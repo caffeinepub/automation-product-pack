@@ -1,0 +1,100 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-16T23:03:19.220Z",
+  "summary": "The diff adds a new Motoko backend actor with access control and user profile/product APIs, plus a new frontend editor/export flow that supports local draft persistence, PDF/ZIP generation, export downloads, and cover thumbnails. However, several BuildRequest requirements are either not evidenced in the diff (notably backend persistence of product definitions per user, and export-screen deliverable summaries/disabled state), and some unrequested features (user profiles, admin-only product creation, pricing) were introduced.",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "Export screen summarizes generated deliverables for each product (what’s included, file sizes, and a preview thumbnail), includes last-generated timestamp, one-click downloads per product, and disables downloads if not generated; also supports 'Download all products' as a single ZIP containing all three product ZIPs.",
+      "reason": "The export screen shows file sizes, a cover thumbnail, a generated date, and a 'Download All Products' button, but the provided (truncated) code does not show an included-files list, explicit disablement/indication for not-yet-generated products, or confirmation that the all-products zip contains three product ZIPs (implementation is in another file and not shown).",
+      "evidence": [
+        "frontend/src/components/export/ExportScreen.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Backend canister API to store/retrieve each authenticated user’s three product definitions and generation metadata, enforcing per-user isolation; app should sync when authenticated and work local-only when unauthenticated.",
+      "reason": "Backend storage is not scoped per user for products/metadata (maps are keyed only by product id Text, not by Principal), product creation is admin-only, and there are no backend methods shown to save/load the user’s three product definitions. Frontend only shows user profile queries/mutations; no product save/load hooks or sync logic is evidenced.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/hooks/useActor.ts",
+        "frontend/src/components/products/ProductsWorkspace.tsx (truncated)",
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Cover images are served as static assets from frontend/public/assets/generated (not through the backend) and included in each product ZIP bundle.",
+      "reason": "The code references cover image paths under /assets/generated, but the diff does not include the actual image files under frontend/public/assets/generated, and the ZIP inclusion of the cover image is not evidenced (zip builder implementation is not shown in the provided diff).",
+      "evidence": [
+        "frontend/src/lib/assets/covers.ts",
+        "frontend/src/lib/generation/generateProductBundle.ts"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "User profile onboarding (name capture) with profile storage APIs and UI dialog.",
+      "reason": "BuildRequest focuses on product definitions and generation/export; it does not request user profile creation or a profile setup dialog.",
+      "evidence": [
+        "backend/main.mo (UserProfile, getCallerUserProfile/saveCallerUserProfile)",
+        "frontend/src/components/auth/ProfileSetupDialog.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/AppLayout.tsx"
+      ]
+    },
+    {
+      "description": "Admin-only product creation and admin-token based access-control initialization via a secret URL parameter.",
+      "reason": "BuildRequest requires per-user product storage with Internet Identity, not an admin-controlled product catalog nor secret-token initialization via URL params.",
+      "evidence": [
+        "backend/main.mo (createProduct admin-only)",
+        "frontend/src/hooks/useActor.ts (caffeineAdminToken, _initializeAccessControlWithSecret)"
+      ]
+    },
+    {
+      "description": "Backend ProductDefinition fields include imageUrl and price.",
+      "reason": "The requested product entry fields are title/subtitle/description/modules/prompts/templates/checklists/optional branding; price and imageUrl are not specified as required fields in the BuildRequest.",
+      "evidence": [
+        "backend/main.mo (type ProductDefinition = { name; description; imageUrl; price; })"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/ProfileSetupDialog.tsx",
+    "frontend/src/components/export/ExportScreen.tsx",
+    "frontend/src/components/layout/AppLayout.tsx",
+    "frontend/src/components/preview/PdfPreviewPanel.tsx",
+    "frontend/src/components/preview/ZipContentsPreview.tsx",
+    "frontend/src/components/products/ProductEditor.tsx",
+    "frontend/src/components/products/ProductsWorkspace.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/lib/assets/covers.ts",
+    "frontend/src/lib/downloads.ts",
+    "frontend/src/lib/filename.ts",
+    "frontend/src/lib/generation/generateAllBundles.ts",
+    "frontend/src/lib/generation/generateProductBundle.ts",
+    "frontend/src/lib/localDrafts.ts",
+    "frontend/src/lib/pdf/generateProductPdf.ts",
+    "frontend/src/lib/zip/buildAllProductsZip.ts",
+    "frontend/src/lib/zip/buildProductZip.ts",
+    "frontend/src/main.tsx",
+    "frontend/src/types/productEntry.ts",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

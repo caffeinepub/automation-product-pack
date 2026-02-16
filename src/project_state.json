@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
+  "architectural_notes": [
+    "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Minimalist abstract tech cover with clean geometric shapes, high-contrast warm palette (product-cover-1.dim_1600x2560.png)\n- Minimalist abstract workflow/automation cover with modern typography-friendly negative space, muted earthy palette (product-cover-2.dim_1600x2560.png)\n- Minimalist abstract AI/prompting cover with subtle grid pattern and soft gradient, neutral palette (product-cover-3.dim_1600x2560.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-frontend-workflow-to-define-and-manage-three-digital-product-entries-title-subtitle-description-included-modules-chapters-prompts-templates-checklists-and-optional-branding-fields-with-an-editor-ui-that-supports-saving-drafts-locally-and-regenerating-outputs-on-demand",
+      "title": "Create a frontend workflow to define and manage three digital product entries (title, subtitle, description, included modules/chapters, prompts/templates/checklists, and optional branding fields), with an editor UI that supports saving drafts locally and regenerating outputs on demand.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-complete-product-files-for-each-of-the-three-products-as-downloadable-assets-including-at-minimum-1-a-multi-page-pdf-document-and-2-a-structured-bundle-of-supplementary-files-e-g-txt-md-templates-checklists-prompt-packs-packaged-into-a-single-zip-per-product",
+      "title": "Generate complete product files for each of the three products as downloadable assets, including at minimum: (1) a multi-page PDF document and (2) a structured bundle of supplementary files (e.g., TXT/MD templates, checklists, prompt packs) packaged into a single ZIP per product.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-gumroad-etsy-export-screen-that-summarizes-the-generated-deliverables-for-each-product-what-s-included-file-sizes-and-a-preview-thumbnail-and-offers-one-click-download-per-product-plus-a-download-all-products-option-that-creates-a-single-zip-containing-all-three-product-zips",
+      "title": "Provide a “Gumroad/Etsy export” screen that summarizes the generated deliverables for each product (what’s included, file sizes, and a preview thumbnail), and offers one-click download per product plus a “Download all products” option that creates a single ZIP containing all three product ZIPs.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-lightweight-backend-canister-api-to-store-retrieve-product-definitions-and-generation-metadata-e-g-last-generated-time-version-tag-so-the-app-can-persist-product-content-beyond-the-browser-and-support-multi-device-use-with-internet-identity-login",
+      "title": "Add a lightweight backend canister API to store/retrieve product definitions and generation metadata (e.g., last generated time, version tag) so the app can persist product content beyond the browser and support multi-device use with Internet Identity login.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-distinctive-visual-theme-across-the-app-colors-typography-spacing-and-component-styling-appropriate-for-a-digital-product-generator-tool-and-keep-all-user-facing-text-in-english",
+      "title": "Apply a coherent, distinctive visual theme across the app (colors, typography, spacing, and component styling) appropriate for a “digital product generator” tool, and keep all user-facing text in English.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-in-app-previews-a-quick-pdf-preview-first-pages-or-a-rendered-preview-panel-and-a-zip-content-preview-tree-list-of-files-that-will-be-included-before-downloading",
+      "title": "Add in-app previews: a quick PDF preview (first pages or a rendered preview panel) and a ZIP content preview (tree/list of files that will be included) before downloading.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-include-static-generated-brand-cover-imagery-for-the-three-products-one-cover-image-per-product-as-part-of-the-downloadable-bundle-and-render-these-images-in-the-ui-as-preview-thumbnails",
+      "title": "Include static generated brand/cover imagery for the three products (one cover image per product) as part of the downloadable bundle, and render these images in the UI as preview thumbnails.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Generate complete product files (PDFs and downloadable assets) for three digital AI-automation products for Gumroad/Etsy upload",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Build a simple app that generates the PDFs and downloadable assets for the three products",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Automation Product Pack",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

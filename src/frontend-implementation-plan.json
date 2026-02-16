@@ -1,0 +1,255 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Automation Product Pack — Frontend product editor, generator, previews, export & sync UI",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Build an editor workflow to manage exactly three digital product entries with local draft persistence and regeneration triggers.",
+      "acceptanceCriteria": [
+        "User can create/edit exactly three product entries in the UI (with clear labels and validation).",
+        "Edits persist across page refresh (local persistence is acceptable).",
+        "User can trigger generation for an individual product or for all three products."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/types/productEntry.ts",
+          "operation": "create",
+          "description": "Define the frontend ProductEntry shape supporting title, subtitle, description, modules/chapters, prompts/templates/checklists, optional branding fields, and generation state for exactly three products."
+        },
+        {
+          "path": "frontend/src/lib/localDrafts.ts",
+          "operation": "create",
+          "description": "Implement local draft persistence (load/save/reset) for exactly three ProductEntry records using localStorage, including basic validation and versioning for safe upgrades."
+        },
+        {
+          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "operation": "create",
+          "description": "Create the product editor UI for a single ProductEntry using shadcn-ui composition (e.g., Card/Input/Textarea/Tabs/Badge/Button) with clear labels and inline validation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "operation": "create",
+          "description": "Create a workspace container that renders exactly three labeled product editors, provides per-product and global 'Regenerate' actions, and coordinates loading/saving drafts via localDrafts."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the main app shell wiring the workspace into the UI, including navigation between 'Editor' and 'Export' screens (no orphan views). Use shadcn-ui layout primitives as available; verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Generate per-product downloadable PDF and ZIP (PDF + supplementary files) fully in-browser with deterministic safe filenames.",
+      "acceptanceCriteria": [
+        "For each product, the app produces a downloadable PDF file generated from the product’s current content.",
+        "For each product, the app produces a downloadable ZIP containing the PDF plus supplementary files in a clear folder structure.",
+        "Generated filenames are deterministic and safe (no illegal characters), and include product name + version/date.",
+        "All downloads work in a standard modern browser without requiring external services."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/package.json",
+          "operation": "modify",
+          "description": "Add/confirm client-side generation dependencies (PDF generation + ZIP packaging + file download helpers) so PDF and ZIP downloads work fully in-browser without external services."
+        },
+        {
+          "path": "frontend/src/lib/filename.ts",
+          "operation": "create",
+          "description": "Implement deterministic, safe filename generation (slugify + date/version tag) for PDFs, product ZIPs, and the all-products ZIP."
+        },
+        {
+          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
+          "operation": "create",
+          "description": "Implement in-browser multi-page PDF generation for a ProductEntry, including cover image embedding and basic layout/typography."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildProductZip.ts",
+          "operation": "create",
+          "description": "Build a structured ZIP per product containing the generated PDF plus supplementary files (TXT/MD templates, checklists, prompt packs) in a clear folder structure, and include the product cover image file."
+        },
+        {
+          "path": "frontend/src/lib/downloads.ts",
+          "operation": "create",
+          "description": "Provide download helpers to trigger browser downloads for generated Blob/File objects (PDF and ZIP) with the deterministic safe filenames."
+        },
+        {
+          "path": "frontend/src/lib/generation/generateProductBundle.ts",
+          "operation": "create",
+          "description": "Create orchestration to generate (a) PDF, (b) ZIP, and (c) generation metadata for one product on demand, updating in-memory state for previews/export."
+        },
+        {
+          "path": "frontend/src/lib/generation/generateAllBundles.ts",
+          "operation": "create",
+          "description": "Create orchestration to generate bundles for all three products in sequence/parallel with progress reporting hooks."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Create a Gumroad/Etsy export screen listing generated deliverables with sizes, timestamps, thumbnails, and one-click downloads including an all-products ZIP.",
+      "acceptanceCriteria": [
+        "Export screen lists three products with: included files list, last-generated timestamp, and download buttons.",
+        "User can download an all-products bundle as a single ZIP.",
+        "If a product has not been generated yet, the UI clearly indicates this and disables downloads until generation is run."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/export/ExportScreen.tsx",
+          "operation": "create",
+          "description": "Implement the export screen UI: list three products, show deliverables summary (file list, sizes, last-generated time), cover thumbnail, per-product download buttons, and a 'Download all products' action. Use shadcn-ui components (Card/Table/Button/Badge) via composition; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildAllProductsZip.ts",
+          "operation": "create",
+          "description": "Implement creation of a single all-products ZIP containing the three per-product ZIPs with a clear top-level folder structure and deterministic naming."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the ExportScreen into the app navigation and ensure export state is shared with the editor/generation workflow (no orphan route/screen)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add Internet Identity login UX and frontend sync mode to save/reload the three product definitions and generation metadata from the backend while keeping a local-only mode for guests.",
+      "acceptanceCriteria": [
+        "Authenticated users can save and reload their three product definitions from the backend.",
+        "Backend enforces that each user only accesses their own product data.",
+        "App continues to function in a limited mode when not authenticated (e.g., local-only drafts), with a clear prompt to sign in to sync."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/auth/LoginButton.tsx",
+          "operation": "create",
+          "description": "Add a Login/Logout button using the authorization component’s Internet Identity guidance (useInternetIdentity + cache clearing via react-query). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useCurrentUserProfile.ts",
+          "operation": "create",
+          "description": "Implement a react-query hook to load the current user profile via actor.getCallerUserProfile with correct loading gating to avoid modal flash (per authorization component guidance). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/auth/ProfileSetupDialog.tsx",
+          "operation": "create",
+          "description": "Implement first-login profile setup (ask for name, save via actor.saveCallerUserProfile), and show the saved name in the UI instead of a principal id. Use shadcn-ui Dialog/Form controls via composition; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/sync/backendProductSync.ts",
+          "operation": "create",
+          "description": "Implement authenticated sync helpers to save/reload the three ProductEntry records and generation metadata through the existing backend interface methods (serialize the full product entry into backend-safe fields as needed), and gracefully handle authorization errors."
+        },
+        {
+          "path": "frontend/src/hooks/useProductSync.ts",
+          "operation": "create",
+          "description": "Create a hook that exposes 'Sync to cloud' and 'Load from cloud' actions, auto-loads on login when available, and keeps local-only drafts when logged out, with a clear UI status."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire authentication UI (LoginButton + ProfileSetupDialog) into the app shell, show a clear prompt to sign in for multi-device sync, and ensure local-only mode remains usable when not authenticated. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Apply a coherent Tailwind-based visual theme across editor, preview, and export screens with English-only UI text and no changes to immutable UI component sources.",
+      "acceptanceCriteria": [
+        "UI has a consistent look and feel across editor, preview, and export screens.",
+        "No user-facing strings appear in languages other than English.",
+        "Theme avoids default/unstyled appearance and uses Tailwind + existing UI components via composition (no edits to immutable UI component sources)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "create",
+          "description": "Add global theme styling (CSS variables aligned with Tailwind/shadcn patterns, base typography, background, spacing defaults) to ensure a distinctive 'digital product generator' look."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "create",
+          "description": "Create a shared layout wrapper (header, content container, consistent spacing) used by editor and export screens. Use shadcn-ui components via composition; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Apply AppLayout usage and normalize all user-facing strings to English across navigation, buttons, empty states, and error messages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Add in-app previews for generated PDFs (quick preview) and ZIP contents (file tree/list) that update after regeneration.",
+      "acceptanceCriteria": [
+        "User can preview key sections/pages before download for each product.",
+        "User can view the list of files/folders that will be included in each ZIP prior to generation/download.",
+        "Preview updates after regeneration."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/preview/PdfPreviewPanel.tsx",
+          "operation": "create",
+          "description": "Implement an in-app PDF preview panel for a product (e.g., first pages rendered or embedded preview from a generated Blob URL) that refreshes after regeneration."
+        },
+        {
+          "path": "frontend/src/components/preview/ZipContentsPreview.tsx",
+          "operation": "create",
+          "description": "Implement a ZIP contents preview (tree/list) showing the folder/file structure that will be included, based on current ProductEntry + generation rules (works pre-download)."
+        },
+        {
+          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "operation": "modify",
+          "description": "Wire PdfPreviewPanel and ZipContentsPreview into the editor workflow so previews are visible prior to download and update after regeneration. Use shadcn-ui Tabs/Accordion as appropriate via composition; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/export/ExportScreen.tsx",
+          "operation": "modify",
+          "description": "Add preview affordances on the export screen (thumbnail + quick preview access) and ensure previews reflect the last-generated artifacts."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Include three static generated cover images as UI thumbnails and as files inside each product’s downloadable ZIP bundle.",
+      "acceptanceCriteria": [
+        "Each product includes a cover image file in its ZIP bundle.",
+        "Export screen shows a thumbnail preview for each product cover image.",
+        "Cover images are served as static assets from frontend/public/assets/generated (not through the backend)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/product-cover-1.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Add generated static cover image asset at exactly this path for product 1 and reference it from the UI and bundle builder."
+        },
+        {
+          "path": "frontend/public/assets/generated/product-cover-2.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Add generated static cover image asset at exactly this path for product 2 and reference it from the UI and bundle builder."
+        },
+        {
+          "path": "frontend/public/assets/generated/product-cover-3.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Add generated static cover image asset at exactly this path for product 3 and reference it from the UI and bundle builder."
+        },
+        {
+          "path": "frontend/src/lib/assets/covers.ts",
+          "operation": "create",
+          "description": "Centralize mapping of the three products to their static cover image asset paths for consistent UI thumbnail rendering and ZIP inclusion."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildProductZip.ts",
+          "operation": "modify",
+          "description": "Ensure the product ZIP bundle includes the correct cover image file from frontend/public/assets/generated (and that ZIP contents preview reflects it)."
+        },
+        {
+          "path": "frontend/src/components/export/ExportScreen.tsx",
+          "operation": "modify",
+          "description": "Render the cover image thumbnails for each product using the static asset mappings (no backend image serving)."
+        }
+      ]
+    }
+  ]
+}
