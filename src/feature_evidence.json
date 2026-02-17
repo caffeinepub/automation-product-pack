@@ -2,11 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-app-s-default-three-products-so-they-match-the-previously-selected-themes-digital-planner-canva-templates-printable-wall-art-and-ensure-each-default-product-is-prefilled-with-complete-starter-content-name-subtitle-description-modules-chapters-ai-prompts-templates-and-checklists-so-users-can-generate-all-three-fully-built-products-immediately-on-first-launch",
-      "featureTitle": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
+      "featureId": "feature-add-a-new-in-app-unified-preview-screen-that-displays-all-three-products-together-in-a-single-combined-layout-suitable-for-quickly-reviewing-the-full-bundle-at-once",
+      "featureTitle": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
       "files": [
-        "frontend/src/components/products/ProductsWorkspace.tsx",
-        "frontend/src/lib/defaultProducts.ts"
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/AppLayout.tsx",
+        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,16 +18,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-24"
+        "REQ-26"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-prevent-existing-local-drafts-from-unintentionally-overriding-the-updated-default-products-by-bumping-the-local-draft-storage-version-key-and-providing-a-safe-fallback-behavior-e-g-treat-older-draft-versions-as-incompatible-and-start-from-the-new-defaults",
-      "featureTitle": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
+      "featureId": "feature-in-the-unified-preview-screen-show-an-in-app-pdf-preview-for-each-generated-product-using-the-already-generated-pdf-blobs-when-available-and-show-a-clear-empty-state-when-a-product-has-not-been-generated-yet",
+      "featureTitle": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
       "files": [
-        "frontend/src/components/products/ProductsWorkspace.tsx",
-        "frontend/src/lib/localDrafts.ts"
+        "frontend/src/components/preview/PdfPreviewPanel.tsx",
+        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -37,7 +38,28 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-25"
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-wire-the-unified-preview-screen-into-the-existing-view-state-flow-so-users-can-enter-and-exit-it-without-losing-the-currently-generated-bundles-in-memory",
+      "featureTitle": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/AppLayout.tsx",
+        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
       ],
       "confidence": "high"
     }

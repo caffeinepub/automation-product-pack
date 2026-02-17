@@ -1,54 +1,80 @@
 {
   "kind": "build_request",
-  "title": "Restore generation of the previously selected three default products",
-  "projectName": "Product Bundle Forge",
+  "title": "Add unified three-product preview layout",
+  "projectName": "Automation Product Pack",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-24",
-      "text": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
+      "id": "REQ-26",
+      "text": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "are you still able to generate the three fully built products that were chosen before?"
+          "want to preview the three products together in a unified layout?",
+          "Yes"
         ]
       },
       "acceptanceCriteria": [
-        "On a fresh browser profile (no localStorage drafts), the Product Editor loads with three products whose themes are Digital Planner, Canva Templates, and Printable Wall Art.",
-        "Each of the three defaults contains non-empty starter content for: modules/chapters, prompts, templates, and checklists (not just name/description).",
-        "Clicking “Generate All Products” successfully produces 3 bundles and navigates to the Export screen with all three bundles available for download."
+        "From within the app, there is a clearly labeled navigation option \"Unified Preview\" that opens the combined preview screen.",
+        "The Unified Preview screen shows three product sections/cards on one page (responsive: stacked on small screens, multi-column on larger screens).",
+        "Each product section includes at minimum: cover image thumbnail, product name, subtitle (if present), and a short description snippet or expandable description area.",
+        "All user-facing text introduced by this change is in English."
       ]
     },
     {
-      "id": "REQ-25",
-      "text": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
+      "id": "REQ-27",
+      "text": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "are you still able to generate the three fully built products that were chosen before?"
+          "want to preview the three products together in a unified layout?",
+          "Yes"
         ]
       },
       "acceptanceCriteria": [
-        "If a user has older saved drafts from the previous default products, the app does not load those drafts over the new default themes; instead it starts from the new defaults.",
-        "Newly saved drafts persist and reload correctly after a page refresh."
+        "If a generated PDF blob exists for a product, the Unified Preview screen renders a PDF preview panel for that product (using the existing PDF preview approach).",
+        "If a generated PDF blob does not exist for a product, the Unified Preview screen shows a non-error empty state (e.g., \"Generate the product to see a PDF preview\").",
+        "Preview panels do not leak object URLs (URLs are revoked when no longer needed / on unmount)."
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "text": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3",
+          "msg-4"
+        ],
+        "quotes": [
+          "want to preview the three products together in a unified layout?",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Navigating to the Unified Preview screen does not clear or regenerate existing bundles; returning to Export or Editor preserves the same generated bundle blobs and metadata.",
+        "If the user generated only one product (single-bundle export), the Unified Preview screen still works and shows that product as generated and the others as not generated.",
+        "The app continues to function with the existing Editor and Export views unchanged in behavior (aside from adding the new navigation path)."
       ]
     }
   ],
   "constraints": [
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
     "Keep all user-facing text in English.",
-    "Do not edit files under frontend/src/components/ui or other frontend immutable paths defined by SYSTEM_CONTEXT.",
-    "Backend must remain a single Motoko actor (no additional backend services)."
+    "Do not add new backend canisters or external services; remain within the existing single-actor backend architecture."
   ],
   "nonGoals": [
-    "Adding new product slots beyond the three default products.",
-    "Introducing any external database or third-party authentication beyond Internet Identity.",
-    "Changing the export/download feature set beyond ensuring the three selected products can be generated."
+    "Do not change product generation logic (PDF/ZIP contents) beyond what is required to display previews in the new unified layout.",
+    "Do not introduce real-time collaboration, chat, or WebSocket functionality.",
+    "Do not add third-party authentication providers beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],

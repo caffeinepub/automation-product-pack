@@ -2,7 +2,7 @@ import React from 'react';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from '../../hooks/useQueries';
 import LoginButton from '../auth/LoginButton';
-import { Package, BookOpen, Download } from 'lucide-react';
+import { Package, BookOpen, Download, Eye } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   Tooltip,
@@ -14,9 +14,10 @@ import {
 interface AppLayoutProps {
   children: React.ReactNode;
   hasGeneratedBundles?: boolean;
-  currentView?: 'editor' | 'export';
+  currentView?: 'editor' | 'export' | 'unifiedPreview';
   onOpenInstructions?: () => void;
   onExportClick?: () => void;
+  onUnifiedPreviewClick?: () => void;
 }
 
 export default function AppLayout({
@@ -25,13 +26,16 @@ export default function AppLayout({
   currentView = 'editor',
   onOpenInstructions,
   onExportClick,
+  onUnifiedPreviewClick,
 }: AppLayoutProps) {
   const { identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
   const isAuthenticated = !!identity;
 
   const showExportButton = currentView === 'editor' && hasGeneratedBundles;
+  const showUnifiedPreviewButton = currentView === 'editor' && hasGeneratedBundles;
   const disableExportButton = !hasGeneratedBundles;
+  const disableUnifiedPreviewButton = !hasGeneratedBundles;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -52,6 +56,29 @@ export default function AppLayout({
                 <BookOpen className="h-4 w-4" />
                 Instructions
               </Button>
+            )}
+            {showUnifiedPreviewButton && onUnifiedPreviewClick && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={onUnifiedPreviewClick}
+                      disabled={disableUnifiedPreviewButton}
+                      className="gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Unified Preview
+                    </Button>
+                  </TooltipTrigger>
+                  {disableUnifiedPreviewButton && (
+                    <TooltipContent>
+                      <p>Generate products first to enable preview</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             )}
             {showExportButton && onExportClick && (
               <TooltipProvider>

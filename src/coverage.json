@@ -1,40 +1,59 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T01:18:16.405Z",
+  "generatedAt": "2026-02-17T01:23:58.790Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-24",
-        "summary": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
+        "id": "REQ-26",
+        "summary": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/defaultProducts.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx",
-          "frontend/src/lib/assets/covers.ts"
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppLayout.tsx",
+          "frontend/public/assets/generated/product-cover-1.dim_1600x2560.png",
+          "frontend/public/assets/generated/product-cover-2.dim_1600x2560.png",
+          "frontend/public/assets/generated/product-cover-3.dim_1600x2560.png"
         ],
         "matchedFiles": [
-          "frontend/src/lib/defaultProducts.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx"
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppLayout.tsx"
         ]
       },
       {
-        "id": "REQ-25",
-        "summary": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
+        "id": "REQ-27",
+        "summary": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/localDrafts.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx"
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "frontend/src/components/preview/PdfPreviewPanel.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/localDrafts.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx"
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "frontend/src/components/preview/PdfPreviewPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-28",
+        "summary": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppLayout.tsx",
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppLayout.tsx",
+          "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
         ]
       }
     ]
@@ -44,9 +63,10 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/products/ProductsWorkspace.tsx",
-    "frontend/src/lib/defaultProducts.ts",
-    "frontend/src/lib/localDrafts.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/layout/AppLayout.tsx",
+    "frontend/src/components/preview/PdfPreviewPanel.tsx",
+    "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

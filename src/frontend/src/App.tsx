@@ -7,11 +7,12 @@ import ProfileSetupDialog from './components/auth/ProfileSetupDialog';
 import OnboardingInstructionsModal from './components/onboarding/OnboardingInstructionsModal';
 import ProductsWorkspace from './components/products/ProductsWorkspace';
 import ExportScreen from './components/export/ExportScreen';
+import UnifiedPreviewScreen from './components/preview/UnifiedPreviewScreen';
 import { Alert, AlertDescription } from './components/ui/alert';
 import { Info } from 'lucide-react';
 import type { GeneratedBundle } from './types/productEntry';
 
-type View = 'editor' | 'export';
+type View = 'editor' | 'export' | 'unifiedPreview';
 
 export default function App() {
   const { identity, isInitializing } = useInternetIdentity();
@@ -47,6 +48,14 @@ export default function App() {
     }
   };
 
+  const handleUnifiedPreviewClick = () => {
+    setCurrentView('unifiedPreview');
+  };
+
+  const handleBackToEditor = () => {
+    setCurrentView('editor');
+  };
+
   if (isInitializing || (isAuthenticated && profileLoading)) {
     return (
       <AppLayout
@@ -54,6 +63,7 @@ export default function App() {
         currentView={currentView}
         onOpenInstructions={openOnboardingManually}
         onExportClick={handleExportClick}
+        onUnifiedPreviewClick={handleUnifiedPreviewClick}
       >
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
@@ -71,6 +81,7 @@ export default function App() {
       currentView={currentView}
       onOpenInstructions={openOnboardingManually}
       onExportClick={handleExportClick}
+      onUnifiedPreviewClick={handleUnifiedPreviewClick}
     >
       {showProfileSetup && (
         <ProfileSetupDialog
@@ -106,7 +117,14 @@ export default function App() {
       {currentView === 'export' && generatedBundles.length > 0 && (
         <ExportScreen
           bundles={generatedBundles}
-          onBack={() => setCurrentView('editor')}
+          onBack={handleBackToEditor}
+        />
+      )}
+
+      {currentView === 'unifiedPreview' && (
+        <UnifiedPreviewScreen
+          bundles={generatedBundles}
+          onBack={handleBackToEditor}
         />
       )}
     </AppLayout>

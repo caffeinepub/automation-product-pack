@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 23,
+  "projectStateVersion": 25,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
     "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution.",
@@ -212,6 +212,30 @@
         "REQ-25"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-in-app-unified-preview-screen-that-displays-all-three-products-together-in-a-single-combined-layout-suitable-for-quickly-reviewing-the-full-bundle-at-once",
+      "title": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-unified-preview-screen-show-an-in-app-pdf-preview-for-each-generated-product-using-the-already-generated-pdf-blobs-when-available-and-show-a-clear-empty-state-when-a-product-has-not-been-generated-yet",
+      "title": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wire-the-unified-preview-screen-into-the-existing-view-state-flow-so-users-can-enter-and-exit-it-without-losing-the-currently-generated-bundles-in-memory",
+      "title": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -260,6 +284,12 @@
     {
       "id": "AR-8",
       "summary": "Add a subtle fade-in animation to the onboarding/instructions popup/modal (especially on tablet)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Provide a unified layout/preview that shows the three products together in one combined view",
       "reqIds": [],
       "status": "pending"
     }

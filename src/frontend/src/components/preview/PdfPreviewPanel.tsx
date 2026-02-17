@@ -24,8 +24,13 @@ export default function PdfPreviewPanel({ pdfBlob, productName }: PdfPreviewPane
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">PDF Preview</CardTitle>
-        <CardDescription>Preview of the generated PDF document</CardDescription>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <FileText className="h-4 w-4" />
+          PDF Preview
+        </CardTitle>
+        <CardDescription>
+          {pdfBlob ? `Preview of ${productName} PDF` : 'No PDF generated yet'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {previewUrl ? (
@@ -38,7 +43,7 @@ export default function PdfPreviewPanel({ pdfBlob, productName }: PdfPreviewPane
           </div>
         ) : (
           <Alert>
-            <FileText className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               Generate the product to see a PDF preview
             </AlertDescription>

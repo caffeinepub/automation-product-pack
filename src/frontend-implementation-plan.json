@@ -1,51 +1,94 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Restore themed, fully-prefilled default products and draft-version safety",
+  "title": "Unified three-product preview screen",
   "requirements": [
     {
-      "id": "REQ-24",
-      "summary": "Replace the three default products with the previously selected themes and fully prefilled starter content so all three can be generated immediately on first launch.",
+      "id": "REQ-26",
+      "summary": "Create a new Unified Preview screen that shows all three products in a responsive combined layout with cover, title/subtitle, and description (snippet/expandable).",
       "acceptanceCriteria": [
-        "On a fresh browser profile (no localStorage drafts), the Product Editor loads with three products whose themes are Digital Planner, Canva Templates, and Printable Wall Art.",
-        "Each of the three defaults contains non-empty starter content for: modules/chapters, prompts, templates, and checklists (not just name/description).",
-        "Clicking “Generate All Products” successfully produces 3 bundles and navigates to the Export screen with all three bundles available for download."
+        "From within the app, there is a clearly labeled navigation option \"Unified Preview\" that opens the combined preview screen.",
+        "The Unified Preview screen shows three product sections/cards on one page (responsive: stacked on small screens, multi-column on larger screens).",
+        "Each product section includes at minimum: cover image thumbnail, product name, subtitle (if present), and a short description snippet or expandable description area.",
+        "All user-facing text introduced by this change is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/defaultProducts.ts",
+          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
           "operation": "create",
-          "description": "Introduce a single source of truth for the app’s three default ProductEntry objects, populated with complete starter content for the Digital Planner, Canva Templates, and Printable Wall Art themes (name, subtitle, description, non-empty modules/chapters, AI prompts, templates, and checklists)."
+          "description": "Add a new UnifiedPreviewScreen component that renders three product cards in a responsive grid. Each card should show the product cover thumbnail (via getCoverPath), name, subtitle (when non-empty), and a description snippet with an English-labeled expand/collapse control."
         },
         {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Use the new default products source (instead of the current placeholder defaults) so first launch loads the three themed, fully-prefilled products; keep IDs as product-1/product-2/product-3 so existing cover mapping and generation/export flows continue to work."
+          "description": "Extend the app view-state to include a \"unifiedPreview\" view and render UnifiedPreviewScreen when selected, while keeping existing editor/export behavior intact."
         },
         {
-          "path": "frontend/src/lib/assets/covers.ts",
+          "path": "frontend/src/components/layout/AppLayout.tsx",
           "operation": "modify",
-          "description": "Confirm the product-1/product-2/product-3 cover mapping remains correct for the restored default themes and aligns with the generated asset filenames under frontend/public/assets/generated/ to ensure covers render in ExportScreen and are included in ZIPs."
+          "description": "Add a clearly labeled \"Unified Preview\" navigation control in the header and wire it via new props (e.g., currentView support + onUnifiedPreviewClick) so users can open the Unified Preview screen from within the app."
+        },
+        {
+          "path": "frontend/public/assets/generated/product-cover-1.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-1.dim_1600x2560.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/product-cover-2.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-2.dim_1600x2560.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/product-cover-3.dim_1600x2560.png",
+          "operation": "create",
+          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-3.dim_1600x2560.png."
         }
       ]
     },
     {
-      "id": "REQ-25",
-      "summary": "Prevent older saved local drafts from overriding the updated defaults by bumping local draft storage version/key and treating older drafts as incompatible.",
+      "id": "REQ-27",
+      "summary": "Show an in-app PDF preview per product on the Unified Preview screen using existing generated PDF blobs, with a clear empty state when not generated and no object URL leaks.",
       "acceptanceCriteria": [
-        "If a user has older saved drafts from the previous default products, the app does not load those drafts over the new default themes; instead it starts from the new defaults.",
-        "Newly saved drafts persist and reload correctly after a page refresh."
+        "If a generated PDF blob exists for a product, the Unified Preview screen renders a PDF preview panel for that product (using the existing PDF preview approach).",
+        "If a generated PDF blob does not exist for a product, the Unified Preview screen shows a non-error empty state (e.g., \"Generate the product to see a PDF preview\").",
+        "Preview panels do not leak object URLs (URLs are revoked when no longer needed / on unmount)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/localDrafts.ts",
+          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
           "operation": "modify",
-          "description": "Bump the localStorage draft STORAGE_VERSION and update the STORAGE_KEY (versioned key) so older drafts are ignored; keep/strengthen the existing version mismatch fallback behavior to return empty drafts and start from the new defaults."
+          "description": "Within each product card, render PdfPreviewPanel using the already-generated PDF blob when available, and pass null when not generated so the existing empty state is shown."
         },
         {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "path": "frontend/src/components/preview/PdfPreviewPanel.tsx",
           "operation": "modify",
-          "description": "Ensure the workspace’s draft load/merge logic cleanly falls back to the new defaults when loadDrafts() returns empty due to an incompatible version/key, while continuing to save and reload newly created drafts correctly."
+          "description": "Confirm object URL lifecycle handling remains correct (create on blob present; revoke on cleanup/unmount and on blob changes) and ensure the empty state text remains a clear, non-error English message."
+        }
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "summary": "Integrate Unified Preview into the existing view-state flow so navigation preserves in-memory generated bundles and works for partial generation.",
+      "acceptanceCriteria": [
+        "Navigating to the Unified Preview screen does not clear or regenerate existing bundles; returning to Export or Editor preserves the same generated bundle blobs and metadata.",
+        "If the user generated only one product (single-bundle export), the Unified Preview screen still works and shows that product as generated and the others as not generated.",
+        "The app continues to function with the existing Editor and Export views unchanged in behavior (aside from adding the new navigation path)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Preserve generatedBundles in App-level state across view switches; add handlers to navigate to/from Unified Preview without mutating generatedBundles. Ensure Unified Preview receives the current generatedBundles array so it can detect which products have PDFs."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Wire header navigation so users can enter Unified Preview from Editor/Export and exit back (e.g., provide a back control in the screen and/or a header control that switches views), without resetting any existing app state."
+        },
+        {
+          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "operation": "modify",
+          "description": "Implement product-to-bundle matching by productId so that if only one bundle exists (single-bundle export), that product shows a PDF preview and the other two show the empty state; also include clear English navigation controls to return to Editor/Export as appropriate."
         }
       ]
     }
