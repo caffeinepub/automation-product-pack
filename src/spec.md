@@ -1,13 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Fix deployment/build failures by removing CDN-loaded jsPDF/JSZip globals and bundling these dependencies via the frontend build system, while keeping PDF/ZIP generation working with clear runtime error handling.
+**Goal:** Restore the app’s three default products to the previously selected themes and ensure they load with complete starter content so users can generate and export all three immediately on first launch.
 
 **Planned changes:**
-- Remove external CDN `<script>` tags for jsPDF and JSZip from `frontend/index.html`.
-- Update `frontend/src/lib/pdf/generateProductPdf.ts` to import jsPDF as a module (no `window.jspdf` usage).
-- Update `frontend/src/lib/zip/buildProductZip.ts` to import JSZip as a module (no `window.JSZip` usage).
-- Ensure TypeScript builds without any global `Window` type declarations for jsPDF/JSZip.
-- Add user-facing (English) error handling in the UI so PDF/ZIP generation failures show a message without crashing the app.
+- Update the default product set to exactly three prefilled products: Digital Planner, Canva Templates, and Printable Wall Art, each with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists).
+- Ensure “Generate All Products” successfully generates all three bundles and proceeds to the Export screen with all three available for download.
+- Prevent older local drafts from overriding the updated defaults by bumping the local draft storage version/key and falling back to the new defaults when incompatible drafts are detected.
 
-**User-visible outcome:** The app builds and deploys reliably without external runtime script dependencies, and users can still generate PDFs and ZIPs; if generation fails, they see a clear English error message and can continue using the app.
+**User-visible outcome:** On a fresh launch, users see three fully prefilled products (Digital Planner, Canva Templates, Printable Wall Art) and can click “Generate All Products” to generate and export three bundles; older saved drafts won’t replace these updated defaults.

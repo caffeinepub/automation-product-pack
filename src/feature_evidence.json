@@ -2,12 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-eliminate-reliance-on-cdn-loaded-global-scripts-for-jspdf-and-jszip-by-bundling-them-via-the-frontend-build-system-so-the-app-builds-and-deploys-reliably-without-external-runtime-dependencies",
-      "featureTitle": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
+      "featureId": "feature-update-the-app-s-default-three-products-so-they-match-the-previously-selected-themes-digital-planner-canva-templates-printable-wall-art-and-ensure-each-default-product-is-prefilled-with-complete-starter-content-name-subtitle-description-modules-chapters-ai-prompts-templates-and-checklists-so-users-can-generate-all-three-fully-built-products-immediately-on-first-launch",
+      "featureTitle": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
       "files": [
-        "frontend/src/lib/pdf/generateProductPdf.ts",
-        "frontend/src/lib/zip/buildAllProductsZip.ts",
-        "frontend/src/lib/zip/buildProductZip.ts"
+        "frontend/src/components/products/ProductsWorkspace.tsx",
+        "frontend/src/lib/defaultProducts.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,17 +17,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-22"
+        "REQ-24"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-project-builds-and-deploys-successfully-after-the-dependency-change-with-clear-user-facing-error-handling-if-pdf-or-zip-generation-fails-at-runtime-english-only",
-      "featureTitle": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
+      "featureId": "feature-prevent-existing-local-drafts-from-unintentionally-overriding-the-updated-default-products-by-bumping-the-local-draft-storage-version-key-and-providing-a-safe-fallback-behavior-e-g-treat-older-draft-versions-as-incompatible-and-start-from-the-new-defaults",
+      "featureTitle": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
       "files": [
-        "frontend/src/components/export/ExportScreen.tsx",
         "frontend/src/components/products/ProductsWorkspace.tsx",
-        "frontend/src/lib/generation/generateProductBundle.ts"
+        "frontend/src/lib/localDrafts.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -39,7 +37,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-23"
+        "REQ-25"
       ],
       "confidence": "high"
     }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 23,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
     "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution.",
@@ -194,6 +194,22 @@
       "title": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
       "reqIds": [
         "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-s-default-three-products-so-they-match-the-previously-selected-themes-digital-planner-canva-templates-printable-wall-art-and-ensure-each-default-product-is-prefilled-with-complete-starter-content-name-subtitle-description-modules-chapters-ai-prompts-templates-and-checklists-so-users-can-generate-all-three-fully-built-products-immediately-on-first-launch",
+      "title": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-prevent-existing-local-drafts-from-unintentionally-overriding-the-updated-default-products-by-bumping-the-local-draft-storage-version-key-and-providing-a-safe-fallback-behavior-e-g-treat-older-draft-versions-as-incompatible-and-start-from-the-new-defaults",
+      "title": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
+      "reqIds": [
+        "REQ-25"
       ],
       "version": 1
     }

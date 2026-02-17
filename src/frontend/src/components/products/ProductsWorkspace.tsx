@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import ProductEditor from './ProductEditor';
 import type { ProductEntry, GeneratedBundle } from '../../types/productEntry';
 import { loadDrafts, saveDrafts } from '../../lib/localDrafts';
+import { DEFAULT_PRODUCTS } from '../../lib/defaultProducts';
 import { generateProductBundle } from '../../lib/generation/generateProductBundle';
 import { generateAllBundles } from '../../lib/generation/generateAllBundles';
 import { Loader2, AlertCircle } from 'lucide-react';
@@ -12,39 +13,6 @@ import { Loader2, AlertCircle } from 'lucide-react';
 interface ProductsWorkspaceProps {
   onBundlesGenerated: (bundles: GeneratedBundle[]) => void;
 }
-
-const DEFAULT_PRODUCTS: ProductEntry[] = [
-  {
-    id: 'product-1',
-    name: 'AI Automation Starter Pack',
-    subtitle: 'Essential Tools & Prompts for Beginners',
-    description: 'Get started with AI automation using our curated collection of prompts, templates, and step-by-step guides.',
-    modules: [],
-    prompts: [],
-    templates: [],
-    checklists: [],
-  },
-  {
-    id: 'product-2',
-    name: 'Workflow Optimization Blueprint',
-    subtitle: 'Streamline Your Business Processes',
-    description: 'Transform your daily operations with proven automation strategies and ready-to-use workflow templates.',
-    modules: [],
-    prompts: [],
-    templates: [],
-    checklists: [],
-  },
-  {
-    id: 'product-3',
-    name: 'Advanced AI Prompting Guide',
-    subtitle: 'Master the Art of AI Communication',
-    description: 'Unlock the full potential of AI tools with advanced prompting techniques and real-world examples.',
-    modules: [],
-    prompts: [],
-    templates: [],
-    checklists: [],
-  },
-];
 
 export default function ProductsWorkspace({ onBundlesGenerated }: ProductsWorkspaceProps) {
   const [products, setProducts] = useState<ProductEntry[]>(DEFAULT_PRODUCTS);

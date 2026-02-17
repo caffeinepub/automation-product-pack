@@ -1,5 +1,5 @@
-const STORAGE_KEY = 'automation-product-drafts';
-const STORAGE_VERSION = '1.0';
+const STORAGE_KEY = 'automation-product-drafts-v2';
+const STORAGE_VERSION = '2.0';
 
 export interface DraftsStorage {
   version: string;
@@ -14,9 +14,9 @@ export function loadDrafts(): Record<string, any> {
     
     const data: DraftsStorage = JSON.parse(stored);
     
-    // Version check
+    // Version check - return empty if version mismatch
     if (data.version !== STORAGE_VERSION) {
-      console.warn('Draft version mismatch, resetting');
+      console.warn('Draft version mismatch, starting fresh with new defaults');
       return {};
     }
     

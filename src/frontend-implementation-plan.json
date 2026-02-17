@@ -1,69 +1,51 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix deployment failure by bundling jsPDF/JSZip and improving runtime error handling",
+  "title": "Restore themed, fully-prefilled default products and draft-version safety",
   "requirements": [
     {
-      "id": "REQ-22",
-      "summary": "Remove CDN-loaded jsPDF/JSZip globals and bundle them via the frontend build system using module imports.",
+      "id": "REQ-24",
+      "summary": "Replace the three default products with the previously selected themes and fully prefilled starter content so all three can be generated immediately on first launch.",
       "acceptanceCriteria": [
-        "The app no longer includes external CDN <script> tags for jsPDF or JSZip in frontend/index.html.",
-        "frontend/src/lib/pdf/generateProductPdf.ts no longer reads jsPDF from window.jspdf and instead uses a module import.",
-        "frontend/src/lib/zip/buildProductZip.ts no longer reads JSZip from window.JSZip and instead uses a module import.",
-        "TypeScript builds without needing global Window type declarations for jspdf/JSZip."
+        "On a fresh browser profile (no localStorage drafts), the Product Editor loads with three products whose themes are Digital Planner, Canva Templates, and Printable Wall Art.",
+        "Each of the three defaults contains non-empty starter content for: modules/chapters, prompts, templates, and checklists (not just name/description).",
+        "Clicking “Generate All Products” successfully produces 3 bundles and navigates to the Export screen with all three bundles available for download."
       ],
       "file_operations": [
         {
-          "path": "frontend/index.html",
-          "operation": "modify",
-          "description": "Remove the external CDN <script> tags that load jsPDF and JSZip so the app no longer relies on runtime globals."
-        },
-        {
-          "path": "frontend/package.json",
-          "operation": "modify",
-          "description": "Add npm dependencies for jspdf and jszip (and any required type packages) so they are bundled by the frontend build system."
-        },
-        {
-          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
-          "operation": "modify",
-          "description": "Replace window.jspdf usage with a module import from the bundled jsPDF package and remove global Window type declarations."
-        },
-        {
-          "path": "frontend/src/lib/zip/buildProductZip.ts",
-          "operation": "modify",
-          "description": "Replace window.JSZip usage with a module import from the bundled JSZip package and remove global Window type declarations."
-        },
-        {
-          "path": "frontend/src/lib/zip/buildAllProductsZip.ts",
-          "operation": "modify",
-          "description": "Replace window.JSZip usage with a module import from the bundled JSZip package and remove global Window type declarations to keep bundling consistent across ZIP creation paths."
-        }
-      ]
-    },
-    {
-      "id": "REQ-23",
-      "summary": "Ensure builds succeed after dependency changes and add user-facing, English-only error handling for PDF/ZIP generation failures without crashing the UI.",
-      "acceptanceCriteria": [
-        "Frontend production build completes successfully without referencing window.jspdf or window.JSZip.",
-        "Product PDF generation still produces a valid multi-page PDF blob.",
-        "Product ZIP generation still produces a valid ZIP blob containing the expected files (PDF, cover image, templates/checklists/prompts folders when present, README.md).",
-        "If PDF or ZIP generation throws an error, the UI presents an English error message and the app remains usable (no blank screen/crash)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/generation/generateProductBundle.ts",
-          "operation": "modify",
-          "description": "Add clear error wrapping around PDF generation and ZIP building so callers receive consistent, user-friendly English error messages while preserving the underlying error for logging/debugging."
+          "path": "frontend/src/lib/defaultProducts.ts",
+          "operation": "create",
+          "description": "Introduce a single source of truth for the app’s three default ProductEntry objects, populated with complete starter content for the Digital Planner, Canva Templates, and Printable Wall Art themes (name, subtitle, description, non-empty modules/chapters, AI prompts, templates, and checklists)."
         },
         {
           "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Improve generation error presentation to use clearer English messaging (distinguish PDF vs ZIP failures when possible) while keeping the app usable and avoiding crashes."
+          "description": "Use the new default products source (instead of the current placeholder defaults) so first launch loads the three themed, fully-prefilled products; keep IDs as product-1/product-2/product-3 so existing cover mapping and generation/export flows continue to work."
         },
         {
-          "path": "frontend/src/components/export/ExportScreen.tsx",
+          "path": "frontend/src/lib/assets/covers.ts",
           "operation": "modify",
-          "description": "Add guarded error handling for the “Download All Products” flow (master ZIP creation) so failures show an English error message in the UI and do not break the screen."
+          "description": "Confirm the product-1/product-2/product-3 cover mapping remains correct for the restored default themes and aligns with the generated asset filenames under frontend/public/assets/generated/ to ensure covers render in ExportScreen and are included in ZIPs."
+        }
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "summary": "Prevent older saved local drafts from overriding the updated defaults by bumping local draft storage version/key and treating older drafts as incompatible.",
+      "acceptanceCriteria": [
+        "If a user has older saved drafts from the previous default products, the app does not load those drafts over the new default themes; instead it starts from the new defaults.",
+        "Newly saved drafts persist and reload correctly after a page refresh."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/localDrafts.ts",
+          "operation": "modify",
+          "description": "Bump the localStorage draft STORAGE_VERSION and update the STORAGE_KEY (versioned key) so older drafts are ignored; keep/strengthen the existing version mismatch fallback behavior to return empty drafts and start from the new defaults."
+        },
+        {
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "operation": "modify",
+          "description": "Ensure the workspace’s draft load/merge logic cleanly falls back to the new defaults when loadDrafts() returns empty due to an incompatible version/key, while continuing to save and reload newly created drafts correctly."
         }
       ]
     }

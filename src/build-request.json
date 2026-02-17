@@ -1,78 +1,57 @@
 {
   "kind": "build_request",
-  "title": "Fix deployment failure by removing CDN-loaded PDF/ZIP dependencies",
-  "projectName": "Automation Product Pack",
-  "priority": "high",
+  "title": "Restore generation of the previously selected three default products",
+  "projectName": "Product Bundle Forge",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-22",
-      "text": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
+      "id": "REQ-24",
+      "text": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
-          "msg-7",
-          "msg-9"
+          "msg-1"
         ],
         "quotes": [
-          "can you fix the deployment error?",
-          "yes",
-          "yes"
+          "are you still able to generate the three fully built products that were chosen before?"
         ]
       },
       "acceptanceCriteria": [
-        "The app no longer includes external CDN <script> tags for jsPDF or JSZip in frontend/index.html.",
-        "frontend/src/lib/pdf/generateProductPdf.ts no longer reads jsPDF from window.jspdf and instead uses a module import.",
-        "frontend/src/lib/zip/buildProductZip.ts no longer reads JSZip from window.JSZip and instead uses a module import.",
-        "TypeScript builds without needing global Window type declarations for jspdf/JSZip."
+        "On a fresh browser profile (no localStorage drafts), the Product Editor loads with three products whose themes are Digital Planner, Canva Templates, and Printable Wall Art.",
+        "Each of the three defaults contains non-empty starter content for: modules/chapters, prompts, templates, and checklists (not just name/description).",
+        "Clicking “Generate All Products” successfully produces 3 bundles and navigates to the Export screen with all three bundles available for download."
       ]
     },
     {
-      "id": "REQ-23",
-      "text": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
-      "target": "both",
+      "id": "REQ-25",
+      "text": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
-          "msg-7",
-          "msg-9"
+          "msg-1"
         ],
         "quotes": [
-          "can you fix the deployment error?",
-          "yes",
-          "yes"
+          "are you still able to generate the three fully built products that were chosen before?"
         ]
       },
       "acceptanceCriteria": [
-        "Frontend production build completes successfully without referencing window.jspdf or window.JSZip.",
-        "Product PDF generation still produces a valid multi-page PDF blob.",
-        "Product ZIP generation still produces a valid ZIP blob containing the expected files (PDF, cover image, templates/checklists/prompts folders when present, README.md).",
-        "If PDF or ZIP generation throws an error, the UI presents an English error message and the app remains usable (no blank screen/crash)."
+        "If a user has older saved drafts from the previous default products, the app does not load those drafts over the new default themes; instead it starts from the new defaults.",
+        "Newly saved drafts persist and reload correctly after a page refresh."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; add migration.mo only if persistent state schema changes are required.",
-    "Do not edit files under frontend/src/components/ui or any paths listed in frontend.immutablePaths.",
-    "Keep all user-facing text in English."
+    "Keep all user-facing text in English.",
+    "Do not edit files under frontend/src/components/ui or other frontend immutable paths defined by SYSTEM_CONTEXT.",
+    "Backend must remain a single Motoko actor (no additional backend services)."
   ],
   "nonGoals": [
-    "Adding new product features unrelated to deployment/build reliability.",
-    "Changing authentication providers (Internet Identity only).",
-    "Introducing external databases or additional backend services."
+    "Adding new product slots beyond the three default products.",
+    "Introducing any external database or third-party authentication beyond Internet Identity.",
+    "Changing the export/download feature set beyond ensuring the three selected products can be generated."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

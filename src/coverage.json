@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T01:11:43.522Z",
+  "generatedAt": "2026-02-17T01:18:16.405Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,51 +11,42 @@
     "implemented": 2,
     "items": [
       {
-        "id": "REQ-22",
-        "summary": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
+        "id": "REQ-24",
+        "summary": "Update the app’s default three products so they match the previously selected themes (Digital Planner, Canva Templates, Printable Wall Art) and ensure each default product is prefilled with complete starter content (name, subtitle, description, modules/chapters, AI prompts, templates, and checklists) so users can generate all three fully built products immediately on first launch.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/index.html",
-          "frontend/package.json",
-          "frontend/src/lib/pdf/generateProductPdf.ts",
-          "frontend/src/lib/zip/buildProductZip.ts",
-          "frontend/src/lib/zip/buildAllProductsZip.ts"
+          "frontend/src/lib/defaultProducts.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx",
+          "frontend/src/lib/assets/covers.ts"
         ],
         "matchedFiles": [
-          "frontend/src/lib/pdf/generateProductPdf.ts",
-          "frontend/src/lib/zip/buildProductZip.ts",
-          "frontend/src/lib/zip/buildAllProductsZip.ts"
+          "frontend/src/lib/defaultProducts.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx"
         ]
       },
       {
-        "id": "REQ-23",
-        "summary": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
+        "id": "REQ-25",
+        "summary": "Prevent existing local drafts from unintentionally overriding the updated default products by bumping the local draft storage version/key and providing a safe fallback behavior (e.g., treat older draft versions as incompatible and start from the new defaults).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/generation/generateProductBundle.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx",
-          "frontend/src/components/export/ExportScreen.tsx"
+          "frontend/src/lib/localDrafts.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/generation/generateProductBundle.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx",
-          "frontend/src/components/export/ExportScreen.tsx"
+          "frontend/src/lib/localDrafts.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/export/ExportScreen.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",
-    "frontend/src/lib/generation/generateProductBundle.ts",
-    "frontend/src/lib/pdf/generateProductPdf.ts",
-    "frontend/src/lib/zip/buildAllProductsZip.ts",
-    "frontend/src/lib/zip/buildProductZip.ts",
+    "frontend/src/lib/defaultProducts.ts",
+    "frontend/src/lib/localDrafts.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
