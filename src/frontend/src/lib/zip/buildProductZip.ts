@@ -1,5 +1,6 @@
 import type { ProductEntry } from '../../types/productEntry';
 import { fetchCoverAsBlob } from '../assets/covers';
+import { getProductReadmeContent } from './readmeContent';
 
 // Type definitions for JSZip
 declare global {
@@ -51,33 +52,17 @@ export async function buildProductZip(
     });
   }
 
-  // Add README
-  const readme = generateReadme(product);
+  // Add comprehensive README with usage and upload instructions
+  const readme = getProductReadmeContent(
+    product.name,
+    product.subtitle,
+    product.description,
+    product.modules,
+    product.templates.length,
+    product.checklists.length,
+    product.prompts.length
+  );
   zip.file('README.md', readme);
 
   return await zip.generateAsync({ type: 'blob' });
-}
-
-function generateReadme(product: ProductEntry): string {
-  return `# ${product.name}
-
-${product.subtitle}
-
-## Description
-
-${product.description}
-
-## Contents
-
-- **PDF Guide**: Complete product documentation
-- **Cover Image**: Product branding asset
-${product.templates.length > 0 ? `- **Templates**: ${product.templates.length} ready-to-use templates\n` : ''}${product.checklists.length > 0 ? `- **Checklists**: ${product.checklists.length} actionable checklists\n` : ''}${product.prompts.length > 0 ? `- **AI Prompts**: ${product.prompts.length} curated prompts\n` : ''}
-## Modules
-
-${product.modules.map((m, i) => `${i + 1}. **${m.title}**: ${m.description}`).join('\n')}
-
----
-
-Generated on ${new Date().toLocaleDateString()}
-`;
 }

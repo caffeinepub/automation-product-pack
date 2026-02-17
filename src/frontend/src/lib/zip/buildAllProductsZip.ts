@@ -1,5 +1,6 @@
 import type { GeneratedBundle } from '../../types/productEntry';
 import { generateProductZipName } from '../filename';
+import { getMasterReadmeContent } from './readmeContent';
 
 // Type definitions for JSZip
 declare global {
@@ -21,25 +22,8 @@ export async function buildAllProductsZip(bundles: GeneratedBundle[]): Promise<B
     }
   }
 
-  // Add master README
-  const readme = `# Automation Products Bundle
-
-This bundle contains ${bundles.length} complete digital products.
-
-## Contents
-
-${bundles.map((b, i) => `${i + 1}. Product ${b.productId} (Generated: ${b.generatedAt.toLocaleDateString()})`).join('\n')}
-
-Each product folder contains a complete ZIP with:
-- PDF documentation
-- Cover image
-- Templates, checklists, and AI prompts
-
----
-
-Bundle created on ${new Date().toLocaleDateString()}
-`;
-
+  // Add comprehensive master README with consolidated upload instructions
+  const readme = getMasterReadmeContent(bundles);
   zip.file('README.md', readme);
 
   return await zip.generateAsync({ type: 'blob' });

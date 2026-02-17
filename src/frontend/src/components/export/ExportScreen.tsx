@@ -9,6 +9,7 @@ import { downloadBlob } from '../../lib/downloads';
 import { generateProductPdfName, generateProductZipName, generateAllProductsZipName } from '../../lib/filename';
 import { buildAllProductsZip } from '../../lib/zip/buildAllProductsZip';
 import { getCoverPath } from '../../lib/assets/covers';
+import ExportInstructions from './ExportInstructions';
 
 interface ExportScreenProps {
   bundles: GeneratedBundle[];
@@ -55,6 +56,8 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
           </Button>
         </div>
       </div>
+
+      <ExportInstructions />
 
       <div className="grid gap-6 md:grid-cols-3">
         {bundles.map((bundle) => (

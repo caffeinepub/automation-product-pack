@@ -1,13 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 7,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
     "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution."
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Minimalist abstract tech cover with clean geometric shapes, high-contrast warm palette (product-cover-1.dim_1600x2560.png)\n- Minimalist abstract workflow/automation cover with modern typography-friendly negative space, muted earthy palette (product-cover-2.dim_1600x2560.png)\n- Minimalist abstract AI/prompting cover with subtle grid pattern and soft gradient, neutral palette (product-cover-3.dim_1600x2560.png)",
   "existing_features": [
     {
       "id": "feature-create-a-frontend-workflow-to-define-and-manage-three-digital-product-entries-title-subtitle-description-included-modules-chapters-prompts-templates-checklists-and-optional-branding-fields-with-an-editor-ui-that-supports-saving-drafts-locally-and-regenerating-outputs-on-demand",
@@ -64,6 +63,46 @@
         "REQ-7"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-an-in-app-step-by-step-instructions-section-english-that-explains-how-to-use-the-app-end-to-end-edit-products-generate-bundles-preview-and-download-and-how-to-upload-the-generated-files-to-gumroad-and-to-etsy",
+      "title": "Add an in-app, step-by-step instructions section (English) that explains how to use the app end-to-end (edit products, generate bundles, preview, and download), and how to upload the generated files to Gumroad and to Etsy.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-include-the-same-step-by-step-usage-gumroad-etsy-upload-instructions-inside-the-generated-downloadable-documentation-by-expanding-the-readme-content-produced-for-each-product-zip-and-the-master-all-products-zip",
+      "title": "Include the same step-by-step usage + Gumroad/Etsy upload instructions inside the generated downloadable documentation by expanding the README content produced for each product ZIP and the master all-products ZIP.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-first-launch-onboarding-modal-that-automatically-opens-the-first-time-a-user-opens-the-app-in-a-given-browser-and-presents-the-app-usage-gumroad-etsy-upload-instructions-inside-the-app",
+      "title": "Add a first-launch onboarding modal that automatically opens the first time a user opens the app in a given browser and presents the app usage + Gumroad/Etsy upload instructions inside the app.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-onboarding-modal-does-not-block-required-first-time-profile-setup-if-the-profile-setup-dialog-is-shown-authenticated-user-with-no-profile-show-profile-setup-first-only-show-the-onboarding-modal-after-profile-setup-is-complete-or-if-profile-setup-is-not-needed",
+      "title": "Ensure the onboarding modal does not block required first-time profile setup: if the profile setup dialog is shown (authenticated user with no profile), show profile setup first; only show the onboarding modal after profile setup is complete or if profile setup is not needed.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-persistent-way-for-users-to-re-open-the-onboarding-instructions-modal-after-dismissing-it-for-example-a-header-link-button-labeled-instructions-or-help",
+      "title": "Provide a persistent way for users to re-open the onboarding instructions modal after dismissing it (for example, a header link/button labeled \"Instructions\" or \"Help\").",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -76,6 +115,24 @@
     {
       "id": "AR-2",
       "summary": "Build a simple app that generates the PDFs and downloadable assets for the three products",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add a simple in-app preview screen for the generated PDFs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add step-by-step instructions for using the app and for uploading the generated products to Gumroad and Etsy",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add a short onboarding modal that shows instructions when users first open the app",
       "reqIds": [],
       "status": "pending"
     }

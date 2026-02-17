@@ -1,164 +1,83 @@
 {
   "kind": "build_request",
-  "title": "Generate downloadable product files (PDF + assets) for three AI-automation products",
+  "title": "Add first-launch onboarding modal with instructions",
   "projectName": "Automation Product Pack",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Create a frontend workflow to define and manage three digital product entries (title, subtitle, description, included modules/chapters, prompts/templates/checklists, and optional branding fields), with an editor UI that supports saving drafts locally and regenerating outputs on demand.",
+      "id": "REQ-10",
+      "text": "Add a first-launch onboarding modal that automatically opens the first time a user opens the app in a given browser and presents the app usage + Gumroad/Etsy upload instructions inside the app.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-1",
+          "msg-2",
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "Yes, please create the product files"
+          "Everything is in place — would you like to add a short onboarding modal so users see the instructions right inside the app when they first open it?",
+          "Yes"
         ]
       },
       "acceptanceCriteria": [
-        "User can create/edit exactly three product entries in the UI (with clear labels and validation).",
-        "Edits persist across page refresh (local persistence is acceptable).",
-        "User can trigger generation for an individual product or for all three products."
+        "On first app load in a fresh browser profile, an onboarding modal opens automatically without requiring navigation to the Export screen.",
+        "The modal content is in English and reuses the existing instructions content (the same guidance users can see in the app) rather than introducing conflicting steps.",
+        "Closing the modal persists a local flag (e.g., localStorage) so the modal does not auto-open again on subsequent visits in the same browser.",
+        "The modal can be dismissed via a clearly labeled Close button; pressing Escape also closes it (standard dialog behavior)."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Generate complete product files for each of the three products as downloadable assets, including at minimum: (1) a multi-page PDF document and (2) a structured bundle of supplementary files (e.g., TXT/MD templates, checklists, prompt packs) packaged into a single ZIP per product.",
+      "id": "REQ-11",
+      "text": "Ensure the onboarding modal does not block required first-time profile setup: if the profile setup dialog is shown (authenticated user with no profile), show profile setup first; only show the onboarding modal after profile setup is complete or if profile setup is not needed.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-1",
+          "msg-2",
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "Yes, please create the product files"
+          "Yes"
         ]
       },
       "acceptanceCriteria": [
-        "For each product, the app produces a downloadable PDF file generated from the product’s current content.",
-        "For each product, the app produces a downloadable ZIP containing the PDF plus supplementary files in a clear folder structure.",
-        "Generated filenames are deterministic and safe (no illegal characters), and include product name + version/date.",
-        "All downloads work in a standard modern browser without requiring external services."
+        "When ProfileSetupDialog is open, the onboarding modal is not shown at the same time.",
+        "After profile setup completes, the onboarding modal appears if it has not been dismissed previously in that browser."
       ]
     },
     {
-      "id": "REQ-3",
-      "text": "Provide a “Gumroad/Etsy export” screen that summarizes the generated deliverables for each product (what’s included, file sizes, and a preview thumbnail), and offers one-click download per product plus a “Download all products” option that creates a single ZIP containing all three product ZIPs.",
+      "id": "REQ-12",
+      "text": "Provide a persistent way for users to re-open the onboarding instructions modal after dismissing it (for example, a header link/button labeled \"Instructions\" or \"Help\").",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-1",
+          "msg-2",
+          "msg-3",
+          "msg-4"
         ],
         "quotes": [
-          "Yes, please create the product files"
+          "Yes"
         ]
       },
       "acceptanceCriteria": [
-        "Export screen lists three products with: included files list, last-generated timestamp, and download buttons.",
-        "User can download an all-products bundle as a single ZIP.",
-        "If a product has not been generated yet, the UI clearly indicates this and disables downloads until generation is run."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Add a lightweight backend canister API to store/retrieve product definitions and generation metadata (e.g., last generated time, version tag) so the app can persist product content beyond the browser and support multi-device use with Internet Identity login.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Yes, please create the product files"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Authenticated users can save and reload their three product definitions from the backend.",
-        "Backend enforces that each user only accesses their own product data.",
-        "App continues to function in a limited mode when not authenticated (e.g., local-only drafts), with a clear prompt to sign in to sync."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Apply a coherent, distinctive visual theme across the app (colors, typography, spacing, and component styling) appropriate for a “digital product generator” tool, and keep all user-facing text in English.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Yes, please create the product files"
-        ]
-      },
-      "acceptanceCriteria": [
-        "UI has a consistent look and feel across editor, preview, and export screens.",
-        "No user-facing strings appear in languages other than English.",
-        "Theme avoids default/unstyled appearance and uses Tailwind + existing UI components via composition (no edits to immutable UI component sources)."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Add in-app previews: a quick PDF preview (first pages or a rendered preview panel) and a ZIP content preview (tree/list of files that will be included) before downloading.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Yes, please create the product files"
-        ]
-      },
-      "acceptanceCriteria": [
-        "User can preview key sections/pages before download for each product.",
-        "User can view the list of files/folders that will be included in each ZIP prior to generation/download.",
-        "Preview updates after regeneration."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Include static generated brand/cover imagery for the three products (one cover image per product) as part of the downloadable bundle, and render these images in the UI as preview thumbnails.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Yes, please create the product files"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each product includes a cover image file in its ZIP bundle.",
-        "Export screen shows a thumbnail preview for each product cover image.",
-        "Cover images are served as static assets from frontend/public/assets/generated (not through the backend)."
+        "A user can re-open the onboarding modal from the main app UI at any time (both from the editor view and export view).",
+        "Re-opening the modal does not reset the 'seen' flag; the modal still does not auto-open on future app loads unless the user manually opens it."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor (all logic in the main actor).",
-    "Do not modify files under frontend immutablePaths; compose existing UI components instead.",
-    "Do not rely on external databases or third-party auth providers; use Internet Identity for authentication.",
-    "User-facing text must be English."
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose existing UI components instead).",
+    "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Integrations with Gumroad/Etsy APIs (auto-upload, listing creation, pricing, etc.).",
-    "Real-time collaboration, chat, or multi-user shared workspaces.",
-    "Email delivery of files or external cloud storage exports."
+    "Do not add or modify backend canister APIs for onboarding state (store onboarding state locally in the browser only).",
+    "Do not change the existing Export screen instructions content beyond what is necessary to embed/reuse it in the onboarding modal."
   ],
   "imageRequirements": {
-    "required": [
-      "Minimalist abstract tech cover with clean geometric shapes, high-contrast warm palette (product-cover-1.dim_1600x2560.png)",
-      "Minimalist abstract workflow/automation cover with modern typography-friendly negative space, muted earthy palette (product-cover-2.dim_1600x2560.png)",
-      "Minimalist abstract AI/prompting cover with subtle grid pattern and soft gradient, neutral palette (product-cover-3.dim_1600x2560.png)"
-    ],
+    "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }
