@@ -1,94 +1,76 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Unified three-product preview screen",
+  "title": "Digital Bundle Studio — Reintroduce subtle color accents across theme and key surfaces",
   "requirements": [
     {
-      "id": "REQ-26",
-      "summary": "Create a new Unified Preview screen that shows all three products in a responsive combined layout with cover, title/subtitle, and description (snippet/expandable).",
+      "id": "REQ-49",
+      "summary": "Rework global CSS theme tokens to add subtle, cohesive accent tinting across light/dark modes while preserving Tailwind token mapping and readable contrast.",
       "acceptanceCriteria": [
-        "From within the app, there is a clearly labeled navigation option \"Unified Preview\" that opens the combined preview screen.",
-        "The Unified Preview screen shows three product sections/cards on one page (responsive: stacked on small screens, multi-column on larger screens).",
-        "Each product section includes at minimum: cover image thumbnail, product name, subtitle (if present), and a short description snippet or expandable description area.",
-        "All user-facing text introduced by this change is in English."
+        "In light mode and dark mode, the UI surfaces (page background, cards, muted panels) show a subtle color tint rather than appearing purely gray/white.",
+        "Primary and ring colors feel consistent with the rest of the palette (no clashing accents), and focus rings remain clearly visible.",
+        "Text contrast remains readable across header, cards, muted panels, and buttons (no low-contrast body text on tinted surfaces).",
+        "No user-facing text is changed as part of the theme-token update."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "operation": "create",
-          "description": "Add a new UnifiedPreviewScreen component that renders three product cards in a responsive grid. Each card should show the product cover thumbnail (via getCoverPath), name, subtitle (when non-empty), and a description snippet with an English-labeled expand/collapse control."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Extend the app view-state to include a \"unifiedPreview\" view and render UnifiedPreviewScreen when selected, while keeping existing editor/export behavior intact."
-        },
-        {
-          "path": "frontend/src/components/layout/AppLayout.tsx",
-          "operation": "modify",
-          "description": "Add a clearly labeled \"Unified Preview\" navigation control in the header and wire it via new props (e.g., currentView support + onUnifiedPreviewClick) so users can open the Unified Preview screen from within the app."
-        },
-        {
-          "path": "frontend/public/assets/generated/product-cover-1.dim_1600x2560.png",
-          "operation": "create",
-          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-1.dim_1600x2560.png."
-        },
-        {
-          "path": "frontend/public/assets/generated/product-cover-2.dim_1600x2560.png",
-          "operation": "create",
-          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-2.dim_1600x2560.png."
-        },
-        {
-          "path": "frontend/public/assets/generated/product-cover-3.dim_1600x2560.png",
-          "operation": "create",
-          "description": "Ensure the generated cover asset is present as a static frontend asset at frontend/public/assets/generated/product-cover-3.dim_1600x2560.png."
+          "description": "Adjust existing CSS variables for light and dark themes (e.g., --background/--card/--popover/--muted/--accent/--secondary/--border/--input/--ring and related foregrounds) to introduce a subtle, cohesive color tint while maintaining contrast and preserving the current Tailwind token mapping. Ensure focus-visible ring/offset remains clearly visible. Use the shadcn-ui token approach (CSS variables consumed by Tailwind color mapping) to keep components consistent. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-27",
-      "summary": "Show an in-app PDF preview per product on the Unified Preview screen using existing generated PDF blobs, with a clear empty state when not generated and no object URL leaks.",
+      "id": "REQ-50",
+      "summary": "Update AppLayout styling so the header and main container reflect the refreshed accent palette without altering layout structure or navigation behavior.",
       "acceptanceCriteria": [
-        "If a generated PDF blob exists for a product, the Unified Preview screen renders a PDF preview panel for that product (using the existing PDF preview approach).",
-        "If a generated PDF blob does not exist for a product, the Unified Preview screen shows a non-error empty state (e.g., \"Generate the product to see a PDF preview\").",
-        "Preview panels do not leak object URLs (URLs are revoked when no longer needed / on unmount)."
+        "The header and main page background visually reflect the updated accent palette (for example, subtle gradient, tinted backdrop, or accent border), while keeping the same controls and placement.",
+        "All existing header buttons (“Storefront”, “Instructions”, “Preview”, “Export”, auth button) continue to function and remain accessible with clear hover/focus states.",
+        "No changes to routing/view-state logic; this is purely visual styling."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+          "path": "frontend/src/components/layout/AppLayout.tsx",
           "operation": "modify",
-          "description": "Within each product card, render PdfPreviewPanel using the already-generated PDF blob when available, and pass null when not generated so the existing empty state is shown."
-        },
-        {
-          "path": "frontend/src/components/preview/PdfPreviewPanel.tsx",
-          "operation": "modify",
-          "description": "Confirm object URL lifecycle handling remains correct (create on blob present; revoke on cleanup/unmount and on blob changes) and ensure the empty state text remains a clear, non-error English message."
+          "description": "Refine header and shell surface styling to pick up the updated accent palette (e.g., slightly tinted/gradient header backdrop, accent-aware borders/dividers, and/or subtle backdrop on the main container) while keeping the same structure and behavior. Ensure interactive states remain clear using existing shadcn-ui Button variants and theme tokens. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-28",
-      "summary": "Integrate Unified Preview into the existing view-state flow so navigation preserves in-memory generated bundles and works for partial generation.",
+      "id": "REQ-51",
+      "summary": "Refresh surfaces and interactive states in Export, Unified Preview, Storefront, Storefront product cards, and Product Editor to align with the updated accent palette without changing features or copy.",
       "acceptanceCriteria": [
-        "Navigating to the Unified Preview screen does not clear or regenerate existing bundles; returning to Export or Editor preserves the same generated bundle blobs and metadata.",
-        "If the user generated only one product (single-bundle export), the Unified Preview screen still works and shows that product as generated and the others as not generated.",
-        "The app continues to function with the existing Editor and Export views unchanged in behavior (aside from adding the new navigation path)."
+        "Export screen bundle cards, instructions panel, and primary actions visually show subtle color accents consistent with the global theme.",
+        "Unified Preview cards and “Show more/less” affordances retain current behavior and empty states, but look more visually lively via the updated palette.",
+        "Storefront grid/cards retain current structure and behavior, while the cards and CTA feel more color-accented and less monochrome.",
+        "Product Editor retains current form structure and behavior; section styling and interactive states reflect the updated palette.",
+        "No new screens, no new actions, and no copy changes are introduced in these updates."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/export/ExportScreen.tsx",
           "operation": "modify",
-          "description": "Preserve generatedBundles in App-level state across view switches; add handlers to navigate to/from Unified Preview without mutating generatedBundles. Ensure Unified Preview receives the current generatedBundles array so it can detect which products have PDFs."
-        },
-        {
-          "path": "frontend/src/components/layout/AppLayout.tsx",
-          "operation": "modify",
-          "description": "Wire header navigation so users can enter Unified Preview from Editor/Export and exit back (e.g., provide a back control in the screen and/or a header control that switches views), without resetting any existing app state."
+          "description": "Update screen-level and Card-level class styling to better reflect the new accent-tinted surfaces (e.g., more expressive card borders/background overlays, hover/focus states, and section dividers) while keeping all behaviors intact. Keep using shadcn-ui Card/Button/Badge/Alert/Table components and the updated tokens for consistency. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
           "operation": "modify",
-          "description": "Implement product-to-bundle matching by productId so that if only one bundle exists (single-bundle export), that product shows a PDF preview and the other two show the empty state; also include clear English navigation controls to return to Editor/Export as appropriate."
+          "description": "Adjust card surface treatments and the 'Show more/less' affordance styling to feel more accent-aware (e.g., subtle tinted panels, improved dividers, and more vibrant hover/focus states) while retaining current behavior and empty states. Keep using shadcn-ui Card/Button and theme tokens. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/storefront/StorefrontScreen.tsx",
+          "operation": "modify",
+          "description": "Refine screen container styling (header area and grid surroundings) to pick up the accent-tinted palette without altering layout structure or navigation behavior. Keep using shadcn-ui Button and theme tokens. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/storefront/StorefrontProductCard.tsx",
+          "operation": "modify",
+          "description": "Update product card surface and interaction styling (hover, focus-within ring, borders, media header background, and CTA emphasis) to align with refreshed accent tokens while keeping structure and behavior unchanged. Keep using shadcn-ui Card/Button and theme tokens. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "operation": "modify",
+          "description": "Enhance editor surface hierarchy (main card, tab list area, empty-state panels, inner module cards, and section separators) so tinted muted/accent surfaces and interactive states reflect the updated palette without changing form structure or behavior. Keep using shadcn-ui Card/Tabs/Button/Input/Textarea/Badge and theme tokens. Verify the component's usage instructions before implementing."
         }
       ]
     }

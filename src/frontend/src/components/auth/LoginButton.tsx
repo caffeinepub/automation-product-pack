@@ -10,6 +10,7 @@ export default function LoginButton() {
 
   const isAuthenticated = !!identity;
   const disabled = loginStatus === 'logging-in';
+  const isLoggingIn = loginStatus === 'logging-in';
 
   const handleAuth = async () => {
     if (isAuthenticated) {
@@ -28,14 +29,20 @@ export default function LoginButton() {
     }
   };
 
+  const getAriaLabel = () => {
+    if (isLoggingIn) return 'Logging in';
+    return isAuthenticated ? 'Logout' : 'Login';
+  };
+
   return (
     <Button
       onClick={handleAuth}
       disabled={disabled}
       variant={isAuthenticated ? 'outline' : 'default'}
       size="sm"
+      aria-label={getAriaLabel()}
     >
-      {loginStatus === 'logging-in' ? (
+      {isLoggingIn ? (
         'Logging in...'
       ) : isAuthenticated ? (
         <>

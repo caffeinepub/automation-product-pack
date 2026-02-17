@@ -24,5 +24,5 @@ export function generateProductPdfName(productName: string, versionTag?: string)
 
 export function generateAllProductsZipName(): string {
   const date = new Date().toISOString().split('T')[0];
-  return `automation-products-bundle-${date}.zip`;
+  return `digital-bundle-complete-${date}.zip`;
 }

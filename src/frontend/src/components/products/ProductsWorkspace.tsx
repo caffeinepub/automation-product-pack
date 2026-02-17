@@ -12,9 +12,15 @@ import { Loader2, AlertCircle } from 'lucide-react';
 
 interface ProductsWorkspaceProps {
   onBundlesGenerated: (bundles: GeneratedBundle[]) => void;
+  activeProductId?: string;
+  onActiveProductChange?: (productId: string) => void;
 }
 
-export default function ProductsWorkspace({ onBundlesGenerated }: ProductsWorkspaceProps) {
+export default function ProductsWorkspace({ 
+  onBundlesGenerated,
+  activeProductId = 'product-1',
+  onActiveProductChange,
+}: ProductsWorkspaceProps) {
   const [products, setProducts] = useState<ProductEntry[]>(DEFAULT_PRODUCTS);
   const [generatingIndex, setGeneratingIndex] = useState<number | null>(null);
   const [generatingAll, setGeneratingAll] = useState(false);
@@ -113,7 +119,11 @@ export default function ProductsWorkspace({ onBundlesGenerated }: ProductsWorksp
         </Alert>
       )}
 
-      <Tabs defaultValue="product-1" className="w-full">
+      <Tabs 
+        value={activeProductId} 
+        onValueChange={onActiveProductChange}
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="product-1">Product 1</TabsTrigger>
           <TabsTrigger value="product-2">Product 2</TabsTrigger>

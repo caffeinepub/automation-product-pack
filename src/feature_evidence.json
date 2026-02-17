@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-in-app-unified-preview-screen-that-displays-all-three-products-together-in-a-single-combined-layout-suitable-for-quickly-reviewing-the-full-bundle-at-once",
-      "featureTitle": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
+      "featureId": "feature-update-the-app-s-global-theme-tokens-to-reintroduce-a-subtle-cohesive-color-accent-not-overly-saturated-across-light-and-dark-themes-by-adjusting-the-existing-css-variables-in-frontend-src-index-css-e-g-background-surface-tinting-accent-muted-secondary-ring-border-harmony-while-preserving-readable-contrast-and-the-existing-tailwind-token-mapping",
+      "featureTitle": "Update the app’s global theme tokens to reintroduce a subtle, cohesive color accent (not overly saturated) across light and dark themes by adjusting the existing CSS variables in frontend/src/index.css (e.g., background/surface tinting, accent/muted/secondary/ring/border harmony) while preserving readable contrast and the existing Tailwind token mapping.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppLayout.tsx",
-        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+        "frontend/src/index.css"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,16 +16,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-26"
+        "REQ-49"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-in-the-unified-preview-screen-show-an-in-app-pdf-preview-for-each-generated-product-using-the-already-generated-pdf-blobs-when-available-and-show-a-clear-empty-state-when-a-product-has-not-been-generated-yet",
-      "featureTitle": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
+      "featureId": "feature-apply-the-refreshed-color-accents-consistently-across-the-main-app-shell-by-updating-layout-styling-in-frontend-src-components-layout-applayout-tsx-e-g-header-background-treatment-and-main-container-backdrop-so-the-app-looks-more-vibrant-without-changing-navigation-behavior-or-layout-structure",
+      "featureTitle": "Apply the refreshed color accents consistently across the main app shell by updating layout styling in frontend/src/components/layout/AppLayout.tsx (e.g., header/background treatment and main container backdrop) so the app looks more vibrant without changing navigation behavior or layout structure.",
       "files": [
-        "frontend/src/components/preview/PdfPreviewPanel.tsx",
-        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+        "frontend/src/components/layout/AppLayout.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,17 +35,18 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-27"
+        "REQ-50"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-wire-the-unified-preview-screen-into-the-existing-view-state-flow-so-users-can-enter-and-exit-it-without-losing-the-currently-generated-bundles-in-memory",
-      "featureTitle": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+      "featureId": "feature-refresh-key-screen-surfaces-to-pick-up-the-updated-accent-palette-without-changing-features-ensure-exportscreen-unifiedpreviewscreen-storefrontscreen-storefrontproductcard-and-producteditor-use-consistent-accented-surface-treatments-e-g-muted-panels-card-hover-focus-states-section-dividers-that-align-with-the-new-theme-and-reduce-the-bland-look",
+      "featureTitle": "Refresh key screen surfaces to pick up the updated accent palette (without changing features): ensure ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor use consistent accented surface treatments (e.g., muted panels, card hover/focus states, section dividers) that align with the new theme and reduce the “bland” look.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppLayout.tsx",
-        "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+        "frontend/src/components/export/ExportScreen.tsx",
+        "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+        "frontend/src/components/products/ProductEditor.tsx",
+        "frontend/src/components/storefront/StorefrontProductCard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -59,7 +57,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-28"
+        "REQ-51"
       ],
       "confidence": "high"
     }

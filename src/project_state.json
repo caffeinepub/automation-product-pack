@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 25,
+  "projectStateVersion": 37,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
     "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution.",
@@ -9,7 +9,8 @@
   "known_issues": [
     "Instructions view is not scrollable; users cannot scroll to see the full instructions list.",
     "Instructions popup/modal is still not scrollable on tablet devices; user cannot scroll to see full instructions.",
-    "Deployment/build is failing (deployment error); may be transient in the current environment."
+    "Deployment/build is failing (deployment error); may be transient in the current environment.",
+    "Current visual theme/layout appears too bland; needs more color accents in the UI."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -236,6 +237,190 @@
         "REQ-28"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-in-app-storefront-screen-that-presents-the-three-products-in-a-polished-storefront-style-layout-for-browsing-and-review-showing-each-product-s-cover-image-name-subtitle-and-a-short-description-with-an-expand-collapse-option",
+      "title": "Add a new in-app “Storefront” screen that presents the three products in a polished storefront-style layout for browsing and review, showing each product’s cover image, name, subtitle, and a short description with an expand/collapse option.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wire-the-new-storefront-screen-into-the-existing-view-state-flow-in-frontend-src-app-tsx-so-users-can-enter-and-exit-it-without-losing-the-currently-generated-bundles-in-memory",
+      "title": "Wire the new Storefront screen into the existing view-state flow in frontend/src/App.tsx so users can enter and exit it without losing the currently generated bundles in memory.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-persistent-header-navigation-entry-button-or-link-labeled-storefront-in-frontend-src-components-layout-applayout-tsx-that-routes-to-the-new-storefront-screen-and-ensure-the-existing-export-unified-preview-instructions-controls-continue-to-work-as-before",
+      "title": "Add a persistent header navigation entry (button or link) labeled “Storefront” in frontend/src/components/layout/AppLayout.tsx that routes to the new Storefront screen, and ensure the existing “Export” / “Unified Preview” / “Instructions” controls continue to work as before.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-from-the-storefront-screen-provide-a-clear-action-for-each-product-to-open-the-product-editor-with-that-product-selected-active-tab-set-to-the-chosen-product",
+      "title": "From the Storefront screen, provide a clear action for each product to open the Product Editor with that product selected (active tab set to the chosen product).",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-storefront-screen-s-visual-structure-to-improve-hierarchy-spacing-and-responsiveness-while-keeping-the-existing-layout-and-functionality-intact-no-new-features-update-the-header-area-and-the-product-grid-layout-to-feel-more-polished-across-mobile-tablet-desktop",
+      "title": "Refine the Storefront screen’s visual structure to improve hierarchy, spacing, and responsiveness while keeping the existing layout and functionality intact (no new features). Update the header area and the product grid layout to feel more polished across mobile/tablet/desktop.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-storefront-product-card-visual-design-for-readability-and-scanability-improve-cover-image-presentation-title-subtitle-description-spacing-and-cta-emphasis-using-existing-tailwind-theme-tokens-background-foreground-muted-border-and-existing-ui-components-card-button",
+      "title": "Refine the Storefront product card visual design for readability and scanability: improve cover image presentation, title/subtitle/description spacing, and CTA emphasis using existing Tailwind theme tokens (background/foreground/muted/border) and existing UI components (Card/Button).",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-storefront-visual-refinements-remain-consistent-with-the-app-s-global-theme-tailwind-css-variables-and-shadcn-components-and-keep-all-user-facing-text-in-english",
+      "title": "Ensure Storefront visual refinements remain consistent with the app’s global theme (Tailwind CSS variables and shadcn components) and keep all user-facing text in English.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-global-layout-styling-to-improve-hierarchy-spacing-and-responsive-behavior-across-the-app-shell-header-main-container-and-footer-while-keeping-all-existing-navigation-and-functionality-unchanged",
+      "title": "Refine the global layout styling to improve hierarchy, spacing, and responsive behavior across the app shell (header, main container, and footer) while keeping all existing navigation and functionality unchanged.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-product-editor-ui-styling-frontend-src-components-products-producteditor-tsx-for-readability-and-scanability-improve-spacing-between-form-sections-align-primary-actions-and-ensure-consistent-typography-across-tabs-and-empty-states",
+      "title": "Polish the Product Editor UI styling (frontend/src/components/products/ProductEditor.tsx) for readability and scanability: improve spacing between form sections, align primary actions, and ensure consistent typography across tabs and empty states.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-export-screen-ui-styling-frontend-src-components-export-exportscreen-tsx-to-improve-visual-clarity-of-the-download-actions-bundle-cards-and-the-embedded-instructions-panel-without-changing-export-logic-or-download-behavior",
+      "title": "Polish the Export screen UI styling (frontend/src/components/export/ExportScreen.tsx) to improve visual clarity of the download actions, bundle cards, and the embedded instructions panel, without changing export logic or download behavior.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-unified-preview-screen-ui-styling-frontend-src-components-preview-unifiedpreviewscreen-tsx-to-improve-card-consistency-cover-presentation-and-description-expand-collapse-affordances-while-preserving-existing-preview-behavior-and-empty-states",
+      "title": "Polish the Unified Preview screen UI styling (frontend/src/components/preview/UnifiedPreviewScreen.tsx) to improve card consistency, cover presentation, and description expand/collapse affordances, while preserving existing preview behavior and empty states.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-s-visible-branding-strings-to-be-sale-ready-and-consistent-across-the-shell-change-the-header-title-in-frontend-src-components-layout-applayout-tsx-and-the-html-document-title-in-frontend-index-html-to-a-neutral-product-agnostic-name-no-automation-product-pack-wording",
+      "title": "Update the app’s visible branding strings to be sale-ready and consistent across the shell: change the header title in frontend/src/components/layout/AppLayout.tsx and the HTML document title in frontend/index.html to a neutral, product-agnostic name (no “Automation Product Pack” wording).",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-exported-file-names-sale-ready-and-accurate-by-using-the-actual-product-display-name-from-default-products-rather-than-constructing-names-from-product-ids-in-frontend-src-components-export-exportscreen-tsx-so-pdfs-and-zips-do-not-get-names-like-product-product-1",
+      "title": "Make the exported file names sale-ready and accurate by using the actual product display name (from DEFAULT_PRODUCTS) rather than constructing names from product IDs in frontend/src/components/export/ExportScreen.tsx, so PDFs and ZIPs do not get names like “product-product-1-…”.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rename-the-download-all-master-bundle-zip-filename-to-a-neutral-multi-product-bundle-name-by-updating-frontend-src-lib-filename-ts-generateallproductszipname-so-it-no-longer-uses-automation-products-bundle-date-zip",
+      "title": "Rename the “Download All” master bundle ZIP filename to a neutral multi-product bundle name by updating frontend/src/lib/filename.ts (generateAllProductsZipName) so it no longer uses “automation-products-bundle-<date>.zip”.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-or-replace-the-footer-s-promotional-built-with-using-caffeine-ai-line-in-frontend-src-components-layout-applayout-tsx-with-sale-appropriate-neutral-footer-copy-that-does-not-include-emojis-and-does-not-include-outbound-referral-tracking-links",
+      "title": "Remove or replace the footer’s promotional “Built with ❤️ using caffeine.ai” line in frontend/src/components/layout/AppLayout.tsx with sale-appropriate neutral footer copy that does not include emojis and does not include outbound referral/tracking links.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-harden-the-ui-for-sale-readiness-by-adding-a-user-friendly-english-only-global-error-fallback-for-unexpected-runtime-errors-in-the-react-app-app-shell-level-and-ensure-generation-export-failures-already-surfaced-as-inline-errors-remain-readable-and-actionable",
+      "title": "Harden the UI for sale readiness by adding a user-friendly, English-only global error fallback for unexpected runtime errors in the React app (app shell level), and ensure generation/export failures already surfaced as inline errors remain readable and actionable.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-perform-an-accessibility-and-usability-polish-pass-across-the-main-navigation-and-key-actions-header-buttons-export-download-buttons-to-ensure-clear-focus-states-keyboard-operability-and-meaningful-accessible-names-labels-where-icons-are-used",
+      "title": "Perform an accessibility and usability polish pass across the main navigation and key actions (header buttons, export download buttons) to ensure clear focus states, keyboard operability, and meaningful accessible names/labels where icons are used.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-default-product-marketing-copy-in-frontend-src-lib-defaultproducts-ts-by-improving-each-product-s-name-subtitle-and-description-for-clarity-scanability-and-sale-readiness-while-keeping-the-same-three-themes-digital-planner-canva-templates-printable-wall-art-and-keeping-all-user-facing-text-in-english",
+      "title": "Polish the default product marketing copy in frontend/src/lib/defaultProducts.ts by improving each product’s name, subtitle, and description for clarity, scanability, and sale readiness, while keeping the same three themes (Digital Planner, Canva Templates, Printable Wall Art) and keeping all user-facing text in English.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-and-align-the-in-app-instructional-messaging-to-match-the-updated-product-positioning-and-sale-ready-tone-by-updating-user-facing-copy-in-frontend-src-components-export-exportinstructions-tsx-headings-descriptions-step-text-while-keeping-the-same-structure-tabs-and-steps-and-keeping-all-text-in-english",
+      "title": "Polish and align the in-app instructional messaging to match the updated product positioning and sale-ready tone by updating user-facing copy in frontend/src/components/export/ExportInstructions.tsx (headings, descriptions, step text) while keeping the same structure (tabs and steps) and keeping all text in English.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-polish-the-generated-readme-messaging-inside-exported-zips-to-be-sale-ready-and-consistent-with-the-app-s-current-branding-and-the-three-default-themes-by-updating-copy-in-frontend-src-lib-zip-readmecontent-ts-including-removing-or-rephrasing-language-like-automated-product-generator-and-ensuring-the-master-readme-title-and-contents-description-are-neutral-and-theme-appropriate-while-keeping-all-text-in-english",
+      "title": "Polish the generated README messaging inside exported ZIPs to be sale-ready and consistent with the app’s current branding and the three default themes by updating copy in frontend/src/lib/zip/readmeContent.ts (including removing or rephrasing language like “automated product generator” and ensuring the master README title and contents description are neutral and theme-appropriate), while keeping all text in English.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-s-global-theme-tokens-to-reintroduce-a-subtle-cohesive-color-accent-not-overly-saturated-across-light-and-dark-themes-by-adjusting-the-existing-css-variables-in-frontend-src-index-css-e-g-background-surface-tinting-accent-muted-secondary-ring-border-harmony-while-preserving-readable-contrast-and-the-existing-tailwind-token-mapping",
+      "title": "Update the app’s global theme tokens to reintroduce a subtle, cohesive color accent (not overly saturated) across light and dark themes by adjusting the existing CSS variables in frontend/src/index.css (e.g., background/surface tinting, accent/muted/secondary/ring/border harmony) while preserving readable contrast and the existing Tailwind token mapping.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-the-refreshed-color-accents-consistently-across-the-main-app-shell-by-updating-layout-styling-in-frontend-src-components-layout-applayout-tsx-e-g-header-background-treatment-and-main-container-backdrop-so-the-app-looks-more-vibrant-without-changing-navigation-behavior-or-layout-structure",
+      "title": "Apply the refreshed color accents consistently across the main app shell by updating layout styling in frontend/src/components/layout/AppLayout.tsx (e.g., header/background treatment and main container backdrop) so the app looks more vibrant without changing navigation behavior or layout structure.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refresh-key-screen-surfaces-to-pick-up-the-updated-accent-palette-without-changing-features-ensure-exportscreen-unifiedpreviewscreen-storefrontscreen-storefrontproductcard-and-producteditor-use-consistent-accented-surface-treatments-e-g-muted-panels-card-hover-focus-states-section-dividers-that-align-with-the-new-theme-and-reduce-the-bland-look",
+      "title": "Refresh key screen surfaces to pick up the updated accent palette (without changing features): ensure ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor use consistent accented surface treatments (e.g., muted panels, card hover/focus states, section dividers) that align with the new theme and reduce the “bland” look.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -290,6 +475,30 @@
     {
       "id": "AR-9",
       "summary": "Provide a unified layout/preview that shows the three products together in one combined view",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add a polished storefront-style view that arranges/presents the three products together for browsing/review",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Refine the visual structure of the Storefront screen layout (polish spacing/typography/component arrangement) based on current design",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Fully optimize/polish the app end-to-end so it is ready for sale (final UI/UX polish, responsiveness, copy clarity, and overall quality)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Reintroduce a touch of color in the app’s visual layout/theme (current version feels too bland)",
       "reqIds": [],
       "status": "pending"
     }

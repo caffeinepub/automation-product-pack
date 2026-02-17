@@ -6,7 +6,7 @@
 export function getAppUsageSection(): string {
   return `## How to Use This Product
 
-This digital product was created using an automated product generator. Here's what you received:
+This digital product package includes everything you need to implement the strategies and techniques covered in the guide.
 
 ### What's Included
 
@@ -28,7 +28,7 @@ This digital product was created using an automated product generator. Here's wh
 }
 
 export function getGumroadUploadSection(): string {
-  return `## Uploading to Gumroad
+  return `## Selling on Gumroad
 
 Want to sell this product on Gumroad? Follow these steps:
 
@@ -67,7 +67,7 @@ Want to sell this product on Gumroad? Follow these steps:
 }
 
 export function getEtsyUploadSection(): string {
-  return `## Uploading to Etsy
+  return `## Selling on Etsy
 
 Want to sell this product on Etsy? Follow these steps:
 
@@ -168,7 +168,7 @@ Generated on ${new Date().toLocaleDateString()}
 export function getMasterReadmeContent(
   bundles: Array<{ productId: string; generatedAt: Date }>
 ): string {
-  return `# Automation Products Bundle
+  return `# Digital Product Bundle
 
 This bundle contains ${bundles.length} complete digital products, each with comprehensive documentation, templates, checklists, and AI prompts.
 

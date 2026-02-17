@@ -5,7 +5,7 @@ export const DEFAULT_PRODUCTS: ProductEntry[] = [
     id: 'product-1',
     name: 'Digital Planner Mastery',
     subtitle: 'Create & Sell Stunning Digital Planners',
-    description: 'Learn how to design, create, and sell digital planners that customers love. Includes templates, prompts, and step-by-step guides for building a profitable digital planner business.',
+    description: 'Everything you need to design, create, and sell digital planners that customers love. Includes ready-to-use templates, AI prompts, step-by-step guides, and proven strategies for building a profitable digital planner business on Etsy and Gumroad.',
     modules: [
       {
         id: 'module-1-1',
@@ -66,7 +66,7 @@ export const DEFAULT_PRODUCTS: ProductEntry[] = [
     id: 'product-2',
     name: 'Canva Templates Empire',
     subtitle: 'Build a Profitable Template Business',
-    description: 'Master the art of creating and selling Canva templates. From Instagram posts to presentation decks, learn how to build a template empire that generates passive income.',
+    description: 'Master the art of creating and selling Canva templates that generate passive income. From Instagram posts to presentation decks, this complete guide includes design systems, workflow strategies, and everything you need to build a thriving template business.',
     modules: [
       {
         id: 'module-2-1',
@@ -130,7 +130,7 @@ export const DEFAULT_PRODUCTS: ProductEntry[] = [
     id: 'product-3',
     name: 'Printable Wall Art Studio',
     subtitle: 'Design & Sell Beautiful Wall Art',
-    description: 'Turn your creativity into profit by designing and selling printable wall art. Learn design techniques, trending styles, and how to build a successful print-on-demand business.',
+    description: 'Turn your creativity into profit by designing and selling printable wall art. This comprehensive guide covers design techniques, trending styles, print-ready file preparation, and proven strategies for building a successful print-on-demand business on Etsy.',
     modules: [
       {
         id: 'module-3-1',

@@ -4,13 +4,15 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Download, FileArchive, FileText, Package, AlertCircle, Loader2 } from 'lucide-react';
+import { Download, FileArchive, FileText, Package, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import type { GeneratedBundle } from '../../types/productEntry';
 import { downloadBlob } from '../../lib/downloads';
 import { generateProductPdfName, generateProductZipName, generateAllProductsZipName } from '../../lib/filename';
 import { buildAllProductsZip } from '../../lib/zip/buildAllProductsZip';
 import { getCoverPath } from '../../lib/assets/covers';
+import { DEFAULT_PRODUCTS } from '../../lib/defaultProducts';
 import ExportInstructions from './ExportInstructions';
+import { ScrollArea } from '../ui/scroll-area';
 
 interface ExportScreenProps {
   bundles: GeneratedBundle[];
@@ -21,9 +23,15 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getProductName = (productId: string): string => {
+    const product = DEFAULT_PRODUCTS.find(p => p.id === productId);
+    return product?.name || 'Unknown Product';
+  };
+
   const handleDownloadPdf = (bundle: GeneratedBundle) => {
     try {
-      const filename = generateProductPdfName(`product-${bundle.productId}`, bundle.versionTag);
+      const productName = getProductName(bundle.productId);
+      const filename = generateProductPdfName(productName, bundle.versionTag);
       downloadBlob(bundle.pdfBlob, filename);
     } catch (err) {
       setError('Failed to download PDF. Please try again.');
@@ -33,7 +41,8 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
 
   const handleDownloadZip = (bundle: GeneratedBundle) => {
     try {
-      const filename = generateProductZipName(`product-${bundle.productId}`, bundle.versionTag);
+      const productName = getProductName(bundle.productId);
+      const filename = generateProductZipName(productName, bundle.versionTag);
       downloadBlob(bundle.zipBlob, filename);
     } catch (err) {
       setError('Failed to download ZIP. Please try again.');
@@ -42,48 +51,56 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
   };
 
   const handleDownloadAll = async () => {
-    setError(null);
     setIsDownloadingAll(true);
+    setError(null);
     try {
-      const allZip = await buildAllProductsZip(bundles);
+      const masterZipBlob = await buildAllProductsZip(bundles);
       const filename = generateAllProductsZipName();
-      downloadBlob(allZip, filename);
+      downloadBlob(masterZipBlob, filename);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(`Failed to create master ZIP file: ${errorMessage}. Please try again.`);
-      console.error('Master ZIP creation error:', err);
+      setError('Failed to create master ZIP. Please try downloading products individually.');
+      console.error('Master ZIP error:', err);
     } finally {
       setIsDownloadingAll(false);
     }
   };
 
-  const formatFileSize = (blob: Blob): string => {
-    const kb = blob.size / 1024;
-    if (kb < 1024) return `${kb.toFixed(1)} KB`;
-    return `${(kb / 1024).toFixed(1)} MB`;
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Export Products</h2>
-          <p className="text-muted-foreground">Download your generated product files</p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="space-y-1.5 flex-1 min-w-0">
+          <h1 className="text-3xl font-bold tracking-tight">Export Products</h1>
+          <p className="text-base text-muted-foreground">
+            Download your generated products individually or as a complete bundle
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={onBack} variant="outline">
-            Back to Editor
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <Button onClick={onBack} variant="outline" className="gap-2" aria-label="Back to Editor">
+            <ArrowLeft className="h-4 w-4" />
+            Back
           </Button>
-          <Button onClick={handleDownloadAll} size="lg" disabled={isDownloadingAll}>
+          <Button
+            onClick={handleDownloadAll}
+            disabled={isDownloadingAll || bundles.length === 0}
+            className="gap-2"
+            aria-label="Download All Products"
+          >
             {isDownloadingAll ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating ZIP...
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Creating...
               </>
             ) : (
               <>
-                <Package className="mr-2 h-4 w-4" />
-                Download All Products
+                <Package className="h-4 w-4" />
+                Download All
               </>
             )}
           </Button>
@@ -97,118 +114,104 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
         </Alert>
       )}
 
-      <div className="max-h-[600px] overflow-hidden">
-        <div className="h-[600px] overflow-y-auto touch-scroll pr-4" tabIndex={0}>
-          <ExportInstructions />
-        </div>
-      </div>
+      {/* Product Bundles Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {bundles.map((bundle) => {
+          const productName = getProductName(bundle.productId);
+          const coverPath = getCoverPath(bundle.productId);
+          const pdfSize = formatFileSize(bundle.pdfBlob.size);
+          const zipSize = formatFileSize(bundle.zipBlob.size);
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {bundles.map((bundle) => (
-          <Card key={bundle.productId}>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle>Product {bundle.productId.split('-')[1]}</CardTitle>
-                  <CardDescription>
-                    Generated {bundle.generatedAt.toLocaleDateString()}
+          return (
+            <Card key={bundle.productId} className="flex flex-col shadow-sm hover:shadow-lg transition-all duration-200 border-border/60 bg-gradient-to-br from-card via-card to-accent/5">
+              <CardHeader className="space-y-4 pb-4">
+                {coverPath && (
+                  <div className="rounded-lg overflow-hidden bg-muted/50 border border-border/60 shadow-sm">
+                    <img
+                      src={coverPath}
+                      alt={`${productName} cover`}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  <CardTitle className="text-xl leading-tight">{productName}</CardTitle>
+                  <CardDescription className="text-sm">
+                    Version {bundle.versionTag}
                   </CardDescription>
                 </div>
-                <Badge variant="secondary">{bundle.versionTag}</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="aspect-[5/8] rounded-lg overflow-hidden bg-muted border">
-                <img
-                  src={getCoverPath(bundle.productId)}
-                  alt={`Product ${bundle.productId} cover`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">PDF</span>
-                  <span className="font-mono">{formatFileSize(bundle.pdfBlob)}</span>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col gap-4 pt-0">
+                {/* File Info Table */}
+                <div className="rounded-lg border border-border/60 bg-muted/30 overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-transparent border-border/60">
+                        <TableHead className="font-semibold">File</TableHead>
+                        <TableHead className="text-right font-semibold">Size</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="hover:bg-muted/50 border-border/60">
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-primary" />
+                            PDF
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">{pdfSize}</TableCell>
+                      </TableRow>
+                      <TableRow className="hover:bg-muted/50 border-border/60">
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <FileArchive className="h-4 w-4 text-primary" />
+                            ZIP
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">{zipSize}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Complete ZIP</span>
-                  <span className="font-mono">{formatFileSize(bundle.zipBlob)}</span>
-                </div>
-              </div>
 
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleDownloadPdf(bundle)}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  PDF
-                </Button>
-                <Button
-                  onClick={() => handleDownloadZip(bundle)}
-                  size="sm"
-                  className="flex-1"
-                >
-                  <FileArchive className="mr-2 h-4 w-4" />
-                  ZIP
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                {/* Download Actions */}
+                <div className="flex flex-col gap-2 mt-auto pt-2">
+                  <Button
+                    onClick={() => handleDownloadPdf(bundle)}
+                    variant="outline"
+                    className="w-full gap-2 border-border/60 hover:bg-accent/50"
+                    aria-label={`Download ${productName} PDF`}
+                  >
+                    <FileText className="h-4 w-4" />
+                    Download PDF
+                  </Button>
+                  <Button
+                    onClick={() => handleDownloadZip(bundle)}
+                    className="w-full gap-2 shadow-sm"
+                    aria-label={`Download ${productName} ZIP`}
+                  >
+                    <FileArchive className="h-4 w-4" />
+                    Download ZIP
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      <Card>
+      {/* Instructions Panel */}
+      <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card via-muted/20 to-card">
         <CardHeader>
-          <CardTitle>Product Details</CardTitle>
-          <CardDescription>Complete breakdown of generated files</CardDescription>
+          <CardTitle className="text-xl">Getting Started</CardTitle>
+          <CardDescription>
+            Learn how to use and sell your digital products
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Version</TableHead>
-                <TableHead>Generated</TableHead>
-                <TableHead>PDF Size</TableHead>
-                <TableHead>ZIP Size</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bundles.map((bundle) => (
-                <TableRow key={bundle.productId}>
-                  <TableCell className="font-medium">
-                    Product {bundle.productId.split('-')[1]}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{bundle.versionTag}</Badge>
-                  </TableCell>
-                  <TableCell>{bundle.generatedAt.toLocaleDateString()}</TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {formatFileSize(bundle.pdfBlob)}
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {formatFileSize(bundle.zipBlob)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        onClick={() => handleDownloadPdf(bundle)}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <ScrollArea className="h-[500px] pr-4">
+            <ExportInstructions />
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>

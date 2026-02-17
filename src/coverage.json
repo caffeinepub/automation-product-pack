@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T01:23:58.790Z",
+  "generatedAt": "2026-02-17T02:21:30.423Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,49 +11,43 @@
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-26",
-        "summary": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
+        "id": "REQ-49",
+        "summary": "Update the app’s global theme tokens to reintroduce a subtle, cohesive color accent (not overly saturated) across light and dark themes by adjusting the existing CSS variables in frontend/src/index.css (e.g., background/surface tinting, accent/muted/secondary/ring/border harmony) while preserving readable contrast and the existing Tailwind token mapping.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/components/layout/AppLayout.tsx",
-          "frontend/public/assets/generated/product-cover-1.dim_1600x2560.png",
-          "frontend/public/assets/generated/product-cover-2.dim_1600x2560.png",
-          "frontend/public/assets/generated/product-cover-3.dim_1600x2560.png"
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/App.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-50",
+        "summary": "Apply the refreshed color accents consistently across the main app shell by updating layout styling in frontend/src/components/layout/AppLayout.tsx (e.g., header/background treatment and main container backdrop) so the app looks more vibrant without changing navigation behavior or layout structure.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/layout/AppLayout.tsx"
+        ],
+        "matchedFiles": [
           "frontend/src/components/layout/AppLayout.tsx"
         ]
       },
       {
-        "id": "REQ-27",
-        "summary": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
+        "id": "REQ-51",
+        "summary": "Refresh key screen surfaces to pick up the updated accent palette (without changing features): ensure ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor use consistent accented surface treatments (e.g., muted panels, card hover/focus states, section dividers) that align with the new theme and reduce the “bland” look.",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/components/export/ExportScreen.tsx",
           "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/components/preview/PdfPreviewPanel.tsx"
+          "frontend/src/components/storefront/StorefrontScreen.tsx",
+          "frontend/src/components/storefront/StorefrontProductCard.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/components/export/ExportScreen.tsx",
           "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/components/preview/PdfPreviewPanel.tsx"
-        ]
-      },
-      {
-        "id": "REQ-28",
-        "summary": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/layout/AppLayout.tsx",
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/layout/AppLayout.tsx",
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx"
+          "frontend/src/components/storefront/StorefrontProductCard.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
         ]
       }
     ]
@@ -63,10 +57,12 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
+    "frontend/src/components/export/ExportScreen.tsx",
     "frontend/src/components/layout/AppLayout.tsx",
-    "frontend/src/components/preview/PdfPreviewPanel.tsx",
     "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+    "frontend/src/components/products/ProductEditor.tsx",
+    "frontend/src/components/storefront/StorefrontProductCard.tsx",
+    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

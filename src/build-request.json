@@ -1,80 +1,76 @@
 {
   "kind": "build_request",
-  "title": "Add unified three-product preview layout",
-  "projectName": "Automation Product Pack",
+  "title": "Reintroduce color accents into the app theme (less bland UI)",
+  "projectName": "Digital Bundle Studio",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-26",
-      "text": "Add a new in-app “Unified Preview” screen that displays all three products together in a single combined layout, suitable for quickly reviewing the full bundle at once.",
+      "id": "REQ-49",
+      "text": "Update the app’s global theme tokens to reintroduce a subtle, cohesive color accent (not overly saturated) across light and dark themes by adjusting the existing CSS variables in frontend/src/index.css (e.g., background/surface tinting, accent/muted/secondary/ring/border harmony) while preserving readable contrast and the existing Tailwind token mapping.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
           "msg-4"
         ],
         "quotes": [
-          "want to preview the three products together in a unified layout?",
-          "Yes"
+          "This version is a little too bland. I prefered when there was a touch of color in the visual layout of the app. Can you redo that please?"
         ]
       },
       "acceptanceCriteria": [
-        "From within the app, there is a clearly labeled navigation option \"Unified Preview\" that opens the combined preview screen.",
-        "The Unified Preview screen shows three product sections/cards on one page (responsive: stacked on small screens, multi-column on larger screens).",
-        "Each product section includes at minimum: cover image thumbnail, product name, subtitle (if present), and a short description snippet or expandable description area.",
-        "All user-facing text introduced by this change is in English."
+        "In light mode and dark mode, the UI surfaces (page background, cards, muted panels) show a subtle color tint rather than appearing purely gray/white.",
+        "Primary and ring colors feel consistent with the rest of the palette (no clashing accents), and focus rings remain clearly visible.",
+        "Text contrast remains readable across header, cards, muted panels, and buttons (no low-contrast body text on tinted surfaces).",
+        "No user-facing text is changed as part of the theme-token update."
       ]
     },
     {
-      "id": "REQ-27",
-      "text": "In the Unified Preview screen, show an in-app PDF preview for each generated product using the already-generated PDF blobs when available, and show a clear empty state when a product has not been generated yet.",
+      "id": "REQ-50",
+      "text": "Apply the refreshed color accents consistently across the main app shell by updating layout styling in frontend/src/components/layout/AppLayout.tsx (e.g., header/background treatment and main container backdrop) so the app looks more vibrant without changing navigation behavior or layout structure.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
           "msg-4"
         ],
         "quotes": [
-          "want to preview the three products together in a unified layout?",
-          "Yes"
+          "I prefered when there was a touch of color in the visual layout of the app. Can you redo that please?"
         ]
       },
       "acceptanceCriteria": [
-        "If a generated PDF blob exists for a product, the Unified Preview screen renders a PDF preview panel for that product (using the existing PDF preview approach).",
-        "If a generated PDF blob does not exist for a product, the Unified Preview screen shows a non-error empty state (e.g., \"Generate the product to see a PDF preview\").",
-        "Preview panels do not leak object URLs (URLs are revoked when no longer needed / on unmount)."
+        "The header and main page background visually reflect the updated accent palette (for example, subtle gradient, tinted backdrop, or accent border), while keeping the same controls and placement.",
+        "All existing header buttons (“Storefront”, “Instructions”, “Preview”, “Export”, auth button) continue to function and remain accessible with clear hover/focus states.",
+        "No changes to routing/view-state logic; this is purely visual styling."
       ]
     },
     {
-      "id": "REQ-28",
-      "text": "Wire the Unified Preview screen into the existing view-state flow so users can enter and exit it without losing the currently generated bundles in memory.",
+      "id": "REQ-51",
+      "text": "Refresh key screen surfaces to pick up the updated accent palette (without changing features): ensure ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor use consistent accented surface treatments (e.g., muted panels, card hover/focus states, section dividers) that align with the new theme and reduce the “bland” look.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3",
           "msg-4"
         ],
         "quotes": [
-          "want to preview the three products together in a unified layout?",
-          "Yes"
+          "This version is a little too bland."
         ]
       },
       "acceptanceCriteria": [
-        "Navigating to the Unified Preview screen does not clear or regenerate existing bundles; returning to Export or Editor preserves the same generated bundle blobs and metadata.",
-        "If the user generated only one product (single-bundle export), the Unified Preview screen still works and shows that product as generated and the others as not generated.",
-        "The app continues to function with the existing Editor and Export views unchanged in behavior (aside from adding the new navigation path)."
+        "Export screen bundle cards, instructions panel, and primary actions visually show subtle color accents consistent with the global theme.",
+        "Unified Preview cards and “Show more/less” affordances retain current behavior and empty states, but look more visually lively via the updated palette.",
+        "Storefront grid/cards retain current structure and behavior, while the cards and CTA feel more color-accented and less monochrome.",
+        "Product Editor retains current form structure and behavior; section styling and interactive states reflect the updated palette.",
+        "No new screens, no new actions, and no copy changes are introduced in these updates."
       ]
     }
   ],
   "constraints": [
     "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
     "Keep all user-facing text in English.",
-    "Do not add new backend canisters or external services; remain within the existing single-actor backend architecture."
+    "Do not change existing app functionality, navigation/view-state flow, generation logic, or download behavior; this request is visual/theme-only."
   ],
   "nonGoals": [
-    "Do not change product generation logic (PDF/ZIP contents) beyond what is required to display previews in the new unified layout.",
-    "Do not introduce real-time collaboration, chat, or WebSocket functionality.",
-    "Do not add third-party authentication providers beyond Internet Identity."
+    "Adding new features or screens related to theming (e.g., a user-selectable theme picker).",
+    "Changing product generation/export logic, filenames, or backend APIs.",
+    "Introducing new third-party UI libraries beyond the existing stack."
   ],
   "imageRequirements": {
     "required": [],

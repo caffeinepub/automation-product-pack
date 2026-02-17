@@ -8,17 +8,19 @@ import OnboardingInstructionsModal from './components/onboarding/OnboardingInstr
 import ProductsWorkspace from './components/products/ProductsWorkspace';
 import ExportScreen from './components/export/ExportScreen';
 import UnifiedPreviewScreen from './components/preview/UnifiedPreviewScreen';
+import StorefrontScreen from './components/storefront/StorefrontScreen';
 import { Alert, AlertDescription } from './components/ui/alert';
 import { Info } from 'lucide-react';
 import type { GeneratedBundle } from './types/productEntry';
 
-type View = 'editor' | 'export' | 'unifiedPreview';
+type View = 'editor' | 'export' | 'unifiedPreview' | 'storefront';
 
 export default function App() {
   const { identity, isInitializing } = useInternetIdentity();
   const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
   const [currentView, setCurrentView] = useState<View>('editor');
   const [generatedBundles, setGeneratedBundles] = useState<GeneratedBundle[]>([]);
+  const [activeProductId, setActiveProductId] = useState<string>('product-1');
   
   const {
     isOpen: onboardingOpen,
@@ -52,7 +54,16 @@ export default function App() {
     setCurrentView('unifiedPreview');
   };
 
+  const handleStorefrontClick = () => {
+    setCurrentView('storefront');
+  };
+
   const handleBackToEditor = () => {
+    setCurrentView('editor');
+  };
+
+  const handleEditProduct = (productId: string) => {
+    setActiveProductId(productId);
     setCurrentView('editor');
   };
 
@@ -64,6 +75,7 @@ export default function App() {
         onOpenInstructions={openOnboardingManually}
         onExportClick={handleExportClick}
         onUnifiedPreviewClick={handleUnifiedPreviewClick}
+        onStorefrontClick={handleStorefrontClick}
       >
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
@@ -82,6 +94,7 @@ export default function App() {
       onOpenInstructions={openOnboardingManually}
       onExportClick={handleExportClick}
       onUnifiedPreviewClick={handleUnifiedPreviewClick}
+      onStorefrontClick={handleStorefrontClick}
     >
       {showProfileSetup && (
         <ProfileSetupDialog
@@ -111,7 +124,11 @@ export default function App() {
       )}
 
       {currentView === 'editor' && (
-        <ProductsWorkspace onBundlesGenerated={handleBundlesGenerated} />
+        <ProductsWorkspace 
+          onBundlesGenerated={handleBundlesGenerated}
+          activeProductId={activeProductId}
+          onActiveProductChange={setActiveProductId}
+        />
       )}
 
       {currentView === 'export' && generatedBundles.length > 0 && (
@@ -124,6 +141,13 @@ export default function App() {
       {currentView === 'unifiedPreview' && (
         <UnifiedPreviewScreen
           bundles={generatedBundles}
+          onBack={handleBackToEditor}
+        />
+      )}
+
+      {currentView === 'storefront' && (
+        <StorefrontScreen
+          onEditProduct={handleEditProduct}
           onBack={handleBackToEditor}
         />
       )}

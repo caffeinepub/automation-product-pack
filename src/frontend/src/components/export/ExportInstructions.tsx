@@ -11,10 +11,10 @@ export default function ExportInstructions() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-primary" />
-          <CardTitle>How to Use This App & Upload Your Products</CardTitle>
+          <CardTitle>How to Use & Sell Your Products</CardTitle>
         </div>
         <CardDescription>
-          Complete step-by-step guide for creating, exporting, and selling your digital products
+          Complete guide for editing, exporting, and selling your digital products
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -39,7 +39,7 @@ export default function ExportInstructions() {
               <h3 className="font-semibold text-lg mb-3">Getting Started</h3>
               <Alert>
                 <AlertDescription>
-                  This app helps you create professional digital products with PDFs, templates, checklists, and AI prompts.
+                  Create professional digital products with PDFs, templates, checklists, and AI prompts — ready to sell on Etsy or Gumroad.
                 </AlertDescription>
               </Alert>
             </div>
@@ -47,34 +47,34 @@ export default function ExportInstructions() {
             <div className="space-y-3">
               <h4 className="font-semibold">Step 1: Sign In (Optional)</h4>
               <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Click the "Login" button in the header to sign in with Internet Identity</li>
-                <li>Your products will be saved to the cloud and accessible from any device</li>
-                <li>You can also use the app without signing in (local-only mode)</li>
-                <li>In local-only mode, your products are saved in your browser's storage</li>
+                <li>Click "Login" in the header to sign in with Internet Identity</li>
+                <li>Your products sync to the cloud and work across all devices</li>
+                <li>Or use the app without signing in (browser storage only)</li>
+                <li>Local mode saves products in your browser automatically</li>
               </ul>
             </div>
 
             <Separator />
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Step 2: Edit Your Products</h4>
+              <h4 className="font-semibold">Step 2: Customize Your Products</h4>
               <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Use the product editor to customize each of the three products</li>
-                <li>Fill in the product name, subtitle, and description</li>
-                <li>Add or edit modules (chapters/sections) for your product</li>
-                <li>Add AI prompts, templates, and checklists in their respective tabs</li>
-                <li>Your changes are automatically saved as you type</li>
+                <li>Edit each of the three pre-filled products in the editor</li>
+                <li>Update product name, subtitle, and description</li>
+                <li>Add or modify modules (chapters/sections)</li>
+                <li>Customize AI prompts, templates, and checklists</li>
+                <li>Changes save automatically as you type</li>
               </ul>
             </div>
 
             <Separator />
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Step 3: Generate Products</h4>
+              <h4 className="font-semibold">Step 3: Generate Your Products</h4>
               <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Click "Generate" on individual products to create just that product</li>
+                <li>Click "Generate" on any product to create just that one</li>
                 <li>Or click "Generate All Products" to create all three at once</li>
-                <li>Each product generates a PDF guide and a complete ZIP package</li>
+                <li>Each product generates a PDF guide and complete ZIP package</li>
                 <li>Generation takes a few seconds per product</li>
               </ul>
             </div>
@@ -82,34 +82,34 @@ export default function ExportInstructions() {
             <Separator />
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Step 4: Preview Your Products</h4>
+              <h4 className="font-semibold">Step 4: Preview & Download</h4>
               <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>After generation, you'll see the Export screen (this page)</li>
-                <li>View product covers, file sizes, and generation dates</li>
-                <li>Each product includes a PDF and a complete ZIP package</li>
-                <li>The ZIP contains: PDF, cover image, templates, checklists, and prompts</li>
+                <li>After generation, view the Export screen (this page)</li>
+                <li>See product covers, file sizes, and generation dates</li>
+                <li>Download individual PDFs or complete ZIP packages</li>
+                <li>Each ZIP includes: PDF, cover image, templates, checklists, and prompts</li>
               </ul>
             </div>
 
             <Separator />
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Step 5: Download Your Products</h4>
+              <h4 className="font-semibold">Step 5: Sell Your Products</h4>
               <ul className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Click "PDF" to download just the PDF guide for a product</li>
-                <li>Click "ZIP" to download the complete package for a product</li>
-                <li>Click "Download All Products" to get a master ZIP with all three products</li>
-                <li>The master ZIP includes separate folders for each product</li>
+                <li>Upload the ZIP file to Gumroad or Etsy (see tabs above)</li>
+                <li>Use the included cover image for your product thumbnail</li>
+                <li>Copy your product description from the editor</li>
+                <li>Set your price and publish your listing</li>
               </ul>
             </div>
           </TabsContent>
 
           <TabsContent value="gumroad" className="space-y-4 mt-4">
             <div>
-              <h3 className="font-semibold text-lg mb-3">Uploading to Gumroad</h3>
+              <h3 className="font-semibold text-lg mb-3">Selling on Gumroad</h3>
               <Alert>
                 <AlertDescription>
-                  Gumroad is perfect for selling digital products with instant delivery and simple setup.
+                  Gumroad offers instant delivery, simple setup, and flexible pricing — perfect for digital products.
                 </AlertDescription>
               </Alert>
             </div>
@@ -118,8 +118,8 @@ export default function ExportInstructions() {
               <h4 className="font-semibold">Before You Start</h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-2">
                 <li>Create a free account at <a href="https://gumroad.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">gumroad.com</a></li>
-                <li>Download the product ZIP file from this app</li>
-                <li>Have your product cover image ready (included in the ZIP)</li>
+                <li>Download your product ZIP from this app</li>
+                <li>Extract the cover image (cover.png) for your thumbnail</li>
               </ul>
             </div>
 
@@ -128,16 +128,16 @@ export default function ExportInstructions() {
             <div className="space-y-3">
               <h4 className="font-semibold">Upload Steps</h4>
               <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Log in to your Gumroad account</li>
-                <li>Click "Create" → "Product" in the top navigation</li>
+                <li>Log in to Gumroad and click "Create" → "Product"</li>
                 <li>Choose "Digital product" as the product type</li>
-                <li>Enter your product name and description (copy from your product editor)</li>
-                <li>Set your price (Gumroad supports pay-what-you-want pricing too)</li>
-                <li>Upload the product ZIP file you downloaded from this app</li>
-                <li>Upload the cover image (extract cover.png from the ZIP)</li>
-                <li>Add product tags and categories for better discoverability</li>
-                <li>Preview your product page to ensure everything looks good</li>
-                <li>Click "Publish" to make your product live</li>
+                <li>Enter your product name and description</li>
+                <li>Set your price (or enable pay-what-you-want)</li>
+                <li>Upload the product ZIP file</li>
+                <li>Upload cover.png as your product thumbnail</li>
+                <li>Add tags and categories for discoverability</li>
+                <li>Preview your product page</li>
+                <li>Click "Publish" to go live</li>
+                <li>Share your product link on social media</li>
               </ol>
             </div>
 
@@ -146,21 +146,21 @@ export default function ExportInstructions() {
             <div className="space-y-3">
               <h4 className="font-semibold">Tips for Success</h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Write a compelling product description highlighting the benefits</li>
-                <li>Use the cover image to create an eye-catching product thumbnail</li>
-                <li>Consider offering a preview or sample to increase conversions</li>
-                <li>Set up email marketing to build your audience</li>
-                <li>Share your Gumroad link on social media and your website</li>
+                <li>Highlight benefits and outcomes in your description</li>
+                <li>Use the cover image to create an eye-catching thumbnail</li>
+                <li>Offer a preview or sample to boost conversions</li>
+                <li>Build an email list to grow your audience</li>
+                <li>Share your link on social media and your website</li>
               </ul>
             </div>
           </TabsContent>
 
           <TabsContent value="etsy" className="space-y-4 mt-4">
             <div>
-              <h3 className="font-semibold text-lg mb-3">Uploading to Etsy</h3>
+              <h3 className="font-semibold text-lg mb-3">Selling on Etsy</h3>
               <Alert>
                 <AlertDescription>
-                  Etsy is a popular marketplace for digital downloads with built-in traffic and buyer trust.
+                  Etsy provides built-in traffic, buyer trust, and a marketplace designed for digital downloads.
                 </AlertDescription>
               </Alert>
             </div>
@@ -169,9 +169,9 @@ export default function ExportInstructions() {
               <h4 className="font-semibold">Before You Start</h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-2">
                 <li>Create an Etsy seller account at <a href="https://etsy.com/sell" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">etsy.com/sell</a></li>
-                <li>Download the product ZIP file from this app</li>
-                <li>Extract the cover image from the ZIP for your listing photos</li>
-                <li>Note: Etsy charges a $0.20 listing fee per product</li>
+                <li>Download your product ZIP from this app</li>
+                <li>Extract cover.png for your listing photos</li>
+                <li>Note: Etsy charges $0.20 per listing</li>
               </ul>
             </div>
 
@@ -180,18 +180,17 @@ export default function ExportInstructions() {
             <div className="space-y-3">
               <h4 className="font-semibold">Upload Steps</h4>
               <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Log in to your Etsy seller account</li>
-                <li>Go to "Shop Manager" → "Listings" → "Add a listing"</li>
-                <li>Select "Digital product" as the listing type</li>
-                <li>Upload the product ZIP file (Etsy allows up to 5 files per listing)</li>
-                <li>Add listing photos: Use the cover image as your main photo</li>
-                <li>Write your listing title (max 140 characters, include keywords)</li>
-                <li>Write a detailed description (copy from your product editor and expand)</li>
-                <li>Add relevant tags (up to 13 tags for better search visibility)</li>
-                <li>Select the appropriate category (e.g., "Digital Downloads" → "Templates")</li>
-                <li>Set your price (consider Etsy's fees when pricing)</li>
-                <li>Choose "Instant download" for delivery method</li>
-                <li>Review your listing and click "Publish"</li>
+                <li>Log in to Etsy and go to "Shop Manager" → "Listings"</li>
+                <li>Click "Add a listing" and select "Digital product"</li>
+                <li>Upload your product ZIP file (under 20MB)</li>
+                <li>Add listing photos (use cover.png as main image)</li>
+                <li>Write a keyword-rich title (max 140 characters)</li>
+                <li>Create a detailed description of what's included</li>
+                <li>Add up to 13 tags for search visibility</li>
+                <li>Select category (e.g., Digital Downloads → Templates)</li>
+                <li>Set your price (factor in Etsy's 6.5% transaction fee)</li>
+                <li>Choose "Instant download" for delivery</li>
+                <li>Review and publish your listing</li>
               </ol>
             </div>
 
@@ -200,24 +199,24 @@ export default function ExportInstructions() {
             <div className="space-y-3">
               <h4 className="font-semibold">Tips for Success</h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Use all 10 photo slots: Show the cover, sample pages, and what's included</li>
-                <li>Optimize your title and tags with keywords buyers search for</li>
-                <li>Offer multiple products to build a cohesive shop brand</li>
-                <li>Respond quickly to customer messages and reviews</li>
-                <li>Consider running Etsy Ads to boost visibility for new listings</li>
-                <li>Include clear instructions in your listing about what buyers will receive</li>
+                <li>Use all 10 photo slots to showcase your product</li>
+                <li>Optimize title and tags with buyer search keywords</li>
+                <li>Build a cohesive shop brand with multiple products</li>
+                <li>Respond quickly to messages and reviews</li>
+                <li>Consider Etsy Ads to boost new listing visibility</li>
+                <li>Include clear instructions about what buyers receive</li>
               </ul>
             </div>
 
             <Separator />
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Important Notes</h4>
+              <h4 className="font-semibold">Etsy Guidelines</h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-2">
-                <li>Etsy's file size limit is 20MB per file (your ZIPs should be well under this)</li>
-                <li>Buyers can download files up to 5 times within 24 hours of purchase</li>
-                <li>You can update your digital files anytime without creating a new listing</li>
-                <li>Etsy takes a 6.5% transaction fee plus payment processing fees</li>
+                <li>File size limit: 20MB per file</li>
+                <li>Buyers can download up to 5 times in 24 hours</li>
+                <li>Transaction fee: 6.5% plus payment processing</li>
+                <li>Listing fee: $0.20 (renews every 4 months if unsold)</li>
               </ul>
             </div>
           </TabsContent>
