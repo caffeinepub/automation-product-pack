@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T02:21:30.423Z",
+  "generatedAt": "2026-02-17T02:29:33.022Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,8 +11,8 @@
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-49",
-        "summary": "Update the app’s global theme tokens to reintroduce a subtle, cohesive color accent (not overly saturated) across light and dark themes by adjusting the existing CSS variables in frontend/src/index.css (e.g., background/surface tinting, accent/muted/secondary/ring/border harmony) while preserving readable contrast and the existing Tailwind token mapping.",
+        "id": "REQ-52",
+        "summary": "Reintroduce a blue primary action style across the Product Editor experience so primary buttons (e.g., “Generate”, “Generate All Products”) render with a clearly blue background (not purple) and readable contrast in both light and dark themes by updating the global theme tokens in frontend/src/index.css.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/index.css"
@@ -22,32 +22,27 @@
         ]
       },
       {
-        "id": "REQ-50",
-        "summary": "Apply the refreshed color accents consistently across the main app shell by updating layout styling in frontend/src/components/layout/AppLayout.tsx (e.g., header/background treatment and main container backdrop) so the app looks more vibrant without changing navigation behavior or layout structure.",
+        "id": "REQ-53",
+        "summary": "Fix the Product Editor page background/surface styling so it does not appear “completely white”; restore an accented/surfaced look (subtle tint/gradient or muted panel treatment) consistent with the app theme when viewing the product editor workspace and editor card(s) (frontend/src/components/products/ProductsWorkspace.tsx and frontend/src/components/products/ProductEditor.tsx).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/layout/AppLayout.tsx"
+          "frontend/src/components/products/ProductsWorkspace.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/layout/AppLayout.tsx"
+          "frontend/src/components/products/ProductsWorkspace.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
         ]
       },
       {
-        "id": "REQ-51",
-        "summary": "Refresh key screen surfaces to pick up the updated accent palette (without changing features): ensure ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor use consistent accented surface treatments (e.g., muted panels, card hover/focus states, section dividers) that align with the new theme and reduce the “bland” look.",
+        "id": "REQ-54",
+        "summary": "Make the onboarding/popup Instructions window fully opaque and easy to read by updating frontend/src/components/onboarding/OnboardingInstructionsModal.tsx to apply a solid background and appropriate border/shadow styling to the DialogContent (avoid transparent/translucent content that reduces legibility).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/export/ExportScreen.tsx",
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/components/storefront/StorefrontScreen.tsx",
-          "frontend/src/components/storefront/StorefrontProductCard.tsx",
-          "frontend/src/components/products/ProductEditor.tsx"
+          "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/export/ExportScreen.tsx",
-          "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "frontend/src/components/storefront/StorefrontProductCard.tsx",
-          "frontend/src/components/products/ProductEditor.tsx"
+          "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
         ]
       }
     ]
@@ -57,11 +52,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/export/ExportScreen.tsx",
-    "frontend/src/components/layout/AppLayout.tsx",
-    "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
+    "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
     "frontend/src/components/products/ProductEditor.tsx",
-    "frontend/src/components/storefront/StorefrontProductCard.tsx",
+    "frontend/src/components/products/ProductsWorkspace.tsx",
     "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",

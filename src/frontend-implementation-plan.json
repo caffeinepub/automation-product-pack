@@ -1,76 +1,58 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Digital Bundle Studio — Reintroduce subtle color accents across theme and key surfaces",
+  "title": "Restore Product Editor styling and modal opacity",
   "requirements": [
     {
-      "id": "REQ-49",
-      "summary": "Rework global CSS theme tokens to add subtle, cohesive accent tinting across light/dark modes while preserving Tailwind token mapping and readable contrast.",
+      "id": "REQ-52",
+      "summary": "Update global theme tokens so primary buttons render clearly blue (not purple) with readable contrast in light and dark themes.",
       "acceptanceCriteria": [
-        "In light mode and dark mode, the UI surfaces (page background, cards, muted panels) show a subtle color tint rather than appearing purely gray/white.",
-        "Primary and ring colors feel consistent with the rest of the palette (no clashing accents), and focus rings remain clearly visible.",
-        "Text contrast remains readable across header, cards, muted panels, and buttons (no low-contrast body text on tinted surfaces).",
-        "No user-facing text is changed as part of the theme-token update."
+        "In light theme, primary buttons render with a clearly blue fill (not purple) and meet readable contrast against button text.",
+        "In dark theme, primary buttons still render blue and remain readable (no low-contrast text).",
+        "Buttons that use the default variant (e.g., ProductsWorkspace “Generate All Products”, ProductEditor “Generate”) visually match the updated blue primary color without additional per-button overrides."
       ],
       "file_operations": [
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Adjust existing CSS variables for light and dark themes (e.g., --background/--card/--popover/--muted/--accent/--secondary/--border/--input/--ring and related foregrounds) to introduce a subtle, cohesive color tint while maintaining contrast and preserving the current Tailwind token mapping. Ensure focus-visible ring/offset remains clearly visible. Use the shadcn-ui token approach (CSS variables consumed by Tailwind color mapping) to keep components consistent. Verify the component's usage instructions before implementing."
+          "description": "Adjust global CSS color tokens for --primary and related tokens (e.g., --ring if needed) in both :root and .dark to a consistent blue hue, ensuring primary button backgrounds and focus rings render blue with strong text contrast across light/dark themes."
         }
       ]
     },
     {
-      "id": "REQ-50",
-      "summary": "Update AppLayout styling so the header and main container reflect the refreshed accent palette without altering layout structure or navigation behavior.",
+      "id": "REQ-53",
+      "summary": "Restore a non-white surfaced look for the Product Editor workspace and ensure the editor card remains visually distinct from the background.",
       "acceptanceCriteria": [
-        "The header and main page background visually reflect the updated accent palette (for example, subtle gradient, tinted backdrop, or accent border), while keeping the same controls and placement.",
-        "All existing header buttons (“Storefront”, “Instructions”, “Preview”, “Export”, auth button) continue to function and remain accessible with clear hover/focus states.",
-        "No changes to routing/view-state logic; this is purely visual styling."
+        "The Product Editor workspace area has a visible surface treatment (e.g., muted/tinted container or subtle gradient) so the page does not look like flat white-on-white in light theme.",
+        "The ProductEditor card remains visually distinct from the surrounding page (clear border/shadow/surface separation).",
+        "No changes to product editing functionality, autosave behavior, or generation logic."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Refine header and shell surface styling to pick up the updated accent palette (e.g., slightly tinted/gradient header backdrop, accent-aware borders/dividers, and/or subtle backdrop on the main container) while keeping the same structure and behavior. Ensure interactive states remain clear using existing shadcn-ui Button variants and theme tokens. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-51",
-      "summary": "Refresh surfaces and interactive states in Export, Unified Preview, Storefront, Storefront product cards, and Product Editor to align with the updated accent palette without changing features or copy.",
-      "acceptanceCriteria": [
-        "Export screen bundle cards, instructions panel, and primary actions visually show subtle color accents consistent with the global theme.",
-        "Unified Preview cards and “Show more/less” affordances retain current behavior and empty states, but look more visually lively via the updated palette.",
-        "Storefront grid/cards retain current structure and behavior, while the cards and CTA feel more color-accented and less monochrome.",
-        "Product Editor retains current form structure and behavior; section styling and interactive states reflect the updated palette.",
-        "No new screens, no new actions, and no copy changes are introduced in these updates."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/export/ExportScreen.tsx",
-          "operation": "modify",
-          "description": "Update screen-level and Card-level class styling to better reflect the new accent-tinted surfaces (e.g., more expressive card borders/background overlays, hover/focus states, and section dividers) while keeping all behaviors intact. Keep using shadcn-ui Card/Button/Badge/Alert/Table components and the updated tokens for consistency. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/preview/UnifiedPreviewScreen.tsx",
-          "operation": "modify",
-          "description": "Adjust card surface treatments and the 'Show more/less' affordance styling to feel more accent-aware (e.g., subtle tinted panels, improved dividers, and more vibrant hover/focus states) while retaining current behavior and empty states. Keep using shadcn-ui Card/Button and theme tokens. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/storefront/StorefrontScreen.tsx",
-          "operation": "modify",
-          "description": "Refine screen container styling (header area and grid surroundings) to pick up the accent-tinted palette without altering layout structure or navigation behavior. Keep using shadcn-ui Button and theme tokens. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/storefront/StorefrontProductCard.tsx",
-          "operation": "modify",
-          "description": "Update product card surface and interaction styling (hover, focus-within ring, borders, media header background, and CTA emphasis) to align with refreshed accent tokens while keeping structure and behavior unchanged. Keep using shadcn-ui Card/Button and theme tokens. Verify the component's usage instructions before implementing."
+          "description": "Update the top-level workspace container styling to add a subtle surface treatment (e.g., muted/tinted panel background, gradient, and/or border) that works with existing theme tokens, improving separation from the page background without affecting workspace logic."
         },
         {
           "path": "frontend/src/components/products/ProductEditor.tsx",
           "operation": "modify",
-          "description": "Enhance editor surface hierarchy (main card, tab list area, empty-state panels, inner module cards, and section separators) so tinted muted/accent surfaces and interactive states reflect the updated palette without changing form structure or behavior. Keep using shadcn-ui Card/Tabs/Button/Input/Textarea/Badge and theme tokens. Verify the component's usage instructions before implementing."
+          "description": "Refine the ProductEditor Card styling (background, border, shadow) to maintain clear visual separation from the workspace surface in light/dark themes while keeping all editor behaviors and handlers unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-54",
+      "summary": "Make the Instructions modal panel fully opaque and legible by applying solid background and appropriate border/shadow styling to DialogContent.",
+      "acceptanceCriteria": [
+        "When the Instructions modal is open, the modal panel (DialogContent) has an opaque background and text is clearly readable over the page behind it.",
+        "The Instructions modal retains its existing responsive sizing and scrolling behavior (no regression to scrollability on tablet/touch).",
+        "No change to the Instructions content structure or navigation behavior; only visual/legibility fixes."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
+          "operation": "modify",
+          "description": "Update DialogContent class composition to enforce an opaque panel surface (solid bg using theme tokens) and add border/shadow as needed; preserve current responsive width/max-height, flex layout, and the scrollable content container to avoid regressions."
         }
       ]
     }

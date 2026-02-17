@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Reintroduce subtle, cohesive color accents across the app UI (light and dark themes) to reduce the “bland” look without changing functionality or copy.
+**Goal:** Restore the Product Editor’s intended visual styling (blue primary actions, non-white surfaced editor background) and make the Instructions modal fully readable by removing transparency.
 
 **Planned changes:**
-- Update global CSS theme variables in `frontend/src/index.css` to add gentle tinted backgrounds/surfaces and harmonized accent/secondary/border/ring colors for both light and dark modes while preserving readable contrast and existing Tailwind token mapping.
-- Update `frontend/src/components/layout/AppLayout.tsx` styling so the header and main container reflect the refreshed accent palette (e.g., tinted backdrop/gradient/border) without changing layout structure or navigation behavior.
-- Refresh surface and interactive styling (cards, muted panels, dividers, hover/focus states) in ExportScreen, UnifiedPreviewScreen, StorefrontScreen, StorefrontProductCard, and ProductEditor to consistently pick up the updated palette while keeping all behaviors unchanged.
+- Update global theme tokens in `frontend/src/index.css` so primary buttons render with a clearly blue fill (not purple) and maintain readable contrast in both light and dark themes.
+- Adjust Product Editor workspace and editor card surface styling in `frontend/src/components/products/ProductsWorkspace.tsx` and `frontend/src/components/products/ProductEditor.tsx` to avoid a flat “completely white” look and keep the editor card visually distinct.
+- Update `frontend/src/components/onboarding/OnboardingInstructionsModal.tsx` to apply an opaque background plus appropriate border/shadow styling to the modal `DialogContent` for legibility, without changing layout/scroll behavior or content.
 
-**User-visible outcome:** The app looks more vibrant and cohesive in both light and dark mode with subtle color-tinted surfaces and consistent accents (including clearly visible focus rings), while all screens, controls, and text remain the same.
+**User-visible outcome:** Primary actions in the Product Editor appear consistently blue with readable text in light/dark themes, the editor area has a clear surfaced/tinted treatment instead of flat white, and the Instructions modal is fully opaque and easy to read.

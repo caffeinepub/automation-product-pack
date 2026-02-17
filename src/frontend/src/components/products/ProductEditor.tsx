@@ -83,8 +83,8 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
   };
 
   return (
-    <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card via-card to-accent/5">
-      <CardHeader className="space-y-3 pb-6 border-b border-border/60 bg-gradient-to-r from-transparent via-accent/10 to-transparent">
+    <Card className="shadow-md border">
+      <CardHeader className="space-y-3 pb-6 border-b">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">
             <CardTitle className="text-2xl">{product.name || 'Untitled Product'}</CardTitle>
@@ -95,7 +95,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           <Button 
             onClick={onGenerate} 
             disabled={isGenerating || !product.name}
-            className="w-full sm:w-auto flex-shrink-0 shadow-sm"
+            className="w-full sm:w-auto flex-shrink-0"
             size="default"
           >
             {isGenerating ? 'Generating...' : 'Generate'}
@@ -104,7 +104,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
       </CardHeader>
       <CardContent className="pt-0">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6 bg-muted/50 border border-border/60">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="basic">Basic</TabsTrigger>
             <TabsTrigger value="modules">Modules</TabsTrigger>
             <TabsTrigger value="prompts">Prompts</TabsTrigger>
@@ -121,7 +121,6 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                 value={product.name}
                 onChange={(e) => updateField('name', e.target.value)}
                 placeholder="e.g., AI Automation Masterclass"
-                className="border-border/60"
               />
             </div>
             <div className="space-y-2">
@@ -133,7 +132,6 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                 value={product.subtitle}
                 onChange={(e) => updateField('subtitle', e.target.value)}
                 placeholder="e.g., Transform Your Workflow with AI"
-                className="border-border/60"
               />
             </div>
             <div className="space-y-2">
@@ -146,7 +144,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="Describe what this product offers..."
                 rows={5}
-                className="resize-none border-border/60"
+                className="resize-none"
               />
             </div>
           </TabsContent>
@@ -154,13 +152,13 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           <TabsContent value="modules" className="space-y-5 mt-0">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">Modules & Chapters</Label>
-              <Button onClick={addModule} size="sm" variant="outline" className="gap-2 border-border/60">
+              <Button onClick={addModule} size="sm" variant="outline" className="gap-2">
                 <Plus className="h-4 w-4" />
                 Add Module
               </Button>
             </div>
             {product.modules.length === 0 ? (
-              <div className="text-center py-12 px-4 border border-dashed border-border/60 rounded-lg bg-muted/40">
+              <div className="text-center py-12 px-4 border border-dashed rounded-lg bg-muted/50">
                 <p className="text-sm text-muted-foreground">
                   No modules yet. Click "Add Module" to get started.
                 </p>
@@ -168,7 +166,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
             ) : (
               <div className="space-y-4">
                 {product.modules.map((module, index) => (
-                  <Card key={module.id} className="border-border/60 bg-gradient-to-br from-muted/30 via-muted/20 to-accent/10">
+                  <Card key={module.id} className="bg-muted/50">
                     <CardContent className="pt-5 pb-5 space-y-4">
                       <div className="flex items-start justify-between gap-3">
                         <Badge variant="secondary" className="font-medium">
@@ -188,14 +186,13 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                           value={module.title}
                           onChange={(e) => updateModule(index, 'title', e.target.value)}
                           placeholder="Module title"
-                          className="border-border/60"
                         />
                         <Textarea
                           value={module.description}
                           onChange={(e) => updateModule(index, 'description', e.target.value)}
                           placeholder="Module description"
                           rows={3}
-                          className="resize-none border-border/60"
+                          className="resize-none"
                         />
                       </div>
                     </CardContent>
@@ -208,13 +205,13 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           <TabsContent value="prompts" className="space-y-5 mt-0">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">AI Prompts</Label>
-              <Button onClick={addPrompt} size="sm" variant="outline" className="gap-2 border-border/60">
+              <Button onClick={addPrompt} size="sm" variant="outline" className="gap-2">
                 <Plus className="h-4 w-4" />
                 Add Prompt
               </Button>
             </div>
             {product.prompts.length === 0 ? (
-              <div className="text-center py-12 px-4 border border-dashed border-border/60 rounded-lg bg-muted/40">
+              <div className="text-center py-12 px-4 border border-dashed rounded-lg bg-muted/50">
                 <p className="text-sm text-muted-foreground">
                   No prompts yet. Click "Add Prompt" to get started.
                 </p>
@@ -228,7 +225,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                       onChange={(e) => updatePrompt(index, e.target.value)}
                       placeholder={`Prompt ${index + 1}`}
                       rows={3}
-                      className="flex-1 resize-none border-border/60"
+                      className="flex-1 resize-none"
                     />
                     <Button
                       onClick={() => removePrompt(index)}
@@ -245,17 +242,16 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           </TabsContent>
 
           <TabsContent value="resources" className="space-y-6 mt-0">
-            {/* Templates Section */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center justify-between">
                 <Label className="text-base font-semibold">Templates</Label>
-                <Button onClick={addTemplate} size="sm" variant="outline" className="gap-2 border-border/60">
+                <Button onClick={addTemplate} size="sm" variant="outline" className="gap-2">
                   <Plus className="h-4 w-4" />
                   Add Template
                 </Button>
               </div>
               {product.templates.length === 0 ? (
-                <div className="text-center py-8 px-4 border border-dashed border-border/60 rounded-lg bg-muted/40">
+                <div className="text-center py-8 px-4 border border-dashed rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground">
                     No templates yet. Click "Add Template" to get started.
                   </p>
@@ -264,12 +260,11 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                 <div className="space-y-3">
                   {product.templates.map((template, index) => (
                     <div key={index} className="flex gap-3">
-                      <Textarea
+                      <Input
                         value={template}
                         onChange={(e) => updateTemplate(index, e.target.value)}
                         placeholder={`Template ${index + 1}`}
-                        rows={3}
-                        className="flex-1 resize-none border-border/60"
+                        className="flex-1"
                       />
                       <Button
                         onClick={() => removeTemplate(index)}
@@ -285,17 +280,16 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
               )}
             </div>
 
-            {/* Checklists Section */}
-            <div className="space-y-4 pt-4 border-t border-border/60">
+            <div className="space-y-5">
               <div className="flex items-center justify-between">
                 <Label className="text-base font-semibold">Checklists</Label>
-                <Button onClick={addChecklist} size="sm" variant="outline" className="gap-2 border-border/60">
+                <Button onClick={addChecklist} size="sm" variant="outline" className="gap-2">
                   <Plus className="h-4 w-4" />
                   Add Checklist
                 </Button>
               </div>
               {product.checklists.length === 0 ? (
-                <div className="text-center py-8 px-4 border border-dashed border-border/60 rounded-lg bg-muted/40">
+                <div className="text-center py-8 px-4 border border-dashed rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground">
                     No checklists yet. Click "Add Checklist" to get started.
                   </p>
@@ -304,12 +298,11 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
                 <div className="space-y-3">
                   {product.checklists.map((checklist, index) => (
                     <div key={index} className="flex gap-3">
-                      <Textarea
+                      <Input
                         value={checklist}
                         onChange={(e) => updateChecklist(index, e.target.value)}
                         placeholder={`Checklist ${index + 1}`}
-                        rows={3}
-                        className="flex-1 resize-none border-border/60"
+                        className="flex-1"
                       />
                       <Button
                         onClick={() => removeChecklist(index)}
