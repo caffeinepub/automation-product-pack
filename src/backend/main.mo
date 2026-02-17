@@ -68,22 +68,14 @@ actor {
     );
   };
 
-  public query ({ caller }) func getProduct(id : Text) : async ProductDefinition {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can view products");
-    };
-
+  public query func getProduct(id : Text) : async ProductDefinition {
     switch (products.get(id)) {
       case (null) { Runtime.trap("Product not found") };
       case (?product) { product };
     };
   };
 
-  public query ({ caller }) func getProductMetadata(id : Text) : async ProductMetadata {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can view product metadata");
-    };
-
+  public query func getProductMetadata(id : Text) : async ProductMetadata {
     switch (metadata.get(id)) {
       case (null) { Runtime.trap("Metadata not found") };
       case (?meta) { meta };

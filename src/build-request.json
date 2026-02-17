@@ -1,83 +1,78 @@
 {
   "kind": "build_request",
-  "title": "Add first-launch onboarding modal with instructions",
+  "title": "Fix deployment failure by removing CDN-loaded PDF/ZIP dependencies",
   "projectName": "Automation Product Pack",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-10",
-      "text": "Add a first-launch onboarding modal that automatically opens the first time a user opens the app in a given browser and presents the app usage + Gumroad/Etsy upload instructions inside the app.",
+      "id": "REQ-22",
+      "text": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1",
-          "msg-2",
           "msg-3",
-          "msg-4"
+          "msg-7",
+          "msg-9"
         ],
         "quotes": [
-          "Everything is in place — would you like to add a short onboarding modal so users see the instructions right inside the app when they first open it?",
-          "Yes"
+          "can you fix the deployment error?",
+          "yes",
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "On first app load in a fresh browser profile, an onboarding modal opens automatically without requiring navigation to the Export screen.",
-        "The modal content is in English and reuses the existing instructions content (the same guidance users can see in the app) rather than introducing conflicting steps.",
-        "Closing the modal persists a local flag (e.g., localStorage) so the modal does not auto-open again on subsequent visits in the same browser.",
-        "The modal can be dismissed via a clearly labeled Close button; pressing Escape also closes it (standard dialog behavior)."
+        "The app no longer includes external CDN <script> tags for jsPDF or JSZip in frontend/index.html.",
+        "frontend/src/lib/pdf/generateProductPdf.ts no longer reads jsPDF from window.jspdf and instead uses a module import.",
+        "frontend/src/lib/zip/buildProductZip.ts no longer reads JSZip from window.JSZip and instead uses a module import.",
+        "TypeScript builds without needing global Window type declarations for jspdf/JSZip."
       ]
     },
     {
-      "id": "REQ-11",
-      "text": "Ensure the onboarding modal does not block required first-time profile setup: if the profile setup dialog is shown (authenticated user with no profile), show profile setup first; only show the onboarding modal after profile setup is complete or if profile setup is not needed.",
-      "target": "frontend",
+      "id": "REQ-23",
+      "text": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-1",
-          "msg-2",
           "msg-3",
-          "msg-4"
+          "msg-7",
+          "msg-9"
         ],
         "quotes": [
-          "Yes"
+          "can you fix the deployment error?",
+          "yes",
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "When ProfileSetupDialog is open, the onboarding modal is not shown at the same time.",
-        "After profile setup completes, the onboarding modal appears if it has not been dismissed previously in that browser."
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "text": "Provide a persistent way for users to re-open the onboarding instructions modal after dismissing it (for example, a header link/button labeled \"Instructions\" or \"Help\").",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1",
-          "msg-2",
-          "msg-3",
-          "msg-4"
-        ],
-        "quotes": [
-          "Yes"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A user can re-open the onboarding modal from the main app UI at any time (both from the editor view and export view).",
-        "Re-opening the modal does not reset the 'seen' flag; the modal still does not auto-open on future app loads unless the user manually opens it."
+        "Frontend production build completes successfully without referencing window.jspdf or window.JSZip.",
+        "Product PDF generation still produces a valid multi-page PDF blob.",
+        "Product ZIP generation still produces a valid ZIP blob containing the expected files (PDF, cover image, templates/checklists/prompts folders when present, README.md).",
+        "If PDF or ZIP generation throws an error, the UI presents an English error message and the app remains usable (no blank screen/crash)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose existing UI components instead).",
+    "Backend must remain a single Motoko actor in backend/main.mo; add migration.mo only if persistent state schema changes are required.",
+    "Do not edit files under frontend/src/components/ui or any paths listed in frontend.immutablePaths.",
     "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Do not add or modify backend canister APIs for onboarding state (store onboarding state locally in the browser only).",
-    "Do not change the existing Export screen instructions content beyond what is necessary to embed/reuse it in the onboarding modal."
+    "Adding new product features unrelated to deployment/build reliability.",
+    "Changing authentication providers (Internet Identity only).",
+    "Introducing external databases or additional backend services."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

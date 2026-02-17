@@ -84,7 +84,15 @@ export default function ProductsWorkspace({ onBundlesGenerated }: ProductsWorksp
       const bundle = await generateProductBundle(products[index]);
       onBundlesGenerated([bundle]);
     } catch (err) {
-      setError(`Failed to generate product: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      if (errorMessage.includes('PDF')) {
+        setError(`Failed to generate PDF for product ${index + 1}. Please check your content and try again.`);
+      } else if (errorMessage.includes('ZIP')) {
+        setError(`Failed to create ZIP file for product ${index + 1}. Please try again.`);
+      } else {
+        setError(`Failed to generate product ${index + 1}: ${errorMessage}`);
+      }
+      console.error('Generation error:', err);
     } finally {
       setGeneratingIndex(null);
     }
@@ -97,7 +105,15 @@ export default function ProductsWorkspace({ onBundlesGenerated }: ProductsWorksp
       const bundles = await generateAllBundles(products);
       onBundlesGenerated(bundles);
     } catch (err) {
-      setError(`Failed to generate products: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      if (errorMessage.includes('PDF')) {
+        setError('Failed to generate one or more PDFs. Please check your product content and try again.');
+      } else if (errorMessage.includes('ZIP')) {
+        setError('Failed to create ZIP files. Please try again.');
+      } else {
+        setError(`Failed to generate products: ${errorMessage}`);
+      }
+      console.error('Generation error:', err);
     } finally {
       setGeneratingAll(false);
     }

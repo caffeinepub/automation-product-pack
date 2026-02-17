@@ -1,77 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "First-launch onboarding instructions modal",
+  "title": "Fix deployment failure by bundling jsPDF/JSZip and improving runtime error handling",
   "requirements": [
     {
-      "id": "REQ-10",
-      "summary": "Add a first-launch onboarding modal that auto-opens once per browser and shows the existing in-app Gumroad/Etsy upload instructions.",
+      "id": "REQ-22",
+      "summary": "Remove CDN-loaded jsPDF/JSZip globals and bundle them via the frontend build system using module imports.",
       "acceptanceCriteria": [
-        "On first app load in a fresh browser profile, an onboarding modal opens automatically without requiring navigation to the Export screen.",
-        "The modal content is in English and reuses the existing instructions content (the same guidance users can see in the app) rather than introducing conflicting steps.",
-        "Closing the modal persists a local flag (e.g., localStorage) so the modal does not auto-open again on subsequent visits in the same browser.",
-        "The modal can be dismissed via a clearly labeled Close button; pressing Escape also closes it (standard dialog behavior)."
+        "The app no longer includes external CDN <script> tags for jsPDF or JSZip in frontend/index.html.",
+        "frontend/src/lib/pdf/generateProductPdf.ts no longer reads jsPDF from window.jspdf and instead uses a module import.",
+        "frontend/src/lib/zip/buildProductZip.ts no longer reads JSZip from window.JSZip and instead uses a module import.",
+        "TypeScript builds without needing global Window type declarations for jspdf/JSZip."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
-          "operation": "create",
-          "description": "Create a controlled modal using existing shadcn/ui Dialog primitives that renders the existing ExportInstructions component inside the dialog content; include a clearly labeled Close button and ensure onOpenChange supports Escape-to-close behavior (persisting the local 'seen' flag when dismissed). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useOnboardingInstructions.ts",
-          "operation": "create",
-          "description": "Add a small state hook that reads/writes a localStorage 'seen' flag and exposes helpers for (a) checking whether auto-open is allowed, (b) opening/closing the modal, and (c) marking the modal as dismissed without resetting the flag on manual opens."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Wire the onboarding modal into the app shell so it can auto-open on first eligible app load; reuse ExportInstructions by rendering the new OnboardingInstructionsModal at the top level (inside AppLayout) and persist the 'seen' flag only when the modal is dismissed."
+          "description": "Remove the external CDN <script> tags that load jsPDF and JSZip so the app no longer relies on runtime globals."
+        },
+        {
+          "path": "frontend/package.json",
+          "operation": "modify",
+          "description": "Add npm dependencies for jspdf and jszip (and any required type packages) so they are bundled by the frontend build system."
+        },
+        {
+          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
+          "operation": "modify",
+          "description": "Replace window.jspdf usage with a module import from the bundled jsPDF package and remove global Window type declarations."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildProductZip.ts",
+          "operation": "modify",
+          "description": "Replace window.JSZip usage with a module import from the bundled JSZip package and remove global Window type declarations."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildAllProductsZip.ts",
+          "operation": "modify",
+          "description": "Replace window.JSZip usage with a module import from the bundled JSZip package and remove global Window type declarations to keep bundling consistent across ZIP creation paths."
         }
       ]
     },
     {
-      "id": "REQ-11",
-      "summary": "Prevent the onboarding modal from displaying while ProfileSetupDialog is required; show onboarding only after profile setup completes (if not previously dismissed).",
+      "id": "REQ-23",
+      "summary": "Ensure builds succeed after dependency changes and add user-facing, English-only error handling for PDF/ZIP generation failures without crashing the UI.",
       "acceptanceCriteria": [
-        "When ProfileSetupDialog is open, the onboarding modal is not shown at the same time.",
-        "After profile setup completes, the onboarding modal appears if it has not been dismissed previously in that browser."
+        "Frontend production build completes successfully without referencing window.jspdf or window.JSZip.",
+        "Product PDF generation still produces a valid multi-page PDF blob.",
+        "Product ZIP generation still produces a valid ZIP blob containing the expected files (PDF, cover image, templates/checklists/prompts folders when present, README.md).",
+        "If PDF or ZIP generation throws an error, the UI presents an English error message and the app remains usable (no blank screen/crash)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/lib/generation/generateProductBundle.ts",
           "operation": "modify",
-          "description": "Gate onboarding auto-open behind profile setup state: if showProfileSetup is true, keep onboarding closed; once profile setup completes (showProfileSetup transitions to false) and the 'seen' flag is not set, trigger onboarding modal open."
+          "description": "Add clear error wrapping around PDF generation and ZIP building so callers receive consistent, user-friendly English error messages while preserving the underlying error for logging/debugging."
         },
         {
-          "path": "frontend/src/hooks/useOnboardingInstructions.ts",
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Add support for delaying/deferring the first auto-open until an external condition is met (e.g., profile setup no longer needed) without losing the ability to auto-open exactly once per browser."
-        }
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "summary": "Add a persistent 'Instructions' control in the main UI to re-open the onboarding modal from both editor and export views without resetting the auto-open flag.",
-      "acceptanceCriteria": [
-        "A user can re-open the onboarding modal from the main app UI at any time (both from the editor view and export view).",
-        "Re-opening the modal does not reset the 'seen' flag; the modal still does not auto-open on future app loads unless the user manually opens it."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/layout/AppLayout.tsx",
-          "operation": "modify",
-          "description": "Add a persistent header button/link labeled \"Instructions\" that calls a provided callback to open the onboarding modal; ensure it is visible regardless of whether the user is in editor or export view. Verify the component's usage instructions before implementing."
+          "description": "Improve generation error presentation to use clearer English messaging (distinguish PDF vs ZIP failures when possible) while keeping the app usable and avoiding crashes."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/export/ExportScreen.tsx",
           "operation": "modify",
-          "description": "Pass an \"openInstructions\" handler into AppLayout and connect it to the onboarding modal's open state so manual opens work from anywhere and do not change the local 'seen' flag."
-        },
-        {
-          "path": "frontend/src/hooks/useOnboardingInstructions.ts",
-          "operation": "modify",
-          "description": "Ensure the hook distinguishes manual open from dismissal persistence: manual re-open must not clear or reset the stored 'seen' flag."
+          "description": "Add guarded error handling for the “Download All Products” flow (master ZIP creation) so failures show an English error message in the UI and do not break the screen."
         }
       ]
     }

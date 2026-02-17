@@ -1,13 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Add a first-launch onboarding modal that shows the existing in-app usage and Gumroad/Etsy upload instructions, without interfering with first-time profile setup.
+**Goal:** Fix deployment/build failures by removing CDN-loaded jsPDF/JSZip globals and bundling these dependencies via the frontend build system, while keeping PDF/ZIP generation working with clear runtime error handling.
 
 **Planned changes:**
-- Add an onboarding instructions modal that auto-opens on the first app load per browser and can be dismissed via Close button or Escape.
-- Persist a local “seen/dismissed” flag (e.g., in localStorage) so the modal does not auto-open again in the same browser after it’s closed.
-- Ensure the onboarding modal does not appear while the ProfileSetupDialog is open; show onboarding only after profile setup completes (or when profile setup is not needed).
-- Add a persistent UI entry point (e.g., “Instructions”/“Help” button or link) to re-open the onboarding modal from both editor and export views without resetting the “seen” flag.
-- Reuse the existing instructions content already present in the app (do not create conflicting or new instruction steps).
+- Remove external CDN `<script>` tags for jsPDF and JSZip from `frontend/index.html`.
+- Update `frontend/src/lib/pdf/generateProductPdf.ts` to import jsPDF as a module (no `window.jspdf` usage).
+- Update `frontend/src/lib/zip/buildProductZip.ts` to import JSZip as a module (no `window.JSZip` usage).
+- Ensure TypeScript builds without any global `Window` type declarations for jsPDF/JSZip.
+- Add user-facing (English) error handling in the UI so PDF/ZIP generation failures show a message without crashing the app.
 
-**User-visible outcome:** On first visit, users see an onboarding modal with the same instructions they can find in the app; after dismissing it, it won’t auto-open again, but they can re-open it anytime via an “Instructions/Help” control, and it won’t interrupt required profile setup.
+**User-visible outcome:** The app builds and deploys reliably without external runtime script dependencies, and users can still generate PDFs and ZIPs; if generation fails, they see a clear English error message and can continue using the app.

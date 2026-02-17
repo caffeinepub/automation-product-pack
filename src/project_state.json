@@ -1,12 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
+  "projectStateVersion": 21,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
-    "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution."
+    "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution.",
+    "Product themes selected for the three digital products: (1) Digital Planners, (2) Canva Templates (social/business/branding bundles), (3) Printable Wall Art (high-volume Etsy style)."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Instructions view is not scrollable; users cannot scroll to see the full instructions list.",
+    "Instructions popup/modal is still not scrollable on tablet devices; user cannot scroll to see full instructions.",
+    "Deployment/build is failing (deployment error); may be transient in the current environment."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-frontend-workflow-to-define-and-manage-three-digital-product-entries-title-subtitle-description-included-modules-chapters-prompts-templates-checklists-and-optional-branding-fields-with-an-editor-ui-that-supports-saving-drafts-locally-and-regenerating-outputs-on-demand",
@@ -103,6 +108,94 @@
         "REQ-12"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-quick-access-always-visible-header-button-labeled-export-that-takes-the-user-to-the-existing-export-screen-for-downloading-generated-product-files",
+      "title": "Add a quick-access, always-visible header button labeled \"Export\" that takes the user to the existing Export screen for downloading generated product files.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wire-the-new-header-export-button-into-the-existing-view-state-so-it-correctly-switches-between-editor-and-export-views-while-preserving-the-currently-generated-bundles-in-memory",
+      "title": "Wire the new header \"Export\" button into the existing view state so it correctly switches between editor and export views while preserving the currently generated bundles in memory.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-instructions-ui-so-users-can-scroll-to-view-the-full-instructions-content-in-all-places-it-is-shown-the-onboarding-instructions-modal-and-the-export-screen-instructions-section",
+      "title": "Fix the Instructions UI so users can scroll to view the full instructions content in all places it is shown (the onboarding instructions modal and the Export screen instructions section).",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-onboarding-instructions-popup-onboardinginstructionsmodal-so-the-full-instructions-content-is-scrollable-on-tablet-browsers-using-touch-scrolling-e-g-ipad-android-tablets-including-when-switching-between-the-app-usage-gumroad-etsy-tabs",
+      "title": "Fix the onboarding Instructions popup (OnboardingInstructionsModal) so the full instructions content is scrollable on tablet browsers using touch scrolling (e.g., iPad/Android tablets), including when switching between the App Usage / Gumroad / Etsy tabs.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-export-screen-s-embedded-instructions-section-is-also-reliably-scrollable-on-tablet-devices-touch-scrolling-without-trapping-scroll-or-preventing-users-from-reaching-all-instruction-content",
+      "title": "Ensure the Export screen’s embedded instructions section is also reliably scrollable on tablet devices (touch scrolling) without trapping scroll or preventing users from reaching all instruction content.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-onboarding-instructions-modal-so-the-popup-dialog-resizes-responsively-to-fit-different-screen-sizes-phone-tablet-desktop-using-responsive-tailwind-classes-on-the-existing-dialogcontent-wrapper-in-frontend-src-components-onboarding-onboardinginstructionsmodal-tsx",
+      "title": "Update the onboarding instructions modal so the popup (dialog) resizes responsively to fit different screen sizes (phone/tablet/desktop), using responsive Tailwind classes on the existing DialogContent wrapper in frontend/src/components/onboarding/OnboardingInstructionsModal.tsx.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-subtle-fade-in-animation-to-the-onboarding-instructions-modal-content-so-the-dialog-smoothly-appears-when-opened-with-a-short-duration-and-minimal-motion-and-ensure-the-animation-is-disabled-when-the-user-has-prefers-reduced-motion-enabled",
+      "title": "Add a subtle fade-in animation to the onboarding instructions modal content so the dialog smoothly appears when opened (with a short duration and minimal motion), and ensure the animation is disabled when the user has prefers-reduced-motion enabled.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-default-three-products-with-the-three-highest-profit-themes-digital-planner-canva-templates-printable-wall-art-and-prefill-each-product-with-complete-starter-content-name-subtitle-description-modules-ai-prompts-templates-and-checklists-so-the-app-ships-with-ready-to-generate-products-on-first-launch",
+      "title": "Replace the current default three products with the three highest-profit themes (Digital Planner, Canva Templates, Printable Wall Art) and prefill each product with complete starter content (name, subtitle, description, modules, AI prompts, templates, and checklists) so the app ships with ready-to-generate products on first launch.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-generated-master-bundle-readme-content-to-remove-the-hard-coded-automation-products-bundle-naming-and-instead-describe-a-neutral-multi-product-digital-bundle-that-matches-the-three-default-themes-planner-templates-wall-art-while-keeping-all-user-facing-text-in-english",
+      "title": "Update the generated master bundle README content to remove the hard-coded “Automation Products Bundle” naming and instead describe a neutral multi-product digital bundle that matches the three default themes (planner, templates, wall art) while keeping all user-facing text in English.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-eliminate-reliance-on-cdn-loaded-global-scripts-for-jspdf-and-jszip-by-bundling-them-via-the-frontend-build-system-so-the-app-builds-and-deploys-reliably-without-external-runtime-dependencies",
+      "title": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-project-builds-and-deploys-successfully-after-the-dependency-change-with-clear-user-facing-error-handling-if-pdf-or-zip-generation-fails-at-runtime-english-only",
+      "title": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -133,6 +226,24 @@
     {
       "id": "AR-5",
       "summary": "Add a short onboarding modal that shows instructions when users first open the app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Add a quick link-out button for exporting the generated product files",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Make the onboarding instructions popup/modal resize dynamically to fit different screen sizes (responsive layout)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Add a subtle fade-in animation to the onboarding/instructions popup/modal (especially on tablet)",
       "reqIds": [],
       "status": "pending"
     }

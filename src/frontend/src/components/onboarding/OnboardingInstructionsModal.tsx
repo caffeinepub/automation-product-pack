@@ -8,7 +8,6 @@ import {
   DialogFooter,
 } from '../ui/dialog';
 import { Button } from '../ui/button';
-import { ScrollArea } from '../ui/scroll-area';
 import ExportInstructions from '../export/ExportInstructions';
 
 interface OnboardingInstructionsModalProps {
@@ -26,17 +25,17 @@ export default function OnboardingInstructionsModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] sm:max-w-[640px] md:max-w-[768px] lg:max-w-4xl max-h-[calc(100svh-1rem)] sm:max-h-[calc(100svh-2rem)] flex flex-col overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[2%] data-[state=open]:slide-in-from-top-[2%] motion-reduce:animate-none motion-reduce:transition-none data-[state=open]:duration-200 data-[state=closed]:duration-150">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Welcome to Automation Product Pack!</DialogTitle>
           <DialogDescription>
             Learn how to create, export, and sell your digital products
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-4">
+        <div className="flex-1 min-h-0 overflow-y-auto touch-scroll pr-2 sm:pr-4" tabIndex={0}>
           <ExportInstructions />
-        </ScrollArea>
-        <DialogFooter>
+        </div>
+        <DialogFooter className="flex-shrink-0">
           <Button onClick={handleClose}>Got it, let's start!</Button>
         </DialogFooter>
       </DialogContent>

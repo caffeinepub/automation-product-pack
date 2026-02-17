@@ -2,12 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-first-launch-onboarding-modal-that-automatically-opens-the-first-time-a-user-opens-the-app-in-a-given-browser-and-presents-the-app-usage-gumroad-etsy-upload-instructions-inside-the-app",
-      "featureTitle": "Add a first-launch onboarding modal that automatically opens the first time a user opens the app in a given browser and presents the app usage + Gumroad/Etsy upload instructions inside the app.",
+      "featureId": "feature-eliminate-reliance-on-cdn-loaded-global-scripts-for-jspdf-and-jszip-by-bundling-them-via-the-frontend-build-system-so-the-app-builds-and-deploys-reliably-without-external-runtime-dependencies",
+      "featureTitle": "Eliminate reliance on CDN-loaded global scripts for jsPDF and JSZip by bundling them via the frontend build system, so the app builds and deploys reliably without external runtime dependencies.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
-        "frontend/src/hooks/useOnboardingInstructions.ts"
+        "frontend/src/lib/pdf/generateProductPdf.ts",
+        "frontend/src/lib/zip/buildAllProductsZip.ts",
+        "frontend/src/lib/zip/buildProductZip.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,16 +18,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-22"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-onboarding-modal-does-not-block-required-first-time-profile-setup-if-the-profile-setup-dialog-is-shown-authenticated-user-with-no-profile-show-profile-setup-first-only-show-the-onboarding-modal-after-profile-setup-is-complete-or-if-profile-setup-is-not-needed",
-      "featureTitle": "Ensure the onboarding modal does not block required first-time profile setup: if the profile setup dialog is shown (authenticated user with no profile), show profile setup first; only show the onboarding modal after profile setup is complete or if profile setup is not needed.",
+      "featureId": "feature-ensure-the-project-builds-and-deploys-successfully-after-the-dependency-change-with-clear-user-facing-error-handling-if-pdf-or-zip-generation-fails-at-runtime-english-only",
+      "featureTitle": "Ensure the project builds and deploys successfully after the dependency change, with clear user-facing error handling if PDF or ZIP generation fails at runtime (English only).",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useOnboardingInstructions.ts"
+        "frontend/src/components/export/ExportScreen.tsx",
+        "frontend/src/components/products/ProductsWorkspace.tsx",
+        "frontend/src/lib/generation/generateProductBundle.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,28 +39,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-provide-a-persistent-way-for-users-to-re-open-the-onboarding-instructions-modal-after-dismissing-it-for-example-a-header-link-button-labeled-instructions-or-help",
-      "featureTitle": "Provide a persistent way for users to re-open the onboarding instructions modal after dismissing it (for example, a header link/button labeled \"Instructions\" or \"Help\").",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppLayout.tsx",
-        "frontend/src/hooks/useOnboardingInstructions.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
+        "REQ-23"
       ],
       "confidence": "high"
     }

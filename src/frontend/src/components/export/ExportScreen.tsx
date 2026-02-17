@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Alert, AlertDescription } from '../ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Download, FileArchive, FileText, Package } from 'lucide-react';
+import { Download, FileArchive, FileText, Package, AlertCircle, Loader2 } from 'lucide-react';
 import type { GeneratedBundle } from '../../types/productEntry';
 import { downloadBlob } from '../../lib/downloads';
 import { generateProductPdfName, generateProductZipName, generateAllProductsZipName } from '../../lib/filename';
@@ -17,20 +18,43 @@ interface ExportScreenProps {
 }
 
 export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleDownloadPdf = (bundle: GeneratedBundle) => {
-    const filename = generateProductPdfName(`product-${bundle.productId}`, bundle.versionTag);
-    downloadBlob(bundle.pdfBlob, filename);
+    try {
+      const filename = generateProductPdfName(`product-${bundle.productId}`, bundle.versionTag);
+      downloadBlob(bundle.pdfBlob, filename);
+    } catch (err) {
+      setError('Failed to download PDF. Please try again.');
+      console.error('PDF download error:', err);
+    }
   };
 
   const handleDownloadZip = (bundle: GeneratedBundle) => {
-    const filename = generateProductZipName(`product-${bundle.productId}`, bundle.versionTag);
-    downloadBlob(bundle.zipBlob, filename);
+    try {
+      const filename = generateProductZipName(`product-${bundle.productId}`, bundle.versionTag);
+      downloadBlob(bundle.zipBlob, filename);
+    } catch (err) {
+      setError('Failed to download ZIP. Please try again.');
+      console.error('ZIP download error:', err);
+    }
   };
 
   const handleDownloadAll = async () => {
-    const allZip = await buildAllProductsZip(bundles);
-    const filename = generateAllProductsZipName();
-    downloadBlob(allZip, filename);
+    setError(null);
+    setIsDownloadingAll(true);
+    try {
+      const allZip = await buildAllProductsZip(bundles);
+      const filename = generateAllProductsZipName();
+      downloadBlob(allZip, filename);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(`Failed to create master ZIP file: ${errorMessage}. Please try again.`);
+      console.error('Master ZIP creation error:', err);
+    } finally {
+      setIsDownloadingAll(false);
+    }
   };
 
   const formatFileSize = (blob: Blob): string => {
@@ -50,14 +74,34 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
           <Button onClick={onBack} variant="outline">
             Back to Editor
           </Button>
-          <Button onClick={handleDownloadAll} size="lg">
-            <Package className="mr-2 h-4 w-4" />
-            Download All Products
+          <Button onClick={handleDownloadAll} size="lg" disabled={isDownloadingAll}>
+            {isDownloadingAll ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating ZIP...
+              </>
+            ) : (
+              <>
+                <Package className="mr-2 h-4 w-4" />
+                Download All Products
+              </>
+            )}
           </Button>
         </div>
       </div>
 
-      <ExportInstructions />
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="max-h-[600px] overflow-hidden">
+        <div className="h-[600px] overflow-y-auto touch-scroll pr-4" tabIndex={0}>
+          <ExportInstructions />
+        </div>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         {bundles.map((bundle) => (
@@ -143,7 +187,7 @@ export default function ExportScreen({ bundles, onBack }: ExportScreenProps) {
                   <TableCell>
                     <Badge variant="outline">{bundle.versionTag}</Badge>
                   </TableCell>
-                  <TableCell>{bundle.generatedAt.toLocaleString()}</TableCell>
+                  <TableCell>{bundle.generatedAt.toLocaleDateString()}</TableCell>
                   <TableCell className="font-mono text-sm">
                     {formatFileSize(bundle.pdfBlob)}
                   </TableCell>

@@ -2,18 +2,36 @@ import React from 'react';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from '../../hooks/useQueries';
 import LoginButton from '../auth/LoginButton';
-import { Package, BookOpen } from 'lucide-react';
+import { Package, BookOpen, Download } from 'lucide-react';
 import { Button } from '../ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  hasGeneratedBundles?: boolean;
+  currentView?: 'editor' | 'export';
   onOpenInstructions?: () => void;
+  onExportClick?: () => void;
 }
 
-export default function AppLayout({ children, onOpenInstructions }: AppLayoutProps) {
+export default function AppLayout({
+  children,
+  hasGeneratedBundles = false,
+  currentView = 'editor',
+  onOpenInstructions,
+  onExportClick,
+}: AppLayoutProps) {
   const { identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
   const isAuthenticated = !!identity;
+
+  const showExportButton = currentView === 'editor' && hasGeneratedBundles;
+  const disableExportButton = !hasGeneratedBundles;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -34,6 +52,29 @@ export default function AppLayout({ children, onOpenInstructions }: AppLayoutPro
                 <BookOpen className="h-4 w-4" />
                 Instructions
               </Button>
+            )}
+            {showExportButton && onExportClick && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={onExportClick}
+                      disabled={disableExportButton}
+                      className="gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Export
+                    </Button>
+                  </TooltipTrigger>
+                  {disableExportButton && (
+                    <TooltipContent>
+                      <p>Generate products first to enable export</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             )}
             {isAuthenticated && userProfile && (
               <span className="text-sm text-muted-foreground">
