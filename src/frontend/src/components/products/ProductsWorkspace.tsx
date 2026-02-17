@@ -20,6 +20,7 @@ import { getDefaultProducts } from '../../lib/defaultProducts';
 import { generateProductBundle } from '../../lib/generation/generateProductBundle';
 import { generateAllBundles } from '../../lib/generation/generateAllBundles';
 import { formatGenerationError, logGenerationError } from '../../lib/generation/formatGenerationError';
+import { validateProductRequiredFields, validateAllProducts } from '../../lib/validation/productValidation';
 import { useIsCallerAdmin, usePopulateDefaultProducts } from '../../hooks/usePopulateDefaultProducts';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { Loader2, AlertCircle, RotateCcw, Database } from 'lucide-react';
@@ -113,9 +114,19 @@ export default function ProductsWorkspace({
   const handleGenerateSingle = async (index: number) => {
     setError(null);
     setSuccessMessage(null);
+    
+    // Pre-validate product fields
+    const product = products[index];
+    const validation = validateProductRequiredFields(product);
+    
+    if (!validation.isValid) {
+      setError(`Cannot generate Product ${index + 1} ("${product.name || 'Untitled'}"): ${validation.message}`);
+      return;
+    }
+    
     setGeneratingIndex(index);
     try {
-      const bundle = await generateProductBundle(products[index], index + 1);
+      const bundle = await generateProductBundle(product, index + 1);
       onBundlesGenerated([bundle]);
     } catch (err) {
       const errorMessage = formatGenerationError(err);
@@ -129,6 +140,15 @@ export default function ProductsWorkspace({
   const handleGenerateAll = async () => {
     setError(null);
     setSuccessMessage(null);
+    
+    // Pre-validate all products
+    const validation = validateAllProducts(products);
+    
+    if (!validation.isValid) {
+      setError(validation.message);
+      return;
+    }
+    
     setGeneratingAll(true);
     try {
       const bundles = await generateAllBundles(products);

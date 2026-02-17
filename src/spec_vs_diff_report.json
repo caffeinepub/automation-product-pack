@@ -1,69 +1,38 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T23:06:31.213Z",
-  "summary": "REQ-2 (typed generation errors + clearer user-facing messages and console logging) appears implemented via new GenerationError model and formatter/logger utilities, and generateProductBundle now wraps failures by step (cover/pdf/zip) with product context. REQ-1 is not satisfied because the changes still rely on CDN-provided global variables on window (window.jspdf / window.JSZip) rather than bundling/importing jsPDF and JSZip for production builds.",
+  "generatedAt": "2026-02-17T23:15:14.404Z",
+  "summary": "Diff adds product field validation utilities, updates PDF error formatting to use underlying GenerationError.originalError (including jsPDF-not-loaded detection), and hardens PDF generation by normalizing required fields to strings before calling jsPDF text APIs. However, the requested UI behavior of explicitly listing which required fields are missing for a specific product in PDF-step errors is not clearly implemented from the provided diff evidence.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds (no dependency on window.jspdf / window.JSZip).",
-      "reason": "The new jsPDF/JSZip client wrappers explicitly read from window.jspdf and window.JSZip and throw errors instructing to include CDN scripts in index.html, which keeps the reliance on CDN globals rather than ensuring module availability in production builds.",
+      "requirement": "When product fields are missing/blank, the displayed PDF-step error explicitly lists which fields are missing (name, subtitle, description) for the affected product, and the message is derived from GenerationError.originalError (not a generic/incorrect prompt).",
+      "reason": "While validation utilities can compute missing fields and formatGenerationError handles some PDF error cases, the provided formatting for invalid product data is generic (it does not enumerate which fields are missing for the affected product). Also, the diff evidence does not show the UI wiring that would surface validateProductRequiredFields/validateAllProducts messages as the displayed PDF-step error.",
       "evidence": [
-        "frontend/src/lib/pdf/jspdfClient.ts",
-        "frontend/src/lib/zip/jszipClient.ts",
-        "frontend/src/lib/pdf/generateProductPdf.ts",
-        "frontend/src/lib/zip/buildProductZip.ts",
-        "frontend/src/lib/zip/buildAllProductsZip.ts"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "requirement": "If generation fails, the editor screen shows an error message that includes the failing step (cover/PDF/ZIP) and the product number or product name; console logs include the original error object/stack; user-facing error remains clear English-only.",
-      "reason": "While formatter/logger utilities are added and errors are wrapped with step/product context, the provided diff for ProductsWorkspace.tsx is truncated before showing that generation handlers actually call formatGenerationError/logGenerationError and surface the formatted message on the editor screen.",
-      "evidence": [
-        "frontend/src/components/products/ProductsWorkspace.tsx (truncated)",
         "frontend/src/lib/generation/formatGenerationError.ts",
-        "frontend/src/lib/generation/generateProductBundle.ts"
+        "frontend/src/lib/validation/productValidation.ts",
+        "frontend/src/components/products/ProductsWorkspace.tsx (truncated)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "jsPDF/JSZip wrapper modules that explicitly require CDN scripts in index.html and access libraries via window globals.",
-      "reason": "The BuildRequest requires removing reliance on CDN-provided global variables; these wrappers reinforce that reliance and add guidance to include CDN scripts.",
+      "description": "Added a helper to create a jsPDF document (createPdfDocument) beyond the requested error handling/validation/hardening changes.",
+      "reason": "BuildRequest did not ask for a new jsPDF document factory API; only to improve error handling and robustness.",
       "evidence": [
-        "frontend/src/lib/pdf/jspdfClient.ts",
-        "frontend/src/lib/zip/jszipClient.ts"
-      ]
-    },
-    {
-      "description": "Master ZIP README consolidation and additional master ZIP generation behavior changes.",
-      "reason": "Not requested by REQ-1/REQ-2; the request is about robustness of jsPDF/JSZip availability and improved error reporting, not altering ZIP contents/readme strategy.",
-      "evidence": [
-        "frontend/src/lib/zip/buildAllProductsZip.ts"
-      ]
-    },
-    {
-      "description": "Admin-only backend repopulation workflow and related UI behavior in the products workspace.",
-      "reason": "Not part of REQ-1/REQ-2; introduces additional backend/admin functionality beyond PDF/ZIP generation robustness and error reporting.",
-      "evidence": [
-        "frontend/src/components/products/ProductsWorkspace.tsx (handlePopulateBackendProducts...)"
+        "frontend/src/lib/pdf/jspdfClient.ts"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.62,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/src/components/products/ProductEditor.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",
     "frontend/src/lib/generation/formatGenerationError.ts",
-    "frontend/src/lib/generation/generateAllBundles.ts",
-    "frontend/src/lib/generation/generateProductBundle.ts",
-    "frontend/src/lib/generation/generationErrors.ts",
     "frontend/src/lib/pdf/generateProductPdf.ts",
     "frontend/src/lib/pdf/jspdfClient.ts",
-    "frontend/src/lib/zip/buildAllProductsZip.ts",
-    "frontend/src/lib/zip/buildProductZip.ts",
-    "frontend/src/lib/zip/jszipClient.ts",
+    "frontend/src/lib/validation/productValidation.ts",
     "project_state.json"
   ]
 }

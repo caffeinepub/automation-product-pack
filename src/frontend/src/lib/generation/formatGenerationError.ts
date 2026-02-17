@@ -6,17 +6,34 @@ import { GenerationError } from './generationErrors';
  */
 export function formatGenerationError(error: unknown): string {
   if (error instanceof GenerationError) {
-    const { step, productName, productNumber } = error;
+    const { step, productName, productNumber, originalError } = error;
+    
+    // Extract the original error message
+    const originalMessage = originalError instanceof Error ? originalError.message : String(originalError);
     
     switch (step) {
       case 'cover':
-        return `Failed to load cover image for "${productName}" (Product ${productNumber}). Please try again.`;
+        return `Failed to load cover image for "${productName}" (Product ${productNumber}). ${originalMessage}`;
+      
       case 'pdf':
-        return `Failed to generate PDF for "${productName}" (Product ${productNumber}). Please verify that the product name, subtitle, and description are filled in and try again.`;
+        // Check if it's a jsPDF library error
+        if (originalMessage.includes('jsPDF library not loaded')) {
+          return `Failed to generate PDF for "${productName}" (Product ${productNumber}). The PDF library failed to load. Please refresh the page and try again.`;
+        }
+        
+        // Check if it's a validation error (missing fields)
+        if (originalMessage.includes('Invalid product data') || originalMessage.includes('undefined') || originalMessage.includes('null')) {
+          return `Failed to generate PDF for "${productName}" (Product ${productNumber}). Invalid product data detected. Please ensure all required fields (Product Name, Subtitle, Description) are filled in.`;
+        }
+        
+        // Generic PDF error with original message
+        return `Failed to generate PDF for "${productName}" (Product ${productNumber}). ${originalMessage}`;
+      
       case 'zip':
-        return `Failed to create ZIP file for "${productName}" (Product ${productNumber}). Please try again.`;
+        return `Failed to create ZIP file for "${productName}" (Product ${productNumber}). ${originalMessage}`;
+      
       default:
-        return `Failed to generate "${productName}" (Product ${productNumber}). Please try again.`;
+        return `Failed to generate "${productName}" (Product ${productNumber}). ${originalMessage}`;
     }
   }
 

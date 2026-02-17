@@ -1,53 +1,54 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T23:06:31.216Z",
+  "generatedAt": "2026-02-17T23:15:14.407Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds.",
+        "summary": "Improve PDF-step error handling so the UI shows an accurate, actionable message based on the real underlying PDF error (e.g., missing jsPDF CDN library vs. missing/invalid product fields), instead of always prompting to verify name/subtitle/description.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/index.html",
-          "frontend/package.json",
-          "frontend/src/lib/pdf/jspdfClient.ts",
-          "frontend/src/lib/zip/jszipClient.ts",
-          "frontend/src/lib/pdf/generateProductPdf.ts",
-          "frontend/src/lib/zip/buildProductZip.ts",
-          "frontend/src/lib/zip/buildAllProductsZip.ts"
+          "frontend/src/lib/generation/formatGenerationError.ts",
+          "frontend/src/lib/generation/generationErrors.ts"
         ],
         "matchedFiles": [
-          "frontend/src/lib/pdf/jspdfClient.ts",
-          "frontend/src/lib/zip/jszipClient.ts",
-          "frontend/src/lib/pdf/generateProductPdf.ts",
-          "frontend/src/lib/zip/buildProductZip.ts",
-          "frontend/src/lib/zip/buildAllProductsZip.ts"
+          "frontend/src/lib/generation/formatGenerationError.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Improve error reporting during generation so the UI shows the actual root-cause message (in English) for failures, including whether the failure occurred during cover fetch, PDF generation, or ZIP generation, and for which product.",
+        "summary": "Add pre-validation before attempting PDF generation for each product to ensure required fields are present and non-empty (after trimming), and prevent generation when validation fails.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/generation/generationErrors.ts",
-          "frontend/src/lib/generation/formatGenerationError.ts",
-          "frontend/src/lib/generation/generateProductBundle.ts",
-          "frontend/src/lib/generation/generateAllBundles.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx"
+          "frontend/src/lib/validation/productValidation.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/generation/generationErrors.ts",
-          "frontend/src/lib/generation/formatGenerationError.ts",
-          "frontend/src/lib/generation/generateProductBundle.ts",
-          "frontend/src/lib/generation/generateAllBundles.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx"
+          "frontend/src/lib/validation/productValidation.ts",
+          "frontend/src/components/products/ProductsWorkspace.tsx",
+          "frontend/src/components/products/ProductEditor.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Harden the PDF generator against undefined/empty text inputs by safely normalizing product fields to strings and guarding jsPDF text calls so generation does not crash due to unexpected undefined/null values coming from drafts or merges.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/pdf/generateProductPdf.ts",
+          "frontend/src/lib/pdf/jspdfClient.ts",
+          "frontend/src/lib/generation/generateProductBundle.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/lib/pdf/generateProductPdf.ts",
+          "frontend/src/lib/pdf/jspdfClient.ts"
         ]
       }
     ]
@@ -57,16 +58,12 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/components/products/ProductEditor.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",
     "frontend/src/lib/generation/formatGenerationError.ts",
-    "frontend/src/lib/generation/generateAllBundles.ts",
-    "frontend/src/lib/generation/generateProductBundle.ts",
-    "frontend/src/lib/generation/generationErrors.ts",
     "frontend/src/lib/pdf/generateProductPdf.ts",
     "frontend/src/lib/pdf/jspdfClient.ts",
-    "frontend/src/lib/zip/buildAllProductsZip.ts",
-    "frontend/src/lib/zip/buildProductZip.ts",
-    "frontend/src/lib/zip/jszipClient.ts",
+    "frontend/src/lib/validation/productValidation.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

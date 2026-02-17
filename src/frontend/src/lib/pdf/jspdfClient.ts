@@ -18,7 +18,7 @@ export function getJsPDF() {
   }
   
   if (!window.jspdf || !window.jspdf.jsPDF) {
-    throw new Error('jsPDF library not loaded. Please ensure the CDN script is included in index.html');
+    throw new Error('jsPDF library not loaded. Please ensure the CDN script is included in index.html and try refreshing the page.');
   }
   
   return window.jspdf.jsPDF;

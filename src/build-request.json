@@ -1,56 +1,84 @@
 {
   "kind": "build_request",
-  "title": "Fix PDF generation errors for all three products",
+  "title": "Fix misleading PDF generation errors and add robust pre-validation for product fields",
   "projectName": "Digital Bundle Studio",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds.",
+      "text": "Improve PDF-step error handling so the UI shows an accurate, actionable message based on the real underlying PDF error (e.g., missing jsPDF CDN library vs. missing/invalid product fields), instead of always prompting to verify name/subtitle/description.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-3"
         ],
         "quotes": [
-          "I got the same errors again for all 3 products. Please fix it"
+          "Failed to generate PDF for \"Digital Planner Mastery\" (Product 1). Please verify that the product name, subtitle, and description are filled in and try again."
         ]
       },
       "acceptanceCriteria": [
-        "Generating a single product succeeds without requiring jsPDF/JSZip to exist on `window`.",
-        "Generating all 3 products succeeds in production and routes the user to the Export screen with 3 generated bundles.",
-        "No runtime error occurs due to `window.jspdf` or `window.JSZip` being undefined."
+        "When jsPDF is not available (e.g., getJsPDF() throws \"jsPDF library not loaded\"), the displayed error explicitly indicates jsPDF failed to load and suggests retrying after ensuring the library is available.",
+        "When product fields are missing/blank, the displayed error explicitly lists which fields are missing (name, subtitle, description) for the affected product.",
+        "The error message shown for PDF failures is derived from the underlying error (GenerationError.originalError) and is not a generic/incorrect prompt."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Improve error reporting during generation so the UI shows the actual root-cause message (in English) for failures, including whether the failure occurred during cover fetch, PDF generation, or ZIP generation, and for which product.",
+      "text": "Add pre-validation before attempting PDF generation for each product to ensure required fields are present and non-empty (after trimming), and prevent generation when validation fails.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-3"
         ],
         "quotes": [
-          "I got the same errors again for all 3 products. Please fix it"
+          "Please verify that the product name, subtitle, and description are filled in and try again."
         ]
       },
       "acceptanceCriteria": [
-        "If generation fails, the editor screen shows an error message that includes the failing step (cover/PDF/ZIP) and the product number or product name.",
-        "Console logs include the original error object/stack for troubleshooting.",
-        "User-facing error text remains clear and English-only (no raw stack traces shown to users in production)."
+        "Clicking “Generate” for a product with missing/blank name, subtitle, or description does not call the PDF generator and instead shows a clear validation error in English.",
+        "Clicking “Generate All Products” skips/blocks generation if any product has missing required fields and reports which product(s) need fixes.",
+        "Validation uses trimmed strings (e.g., whitespace-only values are treated as missing)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Harden the PDF generator against undefined/empty text inputs by safely normalizing product fields to strings and guarding jsPDF text calls so generation does not crash due to unexpected undefined/null values coming from drafts or merges.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Failed to generate PDF for \"Digital Planner Mastery\" (Product 1)."
+        ]
+      },
+      "acceptanceCriteria": [
+        "If any of product.name/product.subtitle/product.description is unexpectedly undefined/null at runtime, PDF generation fails with a clear, accurate error indicating invalid product data (not a generic message), and logs useful diagnostics via existing logging.",
+        "No jsPDF doc.text invocation receives a non-string value (verified by code changes and manual testing through the UI)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui or any path listed in frontend.immutablePaths.",
-    "Keep all backend logic in the single Motoko actor (no backend changes required for this fix unless strictly necessary)."
+    "Do not modify read-only frontend paths listed in SYSTEM_CONTEXT.frontend.immutablePaths.",
+    "Keep backend as a single Motoko actor; do not introduce additional backend services."
   ],
   "nonGoals": [
-    "Adding new product types or changing the product content/model.",
-    "Adding external services or new authentication providers."
+    "Redesigning the PDF layout/content beyond what is necessary to prevent errors and improve error messaging.",
+    "Adding new authentication providers (only Internet Identity is supported).",
+    "Adding external databases or third-party backend services."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

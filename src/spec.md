@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Fix PDF/ZIP generation failures for all three products by ensuring jsPDF and JSZip are reliably available in production builds without relying on CDN globals.
+**Goal:** Make PDF generation failures show accurate, actionable errors and prevent PDF generation when required product fields are missing or invalid.
 
 **Planned changes:**
-- Replace any `window.jspdf` / `window.JSZip` dependency with direct module imports/usages so production builds always include jsPDF and JSZip.
-- Make the “generate one product” and “generate all 3 products” flows handle PDF and ZIP creation reliably and route to the Export screen with 3 generated bundles.
-- Improve generation error reporting to show a clear English root-cause message on the editor screen, including which step failed (cover fetch / PDF / ZIP) and which product, while logging full error details to the console.
+- Update PDF-step error handling to display messages derived from the underlying PDF error (including distinguishing jsPDF load failures vs. invalid/missing product data).
+- Add pre-validation for each product before PDF generation (trimmed name/subtitle/description required), blocking “Generate” and “Generate All Products” when validation fails and reporting which product(s)/field(s) need fixes.
+- Harden the PDF generator by normalizing/guarding product text inputs so jsPDF text calls only receive strings and unexpected undefined/null values fail with a clear, accurate error plus existing diagnostics logging.
 
-**User-visible outcome:** Users can generate any single product or all three products successfully in production; if something fails, they see a clear English error stating the failing step and product, without crashes from missing `window` globals.
+**User-visible outcome:** When generating PDFs, users see specific error messages (e.g., jsPDF failed to load or exactly which fields are missing for which products), and PDF generation won’t run until required product fields are filled in correctly.

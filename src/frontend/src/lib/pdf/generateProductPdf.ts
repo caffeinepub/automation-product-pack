@@ -1,8 +1,35 @@
 import type { ProductEntry } from '../../types/productEntry';
 import { getJsPDF } from './jspdfClient';
 
+/**
+ * Normalizes a value to a string, throwing an error if it's invalid.
+ */
+function normalizeToString(value: any, fieldName: string): string {
+  if (value === undefined || value === null) {
+    throw new Error(`Invalid product data: ${fieldName} is ${value === null ? 'null' : 'undefined'}`);
+  }
+  
+  const str = String(value);
+  if (str.trim() === '') {
+    console.warn(`Warning: ${fieldName} is empty or whitespace-only`);
+  }
+  
+  return str;
+}
+
 export async function generateProductPdf(product: ProductEntry, coverBlob: Blob | null): Promise<Blob> {
   try {
+    // Validate and normalize required product fields
+    const productName = normalizeToString(product.name, 'product.name');
+    const productSubtitle = normalizeToString(product.subtitle, 'product.subtitle');
+    const productDescription = normalizeToString(product.description, 'product.description');
+    
+    console.log('Generating PDF for product:', {
+      name: productName,
+      subtitle: productSubtitle,
+      descriptionLength: productDescription.length,
+    });
+    
     const jsPDF = getJsPDF();
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -31,14 +58,14 @@ export async function generateProductPdf(product: ProductEntry, coverBlob: Blob 
     // Title page
     doc.setFontSize(28);
     doc.setFont('helvetica', 'bold');
-    doc.text(product.name, margin, 40);
+    doc.text(productName, margin, 40);
 
     doc.setFontSize(16);
     doc.setFont('helvetica', 'normal');
-    doc.text(product.subtitle, margin, 55);
+    doc.text(productSubtitle, margin, 55);
 
     doc.setFontSize(12);
-    const descLines = doc.splitTextToSize(product.description, contentWidth);
+    const descLines = doc.splitTextToSize(productDescription, contentWidth);
     doc.text(descLines, margin, 75);
 
     // Modules section
@@ -55,14 +82,18 @@ export async function generateProductPdf(product: ProductEntry, coverBlob: Blob 
           yPos = 30;
         }
 
+        // Normalize module fields
+        const moduleTitle = String(module.title || '');
+        const moduleDescription = String(module.description || '');
+
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.text(`${index + 1}. ${module.title}`, margin, yPos);
+        doc.text(`${index + 1}. ${moduleTitle}`, margin, yPos);
         yPos += 8;
 
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
-        const moduleDescLines = doc.splitTextToSize(module.description, contentWidth);
+        const moduleDescLines = doc.splitTextToSize(moduleDescription, contentWidth);
         doc.text(moduleDescLines, margin + 5, yPos);
         yPos += moduleDescLines.length * 5 + 10;
       });
@@ -82,9 +113,12 @@ export async function generateProductPdf(product: ProductEntry, coverBlob: Blob 
           yPos = 30;
         }
 
+        // Normalize prompt
+        const promptText = String(prompt || '');
+
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
-        const promptLines = doc.splitTextToSize(`${index + 1}. ${prompt}`, contentWidth);
+        const promptLines = doc.splitTextToSize(`${index + 1}. ${promptText}`, contentWidth);
         doc.text(promptLines, margin, yPos);
         yPos += promptLines.length * 5 + 8;
       });
@@ -93,7 +127,7 @@ export async function generateProductPdf(product: ProductEntry, coverBlob: Blob 
     return doc.output('blob');
   } catch (error) {
     console.error('PDF generation error:', error);
-    throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
   }
 }
 

@@ -4,29 +4,36 @@
   "summary": "New project",
   "architectural_notes": [],
   "known_issues": [
-    "PDF generation from the Export screen still fails with the same errors for all 3 products (regression/ongoing issue after v24 deployment)."
+    "PDF generation fails for all products with error: \"Failed to generate PDF for 'Digital Planner Mastery' (Product 1). Please verify that the product name, subtitle, and description are filled in and try again.\""
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-make-pdf-and-zip-generation-robust-by-removing-reliance-on-cdn-provided-global-variables-and-ensuring-jspdf-and-jszip-are-available-in-production-builds",
-      "title": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds.",
+      "id": "feature-improve-pdf-step-error-handling-so-the-ui-shows-an-accurate-actionable-message-based-on-the-real-underlying-pdf-error-e-g-missing-jspdf-cdn-library-vs-missing-invalid-product-fields-instead-of-always-prompting-to-verify-name-subtitle-description",
+      "title": "Improve PDF-step error handling so the UI shows an accurate, actionable message based on the real underlying PDF error (e.g., missing jsPDF CDN library vs. missing/invalid product fields), instead of always prompting to verify name/subtitle/description.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-improve-error-reporting-during-generation-so-the-ui-shows-the-actual-root-cause-message-in-english-for-failures-including-whether-the-failure-occurred-during-cover-fetch-pdf-generation-or-zip-generation-and-for-which-product",
-      "title": "Improve error reporting during generation so the UI shows the actual root-cause message (in English) for failures, including whether the failure occurred during cover fetch, PDF generation, or ZIP generation, and for which product.",
+      "id": "feature-add-pre-validation-before-attempting-pdf-generation-for-each-product-to-ensure-required-fields-are-present-and-non-empty-after-trimming-and-prevent-generation-when-validation-fails",
+      "title": "Add pre-validation before attempting PDF generation for each product to ensure required fields are present and non-empty (after trimming), and prevent generation when validation fails.",
       "reqIds": [
         "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-harden-the-pdf-generator-against-undefined-empty-text-inputs-by-safely-normalizing-product-fields-to-strings-and-guarding-jspdf-text-calls-so-generation-does-not-crash-due-to-unexpected-undefined-null-values-coming-from-drafts-or-merges",
+      "title": "Harden the PDF generator against undefined/empty text inputs by safely normalizing product fields to strings and guarding jsPDF text calls so generation does not crash due to unexpected undefined/null values coming from drafts or merges.",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [],
-  "gameProjectType": "none",
   "projectName": "Digital Bundle Studio",
   "clarification_mode": "instant",
   "clarification_rounds": 0

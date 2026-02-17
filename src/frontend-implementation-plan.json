@@ -1,87 +1,77 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix robust PDF/ZIP generation without CDN globals + better generation error reporting",
+  "title": "Accurate PDF error messaging + product field pre-validation and hardening",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Bundle jsPDF and JSZip with the app (no CDN globals) so PDF/ZIP generation works reliably in production.",
+      "summary": "Derive PDF-step UI errors from the underlying cause (jsPDF load failure vs invalid/missing product data) instead of a generic prompt.",
       "acceptanceCriteria": [
-        "Generating a single product succeeds without requiring jsPDF/JSZip to exist on `window`.",
-        "Generating all 3 products succeeds in production and routes the user to the Export screen with 3 generated bundles.",
-        "No runtime error occurs due to `window.jspdf` or `window.JSZip` being undefined."
+        "When jsPDF is not available (e.g., getJsPDF() throws \"jsPDF library not loaded\"), the displayed error explicitly indicates jsPDF failed to load and suggests retrying after ensuring the library is available.",
+        "When product fields are missing/blank, the displayed error explicitly lists which fields are missing (name, subtitle, description) for the affected product.",
+        "The error message shown for PDF failures is derived from the underlying error (GenerationError.originalError) and is not a generic/incorrect prompt."
       ],
       "file_operations": [
         {
-          "path": "frontend/index.html",
+          "path": "frontend/src/lib/generation/formatGenerationError.ts",
           "operation": "modify",
-          "description": "Remove CDN script tags that provide global jsPDF/JSZip variables so production builds do not rely on window globals."
+          "description": "Update PDF-step formatting to inspect GenerationError.originalError and emit actionable, accurate messages (e.g., jsPDF CDN not loaded vs. validation/missing fields). Remove the current always-the-same prompt for PDF failures."
         },
         {
-          "path": "frontend/package.json",
+          "path": "frontend/src/lib/generation/generationErrors.ts",
           "operation": "modify",
-          "description": "Ensure `jspdf` and `jszip` are declared as runtime dependencies (and any needed types) so they are bundled and available in production builds."
-        },
-        {
-          "path": "frontend/src/lib/pdf/jspdfClient.ts",
-          "operation": "create",
-          "description": "Add a small loader/wrapper that imports jsPDF from installed dependencies (no `window` usage) and exposes a stable API for PDF generation."
-        },
-        {
-          "path": "frontend/src/lib/zip/jszipClient.ts",
-          "operation": "create",
-          "description": "Add a small loader/wrapper that imports JSZip from installed dependencies (no `window` usage) and exposes a stable API for ZIP creation."
-        },
-        {
-          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
-          "operation": "modify",
-          "description": "Replace `window.jspdf` access with the new jsPDF wrapper import so PDF generation works in production builds without global variables."
-        },
-        {
-          "path": "frontend/src/lib/zip/buildProductZip.ts",
-          "operation": "modify",
-          "description": "Replace `window.JSZip` access with the new JSZip wrapper import so per-product ZIP generation works without global variables."
-        },
-        {
-          "path": "frontend/src/lib/zip/buildAllProductsZip.ts",
-          "operation": "modify",
-          "description": "Replace `window.JSZip` access with the new JSZip wrapper import so master ZIP generation works without global variables."
+          "description": "Extend structured error handling support for generation to preserve/propagate meaningful causes that the formatter can reliably map to user messages (without changing app flow)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Show clear, English root-cause generation errors in the editor UI with step (cover/PDF/ZIP) and product context, while logging full error details to console.",
+      "summary": "Pre-validate required product fields (trimmed) before generating single or all PDFs, and block generation with clear guidance.",
       "acceptanceCriteria": [
-        "If generation fails, the editor screen shows an error message that includes the failing step (cover/PDF/ZIP) and the product number or product name.",
-        "Console logs include the original error object/stack for troubleshooting.",
-        "User-facing error text remains clear and English-only (no raw stack traces shown to users in production)."
+        "Clicking “Generate” for a product with missing/blank name, subtitle, or description does not call the PDF generator and instead shows a clear validation error in English.",
+        "Clicking “Generate All Products” skips/blocks generation if any product has missing required fields and reports which product(s) need fixes.",
+        "Validation uses trimmed strings (e.g., whitespace-only values are treated as missing)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/generation/generationErrors.ts",
+          "path": "frontend/src/lib/validation/productValidation.ts",
           "operation": "create",
-          "description": "Define a typed generation error model (including step: cover/PDF/ZIP, product id/name/number, and original cause) to preserve root-cause details without exposing stacks to users."
-        },
-        {
-          "path": "frontend/src/lib/generation/formatGenerationError.ts",
-          "operation": "create",
-          "description": "Add a helper to format generation errors into clear, English-only user messages (step + product context) while allowing full console logging separately."
-        },
-        {
-          "path": "frontend/src/lib/generation/generateProductBundle.ts",
-          "operation": "modify",
-          "description": "Wrap failures from cover fetch, PDF generation, and ZIP generation into the typed generation error (including product context) and ensure console logs include the original error object/stack for troubleshooting."
-        },
-        {
-          "path": "frontend/src/lib/generation/generateAllBundles.ts",
-          "operation": "modify",
-          "description": "When generating all products, propagate the first failure as a typed generation error that includes which product failed and at which step (cover/PDF/ZIP), preserving the original cause for console logging."
+          "description": "Add a reusable product required-field validator that treats trimmed whitespace-only strings as missing and returns a structured result suitable for UI messaging."
         },
         {
           "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Update editor-screen error handling to display the formatted (English-only) root-cause message including step + product name/number, while logging the full original error/cause to the console."
+          "description": "Add pre-validation checks in \"Generate\" and \"Generate All Products\" handlers; block generation when invalid and set the existing workspace error alert to a clear English message listing missing fields per product and/or which products need fixes."
+        },
+        {
+          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "operation": "modify",
+          "description": "Align editor labels/required-field indicators with the actual required fields (name, subtitle, description) and ensure the Generate button behavior does not bypass workspace-level pre-validation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Harden PDF generation against undefined/null/empty text inputs by normalizing to strings and preventing jsPDF text calls with non-string data.",
+      "acceptanceCriteria": [
+        "If any of product.name/product.subtitle/product.description is unexpectedly undefined/null at runtime, PDF generation fails with a clear, accurate error indicating invalid product data (not a generic message), and logs useful diagnostics via existing logging.",
+        "No jsPDF doc.text invocation receives a non-string value (verified by code changes and manual testing through the UI)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
+          "operation": "modify",
+          "description": "Normalize/guard all product text inputs (name/subtitle/description and any other strings passed into jsPDF) so doc.text and splitTextToSize are only called with strings/arrays of strings; on invalid runtime product data, throw a clear invalid-data error and keep existing console diagnostics useful."
+        },
+        {
+          "path": "frontend/src/lib/pdf/jspdfClient.ts",
+          "operation": "modify",
+          "description": "Ensure jsPDF availability errors remain distinct and machine-detectable (e.g., consistent error messages) so UI can accurately report jsPDF load failures."
+        },
+        {
+          "path": "frontend/src/lib/generation/generateProductBundle.ts",
+          "operation": "modify",
+          "description": "Improve PDF-step error propagation so the underlying PDF/validation/jsPDF cause is preserved for downstream formatting and logging, without changing the overall bundle-generation workflow."
         }
       ]
     }

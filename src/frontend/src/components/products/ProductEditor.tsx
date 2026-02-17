@@ -94,7 +94,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           </div>
           <Button 
             onClick={onGenerate} 
-            disabled={isGenerating || !product.name}
+            disabled={isGenerating}
             className="w-full sm:w-auto flex-shrink-0"
             size="default"
           >
@@ -114,7 +114,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           <TabsContent value="basic" className="space-y-5 mt-0">
             <div className="space-y-2">
               <Label htmlFor={`name-${product.id}`} className="text-sm font-medium">
-                Product Name *
+                Product Name <span className="text-destructive">*</span>
               </Label>
               <Input
                 id={`name-${product.id}`}
@@ -125,7 +125,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
             </div>
             <div className="space-y-2">
               <Label htmlFor={`subtitle-${product.id}`} className="text-sm font-medium">
-                Subtitle
+                Subtitle <span className="text-destructive">*</span>
               </Label>
               <Input
                 id={`subtitle-${product.id}`}
@@ -136,7 +136,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
             </div>
             <div className="space-y-2">
               <Label htmlFor={`description-${product.id}`} className="text-sm font-medium">
-                Description
+                Description <span className="text-destructive">*</span>
               </Label>
               <Textarea
                 id={`description-${product.id}`}
