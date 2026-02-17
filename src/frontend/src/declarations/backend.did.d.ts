@@ -35,6 +35,7 @@ export interface _SERVICE {
   'getProductMetadata' : ActorMethod<[string], ProductMetadata>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'populateDefaultProducts' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

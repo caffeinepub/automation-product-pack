@@ -118,6 +118,7 @@ export interface backendInterface {
     getProductMetadata(id: string): Promise<ProductMetadata>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    populateDefaultProducts(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
 }
 import type { UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
@@ -246,6 +247,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async populateDefaultProducts(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.populateDefaultProducts();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.populateDefaultProducts();
             return result;
         }
     }

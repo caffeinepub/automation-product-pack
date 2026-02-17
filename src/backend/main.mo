@@ -6,6 +6,8 @@ import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
+
+
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
@@ -66,6 +68,50 @@ actor {
         versionTag;
       },
     );
+  };
+
+  public shared ({ caller }) func populateDefaultProducts() : async () {
+    // Only admin should be able to call
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can populate default products");
+    };
+
+    products.clear();
+    metadata.clear();
+
+    // Add default products
+    products.add("tshirt", {
+      name = "Internet Computer T-Shirt";
+      description = "High-quality cotton t-shirt featuring the Internet Computer logo. Show off your support and look great doing it!";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/ic_tshirt.jpeg";
+      price = 25_000_000;
+    });
+    products.add("mug", {
+      name = "Internet Computer Mug";
+      description = "High-quality 11oz ceramic mug with the Internet Computer logo.";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/internet_computer_mug.jpeg";
+      price = 12_000_000;
+    });
+    products.add("cap", {
+      name = "Internet Computer Cap";
+      description = "Adjustable black cap with the Internet Computer logo. Durable and stylish.";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/internet_computer_cap.jpeg";
+      price = 12_000_000;
+    });
+
+    // Add default metadata
+    metadata.add("tshirt", {
+      lastGeneratedTime = Time.now();
+      versionTag = "initial v0.1";
+    });
+    metadata.add("mug", {
+      lastGeneratedTime = Time.now();
+      versionTag = "initial v0.1";
+    });
+    metadata.add("cap", {
+      lastGeneratedTime = Time.now();
+      versionTag = "initial v0.1";
+    });
   };
 
   public query func getProduct(id : Text) : async ProductDefinition {

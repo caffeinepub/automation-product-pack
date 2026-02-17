@@ -9,7 +9,7 @@ export async function generateAllBundles(
   
   for (let i = 0; i < products.length; i++) {
     onProgress?.(i, products.length);
-    const bundle = await generateProductBundle(products[i]);
+    const bundle = await generateProductBundle(products[i], i + 1);
     bundles.push(bundle);
   }
   

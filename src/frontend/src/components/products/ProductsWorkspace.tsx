@@ -19,7 +19,10 @@ import { loadDrafts, saveDrafts, resetDrafts } from '../../lib/localDrafts';
 import { getDefaultProducts } from '../../lib/defaultProducts';
 import { generateProductBundle } from '../../lib/generation/generateProductBundle';
 import { generateAllBundles } from '../../lib/generation/generateAllBundles';
-import { Loader2, AlertCircle, RotateCcw } from 'lucide-react';
+import { formatGenerationError, logGenerationError } from '../../lib/generation/formatGenerationError';
+import { useIsCallerAdmin, usePopulateDefaultProducts } from '../../hooks/usePopulateDefaultProducts';
+import { useInternetIdentity } from '../../hooks/useInternetIdentity';
+import { Loader2, AlertCircle, RotateCcw, Database } from 'lucide-react';
 
 interface ProductsWorkspaceProps {
   onBundlesGenerated: (bundles: GeneratedBundle[]) => void;
@@ -36,6 +39,11 @@ export default function ProductsWorkspace({
   const [generatingIndex, setGeneratingIndex] = useState<number | null>(null);
   const [generatingAll, setGeneratingAll] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const { identity } = useInternetIdentity();
+  const { data: isAdmin, isLoading: isAdminLoading } = useIsCallerAdmin();
+  const populateDefaultProducts = usePopulateDefaultProducts();
 
   useEffect(() => {
     const drafts = loadDrafts();
@@ -68,33 +76,51 @@ export default function ProductsWorkspace({
     const freshDefaults = getDefaultProducts();
     setProducts(freshDefaults);
     setError(null);
+    setSuccessMessage(null);
     if (onActiveProductChange) {
       onActiveProductChange('product-1');
     }
   };
 
-  const handleGenerateSingle = async (index: number) => {
+  const handlePopulateBackendProducts = async () => {
     setError(null);
-    setGeneratingIndex(index);
+    setSuccessMessage(null);
+    
     try {
-      const bundle = await generateProductBundle(products[index]);
-      onBundlesGenerated([bundle]);
+      await populateDefaultProducts.mutateAsync();
+      
+      // On success, restore local editor state
+      resetDrafts();
+      const freshDefaults = getDefaultProducts();
+      setProducts(freshDefaults);
+      if (onActiveProductChange) {
+        onActiveProductChange('product-1');
+      }
+      
+      setSuccessMessage('Default products successfully repopulated in the backend. Editor has been reset to default products.');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      const productNumber = index + 1;
       
-      if (errorMessage.includes('PDF')) {
-        setError(
-          `Failed to generate PDF for Product ${productNumber}. Please verify that the product name, subtitle, and description are filled in and try again.`
-        );
-      } else if (errorMessage.includes('ZIP')) {
-        setError(
-          `Failed to create ZIP file for Product ${productNumber}. Please try again.`
-        );
+      if (errorMessage.includes('Unauthorized')) {
+        setError('Unauthorized: Only admins can repopulate default products.');
       } else {
-        setError(`Failed to generate Product ${productNumber}: ${errorMessage}`);
+        setError(`Failed to repopulate default products: ${errorMessage}`);
       }
-      console.error('Generation error:', err);
+      console.error('Repopulate error:', err);
+    }
+  };
+
+  const handleGenerateSingle = async (index: number) => {
+    setError(null);
+    setSuccessMessage(null);
+    setGeneratingIndex(index);
+    try {
+      const bundle = await generateProductBundle(products[index], index + 1);
+      onBundlesGenerated([bundle]);
+    } catch (err) {
+      const errorMessage = formatGenerationError(err);
+      setError(errorMessage);
+      logGenerationError(err);
     } finally {
       setGeneratingIndex(null);
     }
@@ -102,24 +128,21 @@ export default function ProductsWorkspace({
 
   const handleGenerateAll = async () => {
     setError(null);
+    setSuccessMessage(null);
     setGeneratingAll(true);
     try {
       const bundles = await generateAllBundles(products);
       onBundlesGenerated(bundles);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      if (errorMessage.includes('PDF')) {
-        setError('Failed to generate one or more PDFs. Please verify that all product names, subtitles, and descriptions are filled in and try again.');
-      } else if (errorMessage.includes('ZIP')) {
-        setError('Failed to create ZIP files. Please try again.');
-      } else {
-        setError(`Failed to generate products: ${errorMessage}`);
-      }
-      console.error('Generation error:', err);
+      const errorMessage = formatGenerationError(err);
+      setError(errorMessage);
+      logGenerationError(err);
     } finally {
       setGeneratingAll(false);
     }
   };
+
+  const showAdminButton = !!identity && isAdmin === true;
 
   return (
     <div className="space-y-6 p-6 workspace-container bg-gradient-to-br from-accent/20 via-primary/15 to-accent/25 rounded-2xl border-2 border-primary/30 shadow-xl ring-4 ring-primary/20">
@@ -129,6 +152,43 @@ export default function ProductsWorkspace({
           <p className="text-muted-foreground">Configure your three digital products</p>
         </div>
         <div className="flex gap-3">
+          {showAdminButton && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  disabled={populateDefaultProducts.isPending}
+                >
+                  {populateDefaultProducts.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Repopulating...
+                    </>
+                  ) : (
+                    <>
+                      <Database className="mr-2 h-4 w-4" />
+                      Repopulate Default Products
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Repopulate default products in backend?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will reset the backend product database to the three default products and restore your local editor to the default state. This is useful after deployment to ensure the backend has the correct product data. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handlePopulateBackendProducts}>
+                    Repopulate Products
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="lg">
@@ -140,7 +200,7 @@ export default function ProductsWorkspace({
               <AlertDialogHeader>
                 <AlertDialogTitle>Restore default products?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will replace all your current edits with the original three default products: Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio. This action cannot be undone.
+                  This will replace all current product data with the default products. This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -151,7 +211,11 @@ export default function ProductsWorkspace({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button onClick={handleGenerateAll} disabled={generatingAll} size="lg">
+          <Button 
+            onClick={handleGenerateAll}
+            disabled={generatingAll || generatingIndex !== null}
+            size="lg"
+          >
             {generatingAll ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -171,11 +235,13 @@ export default function ProductsWorkspace({
         </Alert>
       )}
 
-      <Tabs 
-        value={activeProductId} 
-        onValueChange={onActiveProductChange}
-        className="w-full"
-      >
+      {successMessage && (
+        <Alert>
+          <AlertDescription>{successMessage}</AlertDescription>
+        </Alert>
+      )}
+
+      <Tabs value={activeProductId} onValueChange={onActiveProductChange}>
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="product-1">Product 1</TabsTrigger>
           <TabsTrigger value="product-2">Product 2</TabsTrigger>
@@ -188,7 +254,7 @@ export default function ProductsWorkspace({
               product={product}
               onChange={(updated) => updateProduct(index, updated)}
               onGenerate={() => handleGenerateSingle(index)}
-              isGenerating={generatingIndex === index || generatingAll}
+              isGenerating={generatingIndex === index}
             />
           </TabsContent>
         ))}

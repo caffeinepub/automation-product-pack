@@ -1,19 +1,11 @@
 import type { GeneratedBundle } from '../../types/productEntry';
 import { generateProductZipName } from '../filename';
 import { getMasterReadmeContent } from './readmeContent';
-
-// Type definitions for JSZip loaded from CDN
-declare global {
-  interface Window {
-    JSZip: any;
-  }
-}
+import { createZip } from './jszipClient';
 
 export async function buildAllProductsZip(bundles: GeneratedBundle[]): Promise<Blob> {
   try {
-    // Access JSZip from global window object (loaded via CDN)
-    const JSZip = window.JSZip;
-    const zip = new JSZip();
+    const zip = createZip();
 
     for (const bundle of bundles) {
       const productFolder = zip.folder(`product-${bundle.productId}`);

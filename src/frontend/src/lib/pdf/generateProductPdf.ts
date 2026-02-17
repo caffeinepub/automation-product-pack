@@ -1,19 +1,9 @@
 import type { ProductEntry } from '../../types/productEntry';
-
-// Type definitions for jsPDF loaded from CDN
-declare global {
-  interface Window {
-    jspdf: {
-      jsPDF: any;
-    };
-  }
-}
+import { getJsPDF } from './jspdfClient';
 
 export async function generateProductPdf(product: ProductEntry, coverBlob: Blob | null): Promise<Blob> {
   try {
-    // Access jsPDF from global window object (loaded via CDN)
-    const { jsPDF } = window.jspdf;
-    
+    const jsPDF = getJsPDF();
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',

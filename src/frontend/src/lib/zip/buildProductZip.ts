@@ -1,13 +1,7 @@
 import type { ProductEntry } from '../../types/productEntry';
 import { fetchCoverAsBlob } from '../assets/covers';
 import { getProductReadmeContent } from './readmeContent';
-
-// Type definitions for JSZip loaded from CDN
-declare global {
-  interface Window {
-    JSZip: any;
-  }
-}
+import { createZip } from './jszipClient';
 
 export async function buildProductZip(
   product: ProductEntry,
@@ -15,9 +9,7 @@ export async function buildProductZip(
   pdfFilename: string
 ): Promise<Blob> {
   try {
-    // Access JSZip from global window object (loaded via CDN)
-    const JSZip = window.JSZip;
-    const zip = new JSZip();
+    const zip = createZip();
 
     // Add PDF
     zip.file(pdfFilename, pdfBlob);

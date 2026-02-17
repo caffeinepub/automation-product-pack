@@ -35,5 +35,6 @@ export interface backendInterface {
     getProductMetadata(id: string): Promise<ProductMetadata>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    populateDefaultProducts(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
 }

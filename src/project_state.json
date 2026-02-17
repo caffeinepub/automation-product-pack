@@ -2,54 +2,32 @@
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
   "summary": "New project",
-  "architectural_notes": [
-    "Draft deployments can expire if not published; any unsaved product data will be lost and backend product storage may be empty."
-  ],
+  "architectural_notes": [],
   "known_issues": [
-    "PDF generation fails when product data is missing/undefined (backend products map empty after draft expiry)."
+    "PDF generation from the Export screen still fails with the same errors for all 3 products (regression/ongoing issue after v24 deployment)."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-add-a-user-visible-action-in-the-product-editor-workspace-to-recreate-the-three-default-products-digital-planner-mastery-canva-templates-empire-printable-wall-art-studio-by-resetting-local-drafts-back-to-the-shipped-defaults",
-      "title": "Add a user-visible action in the Product Editor workspace to recreate the three default products (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) by resetting local drafts back to the shipped defaults.",
+      "id": "feature-make-pdf-and-zip-generation-robust-by-removing-reliance-on-cdn-provided-global-variables-and-ensuring-jspdf-and-jszip-are-available-in-production-builds",
+      "title": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-confirmation-step-before-resetting-drafts-to-defaults-so-users-do-not-accidentally-wipe-their-local-edits",
-      "title": "Add a confirmation step before resetting drafts to defaults so users do not accidentally wipe their local edits.",
+      "id": "feature-improve-error-reporting-during-generation-so-the-ui-shows-the-actual-root-cause-message-in-english-for-failures-including-whether-the-failure-occurred-during-cover-fetch-pdf-generation-or-zip-generation-and-for-which-product",
+      "title": "Improve error reporting during generation so the UI shows the actual root-cause message (in English) for failures, including whether the failure occurred during cover fetch, PDF generation, or ZIP generation, and for which product.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-ensure-pdf-zip-generation-after-restoring-defaults-uses-the-restored-in-memory-product-data-not-undefined-empty-data-and-if-generation-fails-show-an-error-message-that-is-specific-and-actionable-in-english",
-      "title": "Ensure PDF/ZIP generation after restoring defaults uses the restored in-memory product data (not undefined/empty data), and if generation fails, show an error message that is specific and actionable in English.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Recreate the three digital product entries (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) that were lost when the unpublished draft expired",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Ensure products are persisted/retrievable so PDF generation has valid product data (avoid empty backend products map after draft expiry)",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Product Bundle Studio",
+  "new_feature_requests": [],
+  "gameProjectType": "none",
+  "projectName": "Digital Bundle Studio",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

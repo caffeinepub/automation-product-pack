@@ -1,33 +1,69 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T22:49:21.957Z",
-  "summary": "Diff appears to implement a restore-defaults flow in ProductsWorkspace (reset local drafts, repopulate from shipped defaults, and switch active tab to product-1), plus adds more actionable PDF/ZIP generation error handling. However, due to truncation of defaultProducts.ts, the exact presence/name of the third default product cannot be conclusively verified from the provided diff snippet.",
+  "generatedAt": "2026-02-17T23:06:31.213Z",
+  "summary": "REQ-2 (typed generation errors + clearer user-facing messages and console logging) appears implemented via new GenerationError model and formatter/logger utilities, and generateProductBundle now wraps failures by step (cover/pdf/zip) with product context. REQ-1 is not satisfied because the changes still rely on CDN-provided global variables on window (window.jspdf / window.JSZip) rather than bundling/importing jsPDF and JSZip for production builds.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "After reset, the visible product names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", and \"Printable Wall Art Studio\"",
-      "reason": "The diff snippet shows product-1 and product-2 names matching, but the product-3 entry (and its exact name) is not visible due to truncation, so compliance for the third name cannot be verified from provided evidence.",
+      "requirement": "Make PDF and ZIP generation robust by removing reliance on CDN-provided global variables and ensuring jsPDF and JSZip are available in production builds (no dependency on window.jspdf / window.JSZip).",
+      "reason": "The new jsPDF/JSZip client wrappers explicitly read from window.jspdf and window.JSZip and throw errors instructing to include CDN scripts in index.html, which keeps the reliance on CDN globals rather than ensuring module availability in production builds.",
       "evidence": [
-        "frontend/src/lib/defaultProducts.ts (truncated)"
+        "frontend/src/lib/pdf/jspdfClient.ts",
+        "frontend/src/lib/zip/jszipClient.ts",
+        "frontend/src/lib/pdf/generateProductPdf.ts",
+        "frontend/src/lib/zip/buildProductZip.ts",
+        "frontend/src/lib/zip/buildAllProductsZip.ts"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "If generation fails, the editor screen shows an error message that includes the failing step (cover/PDF/ZIP) and the product number or product name; console logs include the original error object/stack; user-facing error remains clear English-only.",
+      "reason": "While formatter/logger utilities are added and errors are wrapped with step/product context, the provided diff for ProductsWorkspace.tsx is truncated before showing that generation handlers actually call formatGenerationError/logGenerationError and surface the formatted message on the editor screen.",
+      "evidence": [
+        "frontend/src/components/products/ProductsWorkspace.tsx (truncated)",
+        "frontend/src/lib/generation/formatGenerationError.ts",
+        "frontend/src/lib/generation/generateProductBundle.ts"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Adds versionTag/date-based tagging in single-product bundle generation output and filenames.",
-      "reason": "BuildRequest focuses on restoring defaults and actionable error messaging; version tagging is not requested and appears as additional behavior in bundle generation.",
+      "description": "jsPDF/JSZip wrapper modules that explicitly require CDN scripts in index.html and access libraries via window globals.",
+      "reason": "The BuildRequest requires removing reliance on CDN-provided global variables; these wrappers reinforce that reliance and add guidance to include CDN scripts.",
       "evidence": [
-        "frontend/src/lib/generation/generateProductBundle.ts"
+        "frontend/src/lib/pdf/jspdfClient.ts",
+        "frontend/src/lib/zip/jszipClient.ts"
+      ]
+    },
+    {
+      "description": "Master ZIP README consolidation and additional master ZIP generation behavior changes.",
+      "reason": "Not requested by REQ-1/REQ-2; the request is about robustness of jsPDF/JSZip availability and improved error reporting, not altering ZIP contents/readme strategy.",
+      "evidence": [
+        "frontend/src/lib/zip/buildAllProductsZip.ts"
+      ]
+    },
+    {
+      "description": "Admin-only backend repopulation workflow and related UI behavior in the products workspace.",
+      "reason": "Not part of REQ-1/REQ-2; introduces additional backend/admin functionality beyond PDF/ZIP generation robustness and error reporting.",
+      "evidence": [
+        "frontend/src/components/products/ProductsWorkspace.tsx (handlePopulateBackendProducts...)"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.72,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/src/components/products/ProductsWorkspace.tsx",
-    "frontend/src/lib/defaultProducts.ts",
+    "frontend/src/lib/generation/formatGenerationError.ts",
+    "frontend/src/lib/generation/generateAllBundles.ts",
     "frontend/src/lib/generation/generateProductBundle.ts",
+    "frontend/src/lib/generation/generationErrors.ts",
+    "frontend/src/lib/pdf/generateProductPdf.ts",
+    "frontend/src/lib/pdf/jspdfClient.ts",
+    "frontend/src/lib/zip/buildAllProductsZip.ts",
+    "frontend/src/lib/zip/buildProductZip.ts",
+    "frontend/src/lib/zip/jszipClient.ts",
     "project_state.json"
   ]
 }

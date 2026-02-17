@@ -1,63 +1,87 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Restore shipped default product drafts with one-click reset and safer generation errors",
+  "title": "Fix robust PDF/ZIP generation without CDN globals + better generation error reporting",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a visible workspace control to restore the three shipped default products by clearing local drafts and repopulating the editor from DEFAULT_PRODUCTS.",
+      "summary": "Bundle jsPDF and JSZip with the app (no CDN globals) so PDF/ZIP generation works reliably in production.",
       "acceptanceCriteria": [
-        "ProductsWorkspace shows a clearly labeled control (e.g., \"Restore default products\")",
-        "Clicking the control removes any saved local drafts (using the existing localDrafts reset capability) and immediately repopulates the editor with the three DEFAULT_PRODUCTS entries",
-        "After reset, the visible product names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", and \"Printable Wall Art Studio\""
+        "Generating a single product succeeds without requiring jsPDF/JSZip to exist on `window`.",
+        "Generating all 3 products succeeds in production and routes the user to the Export screen with 3 generated bundles.",
+        "No runtime error occurs due to `window.jspdf` or `window.JSZip` being undefined."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Add a clearly labeled \"Restore default products\" action to the Product Editor workspace that clears local drafts (via the existing resetDrafts capability) and repopulates in-memory products from shipped defaults (not from localStorage), ensuring the three product names match the DEFAULT_PRODUCTS entries."
+          "description": "Remove CDN script tags that provide global jsPDF/JSZip variables so production builds do not rely on window globals."
         },
         {
-          "path": "frontend/src/lib/defaultProducts.ts",
+          "path": "frontend/package.json",
           "operation": "modify",
-          "description": "Add an exported helper (e.g., a factory like getDefaultProducts()) that returns a fresh copy of the shipped DEFAULT_PRODUCTS so restores do not reuse mutated references and the workspace repopulates reliably from shipped defaults."
+          "description": "Ensure `jspdf` and `jszip` are declared as runtime dependencies (and any needed types) so they are bundled and available in production builds."
+        },
+        {
+          "path": "frontend/src/lib/pdf/jspdfClient.ts",
+          "operation": "create",
+          "description": "Add a small loader/wrapper that imports jsPDF from installed dependencies (no `window` usage) and exposes a stable API for PDF generation."
+        },
+        {
+          "path": "frontend/src/lib/zip/jszipClient.ts",
+          "operation": "create",
+          "description": "Add a small loader/wrapper that imports JSZip from installed dependencies (no `window` usage) and exposes a stable API for ZIP creation."
+        },
+        {
+          "path": "frontend/src/lib/pdf/generateProductPdf.ts",
+          "operation": "modify",
+          "description": "Replace `window.jspdf` access with the new jsPDF wrapper import so PDF generation works in production builds without global variables."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildProductZip.ts",
+          "operation": "modify",
+          "description": "Replace `window.JSZip` access with the new JSZip wrapper import so per-product ZIP generation works without global variables."
+        },
+        {
+          "path": "frontend/src/lib/zip/buildAllProductsZip.ts",
+          "operation": "modify",
+          "description": "Replace `window.JSZip` access with the new JSZip wrapper import so master ZIP generation works without global variables."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add a confirmation prompt before restoring defaults and ensure the workspace returns to the first product tab after confirming.",
+      "summary": "Show clear, English root-cause generation errors in the editor UI with step (cover/PDF/ZIP) and product context, while logging full error details to console.",
       "acceptanceCriteria": [
-        "Attempting to restore defaults prompts the user to confirm the destructive action",
-        "Cancel leaves current drafts unchanged",
-        "Confirm performs the reset and switches the workspace to the first product tab (product-1)"
+        "If generation fails, the editor screen shows an error message that includes the failing step (cover/PDF/ZIP) and the product number or product name.",
+        "Console logs include the original error object/stack for troubleshooting.",
+        "User-facing error text remains clear and English-only (no raw stack traces shown to users in production)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
-          "operation": "modify",
-          "description": "Wrap the restore-defaults action in a confirmation step (English-only text) so users must confirm before drafts are wiped; on cancel, do nothing; on confirm, perform the reset and force the active tab to product-1 (calling onActiveProductChange when provided and/or using internal state as needed)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure bundle generation uses restored in-memory product data after reset and improve PDF/ZIP failure messages to be specific and actionable in English.",
-      "acceptanceCriteria": [
-        "After restoring defaults, generating a single product produces a bundle without requiring any backend product data",
-        "If PDF generation throws, the UI error includes the product number and indicates the user should verify required fields (name, subtitle, description) are present (English-only)",
-        "If ZIP generation throws, the UI error indicates ZIP creation failed and to retry (English-only)"
-      ],
-      "file_operations": [
+          "path": "frontend/src/lib/generation/generationErrors.ts",
+          "operation": "create",
+          "description": "Define a typed generation error model (including step: cover/PDF/ZIP, product id/name/number, and original cause) to preserve root-cause details without exposing stacks to users."
+        },
         {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
-          "operation": "modify",
-          "description": "Ensure the restore flow sets products state to a fresh in-memory copy so subsequent Generate actions use restored product data; update single-product generation error handling to (1) include the product number and (2) show actionable English-only messages: for PDF failures instruct verifying required fields (name, subtitle, description); for ZIP failures state ZIP creation failed and instruct retry."
+          "path": "frontend/src/lib/generation/formatGenerationError.ts",
+          "operation": "create",
+          "description": "Add a helper to format generation errors into clear, English-only user messages (step + product context) while allowing full console logging separately."
         },
         {
           "path": "frontend/src/lib/generation/generateProductBundle.ts",
           "operation": "modify",
-          "description": "Harden generation error surfacing by ensuring thrown errors clearly distinguish PDF generation vs ZIP generation failures (so the UI can reliably map them to the required actionable messages) while keeping generation fully frontend-only and based on the provided in-memory product entry."
+          "description": "Wrap failures from cover fetch, PDF generation, and ZIP generation into the typed generation error (including product context) and ensure console logs include the original error object/stack for troubleshooting."
+        },
+        {
+          "path": "frontend/src/lib/generation/generateAllBundles.ts",
+          "operation": "modify",
+          "description": "When generating all products, propagate the first failure as a typed generation error that includes which product failed and at which step (cover/PDF/ZIP), preserving the original cause for console logging."
+        },
+        {
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "operation": "modify",
+          "description": "Update editor-screen error handling to display the formatted (English-only) root-cause message including step + product name/number, while logging the full original error/cause to the console."
         }
       ]
     }
