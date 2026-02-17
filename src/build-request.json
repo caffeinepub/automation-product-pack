@@ -1,129 +1,74 @@
 {
   "kind": "build_request",
-  "title": "Make dialogs fully opaque and strengthen Product Editor workspace surface styling",
-  "projectName": "Digital Bundle Studio",
+  "title": "Restore expired default product drafts and add one-click reset to recreate the three products",
+  "projectName": "Product Bundle Studio",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-62",
-      "text": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
+      "id": "REQ-1",
+      "text": "Add a user-visible action in the Product Editor workspace to recreate the three default products (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) by resetting local drafts back to the shipped defaults.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "the popup window is still transparent and hard to read",
-          "Just say “yes, apply the fixes,” and I’ll update the code and redeploy so you can finally see the visual changes take effect.",
-          "yes"
+          "You suggested and created those products for me yesterday... I did not publish the draft so they expired. Can you create them again?"
         ]
       },
       "acceptanceCriteria": [
-        "When opening the onboarding instructions modal, the dialog surface is fully opaque (no translucency/see-through effect) in both light and dark themes.",
-        "The modal remains readable with clear contrast between background and text.",
-        "Scroll behavior and responsive sizing remain intact (modal content is still scrollable; no content is cut off on phone/tablet/desktop).",
-        "No `!bg-popover` overrides remain on the onboarding modal container/header/content/footer that could reintroduce transparency."
+        "ProductsWorkspace shows a clearly labeled control (e.g., \"Restore default products\")",
+        "Clicking the control removes any saved local drafts (using the existing localDrafts reset capability) and immediately repopulates the editor with the three DEFAULT_PRODUCTS entries",
+        "After reset, the visible product names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", and \"Printable Wall Art Studio\""
       ]
     },
     {
-      "id": "REQ-63",
-      "text": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
+      "id": "REQ-2",
+      "text": "Add a confirmation step before resetting drafts to defaults so users do not accidentally wipe their local edits.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "the popup window is still transparent and hard to read",
-          "Make all other app dialogs used in normal flows (at minimum the ProfileSetupDialog) match the same opaque, readable dialog styling as the Instructions modal"
+          "Can you create them again?"
         ]
       },
       "acceptanceCriteria": [
-        "When the Profile Setup dialog is shown, the dialog surface is fully opaque (no translucency) in both light and dark themes.",
-        "The dialog content (title, description, input, buttons) is clearly legible with sufficient contrast.",
-        "The dialog’s existing behavior (cannot dismiss by clicking outside, form submission) remains unchanged."
+        "Attempting to restore defaults prompts the user to confirm the destructive action",
+        "Cancel leaves current drafts unchanged",
+        "Confirm performs the reset and switches the workspace to the first product tab (product-1)"
       ]
     },
     {
-      "id": "REQ-64",
-      "text": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
+      "id": "REQ-3",
+      "text": "Ensure PDF/ZIP generation after restoring defaults uses the restored in-memory product data (not undefined/empty data), and if generation fails, show an error message that is specific and actionable in English.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "The refreshed design still appears the same with no visible changes.",
-          "Same issue on the Product Editor page",
-          "Add a lightly tinted panel background to Product Editor ... so the page no longer looks stark white.",
-          "Strengthen border and shadow so the workspace has visible depth."
+          "Can you create them again?"
         ]
       },
       "acceptanceCriteria": [
-        "The Product Editor workspace area has a visibly tinted/gradient surface (not plain white) in light theme and retains appropriate depth/contrast in dark theme.",
-        "Borders and shadows appear softened (no harsh stark outlines), while maintaining clear separation between sections.",
-        "All existing Product Editor functionality remains unchanged (editing, tabs, Generate, Generate All Products, error display)."
-      ]
-    },
-    {
-      "id": "REQ-65",
-      "text": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "The refreshed design still appears the same with no visible changes.",
-          "Add a lightweight, user-visible sanity check that confirms the deployed build includes the latest styling changes"
-        ]
-      },
-      "acceptanceCriteria": [
-        "After deployment, there is at least one subtle but clearly observable visual change in the editor workspace container styling that can be used to confirm the new build is running.",
-        "The tweak does not add new UI features, buttons, or flows; it is purely a styling-level change.",
-        "No functional behavior changes occur in the editor view."
-      ]
-    },
-    {
-      "id": "REQ-66",
-      "text": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "the popup window is still transparent and hard to read"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The onboarding modal title does not say “Automation Product Pack!” and instead uses the current app branding consistent with the header title.",
-        "All user-facing text remains English-only."
+        "After restoring defaults, generating a single product produces a bundle without requiring any backend product data",
+        "If PDF generation throws, the UI error includes the product number and indicates the user should verify required fields (name, subtitle, description) are present (English-only)",
+        "If ZIP generation throws, the UI error indicates ZIP creation failed and to retry (English-only)"
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Keep all user-facing text in English.",
-    "Do not change bundle generation logic, export logic, or view-state navigation behavior as part of these styling fixes."
+    "Do not edit any files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Adding new features to the onboarding modal beyond styling/copy consistency (e.g., new steps, new tabs, new controls).",
-    "Backend/canister changes or schema migrations.",
-    "Replacing the design system or introducing new UI component libraries."
+    "Do not add new product themes beyond the three existing defaults.",
+    "Do not implement third-party authentication or external database storage."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

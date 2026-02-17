@@ -191,3 +191,10 @@ export const DEFAULT_PRODUCTS: ProductEntry[] = [
     ],
   },
 ];
+
+/**
+ * Returns a fresh deep copy of the default products to prevent mutation issues
+ */
+export function getDefaultProducts(): ProductEntry[] {
+  return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+}

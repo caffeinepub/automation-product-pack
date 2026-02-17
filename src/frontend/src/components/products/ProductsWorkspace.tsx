@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog';
 import ProductEditor from './ProductEditor';
 import type { ProductEntry, GeneratedBundle } from '../../types/productEntry';
-import { loadDrafts, saveDrafts } from '../../lib/localDrafts';
-import { DEFAULT_PRODUCTS } from '../../lib/defaultProducts';
+import { loadDrafts, saveDrafts, resetDrafts } from '../../lib/localDrafts';
+import { getDefaultProducts } from '../../lib/defaultProducts';
 import { generateProductBundle } from '../../lib/generation/generateProductBundle';
 import { generateAllBundles } from '../../lib/generation/generateAllBundles';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, RotateCcw } from 'lucide-react';
 
 interface ProductsWorkspaceProps {
   onBundlesGenerated: (bundles: GeneratedBundle[]) => void;
@@ -21,7 +32,7 @@ export default function ProductsWorkspace({
   activeProductId = 'product-1',
   onActiveProductChange,
 }: ProductsWorkspaceProps) {
-  const [products, setProducts] = useState<ProductEntry[]>(DEFAULT_PRODUCTS);
+  const [products, setProducts] = useState<ProductEntry[]>(getDefaultProducts());
   const [generatingIndex, setGeneratingIndex] = useState<number | null>(null);
   const [generatingAll, setGeneratingAll] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +40,8 @@ export default function ProductsWorkspace({
   useEffect(() => {
     const drafts = loadDrafts();
     if (Object.keys(drafts).length > 0) {
-      const loaded = DEFAULT_PRODUCTS.map((p) => ({
+      const defaultProducts = getDefaultProducts();
+      const loaded = defaultProducts.map((p) => ({
         ...p,
         ...drafts[p.id],
       }));
@@ -51,6 +63,16 @@ export default function ProductsWorkspace({
     setProducts(newProducts);
   };
 
+  const handleRestoreDefaults = () => {
+    resetDrafts();
+    const freshDefaults = getDefaultProducts();
+    setProducts(freshDefaults);
+    setError(null);
+    if (onActiveProductChange) {
+      onActiveProductChange('product-1');
+    }
+  };
+
   const handleGenerateSingle = async (index: number) => {
     setError(null);
     setGeneratingIndex(index);
@@ -59,12 +81,18 @@ export default function ProductsWorkspace({
       onBundlesGenerated([bundle]);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const productNumber = index + 1;
+      
       if (errorMessage.includes('PDF')) {
-        setError(`Failed to generate PDF for product ${index + 1}. Please check your content and try again.`);
+        setError(
+          `Failed to generate PDF for Product ${productNumber}. Please verify that the product name, subtitle, and description are filled in and try again.`
+        );
       } else if (errorMessage.includes('ZIP')) {
-        setError(`Failed to create ZIP file for product ${index + 1}. Please try again.`);
+        setError(
+          `Failed to create ZIP file for Product ${productNumber}. Please try again.`
+        );
       } else {
-        setError(`Failed to generate product ${index + 1}: ${errorMessage}`);
+        setError(`Failed to generate Product ${productNumber}: ${errorMessage}`);
       }
       console.error('Generation error:', err);
     } finally {
@@ -81,7 +109,7 @@ export default function ProductsWorkspace({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       if (errorMessage.includes('PDF')) {
-        setError('Failed to generate one or more PDFs. Please check your product content and try again.');
+        setError('Failed to generate one or more PDFs. Please verify that all product names, subtitles, and descriptions are filled in and try again.');
       } else if (errorMessage.includes('ZIP')) {
         setError('Failed to create ZIP files. Please try again.');
       } else {
@@ -100,16 +128,40 @@ export default function ProductsWorkspace({
           <h2 className="text-2xl font-bold">Product Editor</h2>
           <p className="text-muted-foreground">Configure your three digital products</p>
         </div>
-        <Button onClick={handleGenerateAll} disabled={generatingAll} size="lg">
-          {generatingAll ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating All...
-            </>
-          ) : (
-            'Generate All Products'
-          )}
-        </Button>
+        <div className="flex gap-3">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="lg">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Restore Defaults
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Restore default products?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will replace all your current edits with the original three default products: Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleRestoreDefaults}>
+                  Restore Defaults
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Button onClick={handleGenerateAll} disabled={generatingAll} size="lg">
+            {generatingAll ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating All...
+              </>
+            ) : (
+              'Generate All Products'
+            )}
+          </Button>
+        </div>
       </div>
 
       {error && (

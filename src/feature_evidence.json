@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-make-the-onboarding-instructions-modal-fully-opaque-and-easy-to-read-by-removing-the-forced-bg-popover-styling-from-the-dialog-container-and-its-header-body-footer-and-using-an-opaque-surface-token-e-g-bg-card-with-appropriate-border-shadow-so-the-modal-is-never-translucent-on-any-browser",
-      "featureTitle": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
+      "featureId": "feature-add-a-user-visible-action-in-the-product-editor-workspace-to-recreate-the-three-default-products-digital-planner-mastery-canva-templates-empire-printable-wall-art-studio-by-resetting-local-drafts-back-to-the-shipped-defaults",
+      "featureTitle": "Add a user-visible action in the Product Editor workspace to recreate the three default products (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) by resetting local drafts back to the shipped defaults.",
       "files": [
-        "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
+        "frontend/src/components/products/ProductsWorkspace.tsx",
+        "frontend/src/lib/defaultProducts.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,34 +17,14 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-62"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-make-the-profile-setup-dialog-match-the-same-opaque-readable-dialog-styling-as-the-onboarding-instructions-modal-by-removing-the-forced-bg-popover-styling-and-ensuring-it-uses-an-opaque-surface-background-with-consistent-border-shadow-treatment",
-      "featureTitle": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
+      "featureId": "feature-add-a-confirmation-step-before-resetting-drafts-to-defaults-so-users-do-not-accidentally-wipe-their-local-edits",
+      "featureTitle": "Add a confirmation step before resetting drafts to defaults so users do not accidentally wipe their local edits.",
       "files": [
-        "frontend/src/components/auth/ProfileSetupDialog.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-63"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-strengthen-the-product-editor-workspace-page-surface-styling-so-it-no-longer-appears-flat-white-by-applying-a-clearly-visible-but-subtle-tinted-gradient-background-treatment-and-softened-borders-shadows-consistent-with-the-existing-theme-tokens-without-changing-any-generation-logic-or-navigation-behavior",
-      "featureTitle": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
-      "files": [
-        "frontend/src/components/products/ProductEditor.tsx",
         "frontend/src/components/products/ProductsWorkspace.tsx"
       ],
       "components": [
@@ -55,16 +36,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-64"
+        "REQ-2"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-small-non-functional-user-visible-styling-tweak-in-the-editor-view-that-is-always-rendered-within-the-product-editor-workspace-container-to-serve-as-a-deterministic-deployment-sanity-check-ensuring-a-fresh-deploy-clearly-reflects-the-latest-styling-changes-even-if-caching-previously-masked-updates",
-      "featureTitle": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
+      "featureId": "feature-ensure-pdf-zip-generation-after-restoring-defaults-uses-the-restored-in-memory-product-data-not-undefined-empty-data-and-if-generation-fails-show-an-error-message-that-is-specific-and-actionable-in-english",
+      "featureTitle": "Ensure PDF/ZIP generation after restoring defaults uses the restored in-memory product data (not undefined/empty data), and if generation fails, show an error message that is specific and actionable in English.",
       "files": [
         "frontend/src/components/products/ProductsWorkspace.tsx",
-        "frontend/src/index.css"
+        "frontend/src/lib/generation/generateProductBundle.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -75,26 +56,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-65"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-onboarding-instructions-modal-header-title-copy-to-match-the-app-s-current-neutral-branding-shown-in-the-header-use-english-only-text-so-the-modal-no-longer-references-outdated-branding",
-      "featureTitle": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
-      "files": [
-        "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-66"
+        "REQ-3"
       ],
       "confidence": "high"
     }

@@ -1,18 +1,33 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T02:59:06.895Z",
-  "summary": "All requested styling updates for the onboarding instructions modal, Profile Setup dialog, and Product Editor workspace (including the always-rendered sanity-check styling tweak) appear to be implemented in the provided diff summary, and the onboarding modal title copy has been updated away from the outdated branding.",
-  "missing_requirements": [],
-  "hallucinated_features": [],
-  "confidence": 0.78,
+  "generatedAt": "2026-02-17T22:49:21.957Z",
+  "summary": "Diff appears to implement a restore-defaults flow in ProductsWorkspace (reset local drafts, repopulate from shipped defaults, and switch active tab to product-1), plus adds more actionable PDF/ZIP generation error handling. However, due to truncation of defaultProducts.ts, the exact presence/name of the third default product cannot be conclusively verified from the provided diff snippet.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "After reset, the visible product names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", and \"Printable Wall Art Studio\"",
+      "reason": "The diff snippet shows product-1 and product-2 names matching, but the product-3 entry (and its exact name) is not visible due to truncation, so compliance for the third name cannot be verified from provided evidence.",
+      "evidence": [
+        "frontend/src/lib/defaultProducts.ts (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Adds versionTag/date-based tagging in single-product bundle generation output and filenames.",
+      "reason": "BuildRequest focuses on restoring defaults and actionable error messaging; version tagging is not requested and appears as additional behavior in bundle generation.",
+      "evidence": [
+        "frontend/src/lib/generation/generateProductBundle.ts"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/auth/ProfileSetupDialog.tsx",
-    "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
-    "frontend/src/components/products/ProductEditor.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",
-    "frontend/src/index.css",
+    "frontend/src/lib/defaultProducts.ts",
+    "frontend/src/lib/generation/generateProductBundle.ts",
     "project_state.json"
   ]
 }

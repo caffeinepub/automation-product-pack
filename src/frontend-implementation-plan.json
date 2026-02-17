@@ -1,95 +1,63 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Opaque dialogs + stronger Product Editor workspace surface styling",
+  "title": "Restore shipped default product drafts with one-click reset and safer generation errors",
   "requirements": [
     {
-      "id": "REQ-62",
-      "summary": "Make onboarding instructions modal fully opaque by removing forced popover backgrounds and applying an opaque surface with consistent border/shadow.",
+      "id": "REQ-1",
+      "summary": "Add a visible workspace control to restore the three shipped default products by clearing local drafts and repopulating the editor from DEFAULT_PRODUCTS.",
       "acceptanceCriteria": [
-        "When opening the onboarding instructions modal, the dialog surface is fully opaque (no translucency/see-through effect) in both light and dark themes.",
-        "The modal remains readable with clear contrast between background and text.",
-        "Scroll behavior and responsive sizing remain intact (modal content is still scrollable; no content is cut off on phone/tablet/desktop).",
-        "No `!bg-popover` overrides remain on the onboarding modal container/header/content/footer that could reintroduce transparency."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
-          "operation": "modify",
-          "description": "Remove all `!bg-popover` class overrides from DialogContent, DialogHeader, scroll container, and DialogFooter; apply an explicitly opaque surface background (e.g., `bg-card text-card-foreground`) and consistent `border`/`shadow` utilities so the modal is never translucent while keeping existing sizing and scroll behavior unchanged."
-        }
-      ]
-    },
-    {
-      "id": "REQ-63",
-      "summary": "Make Profile Setup dialog match the same opaque, readable dialog styling as onboarding by removing forced popover backgrounds and using an opaque surface with consistent border/shadow.",
-      "acceptanceCriteria": [
-        "When the Profile Setup dialog is shown, the dialog surface is fully opaque (no translucency) in both light and dark themes.",
-        "The dialog content (title, description, input, buttons) is clearly legible with sufficient contrast.",
-        "The dialog’s existing behavior (cannot dismiss by clicking outside, form submission) remains unchanged."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/auth/ProfileSetupDialog.tsx",
-          "operation": "modify",
-          "description": "Remove `!bg-popover` overrides from DialogContent/DialogHeader/body/DialogFooter; apply the same opaque surface styling used for onboarding (e.g., `bg-card text-card-foreground` with consistent `border`/`shadow`) while preserving current outside-click prevention and submit behavior."
-        }
-      ]
-    },
-    {
-      "id": "REQ-64",
-      "summary": "Strengthen Product Editor workspace surface styling with a visible subtle tint/gradient and softened borders/shadows without changing functionality.",
-      "acceptanceCriteria": [
-        "The Product Editor workspace area has a visibly tinted/gradient surface (not plain white) in light theme and retains appropriate depth/contrast in dark theme.",
-        "Borders and shadows appear softened (no harsh stark outlines), while maintaining clear separation between sections.",
-        "All existing Product Editor functionality remains unchanged (editing, tabs, Generate, Generate All Products, error display)."
+        "ProductsWorkspace shows a clearly labeled control (e.g., \"Restore default products\")",
+        "Clicking the control removes any saved local drafts (using the existing localDrafts reset capability) and immediately repopulates the editor with the three DEFAULT_PRODUCTS entries",
+        "After reset, the visible product names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", and \"Printable Wall Art Studio\""
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Adjust the workspace container surface styling to be more visibly tinted/gradient-based (using existing theme tokens such as `background/muted/accent/primary`) and refine border/shadow treatment to appear softer while keeping layout, spacing, and all generation/navigation logic unchanged."
+          "description": "Add a clearly labeled \"Restore default products\" action to the Product Editor workspace that clears local drafts (via the existing resetDrafts capability) and repopulates in-memory products from shipped defaults (not from localStorage), ensuring the three product names match the DEFAULT_PRODUCTS entries."
         },
         {
-          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "path": "frontend/src/lib/defaultProducts.ts",
           "operation": "modify",
-          "description": "If needed for consistent depth and separation within the strengthened workspace, lightly soften internal editor Card borders/shadows using existing theme tokens (no layout or behavioral changes)."
+          "description": "Add an exported helper (e.g., a factory like getDefaultProducts()) that returns a fresh copy of the shipped DEFAULT_PRODUCTS so restores do not reuse mutated references and the workspace repopulates reliably from shipped defaults."
         }
       ]
     },
     {
-      "id": "REQ-65",
-      "summary": "Add a subtle, always-rendered styling-only tweak inside the Product Editor workspace container as a deterministic deployment sanity check.",
+      "id": "REQ-2",
+      "summary": "Add a confirmation prompt before restoring defaults and ensure the workspace returns to the first product tab after confirming.",
       "acceptanceCriteria": [
-        "After deployment, there is at least one subtle but clearly observable visual change in the editor workspace container styling that can be used to confirm the new build is running.",
-        "The tweak does not add new UI features, buttons, or flows; it is purely a styling-level change.",
-        "No functional behavior changes occur in the editor view."
+        "Attempting to restore defaults prompts the user to confirm the destructive action",
+        "Cancel leaves current drafts unchanged",
+        "Confirm performs the reset and switches the workspace to the first product tab (product-1)"
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add a small, styling-only utility/class (scoped to the Product Editor workspace container) that creates a subtle but noticeable visual signature (e.g., a faint top accent highlight/outline or micro-gradient) using existing theme tokens; ensure it does not affect layout or introduce new interactive UI."
-        },
         {
           "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Apply the new workspace sanity-check class/utility to the always-rendered workspace container so the signature is consistently visible on every load without adding new UI elements or changing any behavior."
+          "description": "Wrap the restore-defaults action in a confirmation step (English-only text) so users must confirm before drafts are wiped; on cancel, do nothing; on confirm, perform the reset and force the active tab to product-1 (calling onActiveProductChange when provided and/or using internal state as needed)."
         }
       ]
     },
     {
-      "id": "REQ-66",
-      "summary": "Update onboarding instructions modal header/title to match current neutral branding used in the app header (English-only).",
+      "id": "REQ-3",
+      "summary": "Ensure bundle generation uses restored in-memory product data after reset and improve PDF/ZIP failure messages to be specific and actionable in English.",
       "acceptanceCriteria": [
-        "The onboarding modal title does not say “Automation Product Pack!” and instead uses the current app branding consistent with the header title.",
-        "All user-facing text remains English-only."
+        "After restoring defaults, generating a single product produces a bundle without requiring any backend product data",
+        "If PDF generation throws, the UI error includes the product number and indicates the user should verify required fields (name, subtitle, description) are present (English-only)",
+        "If ZIP generation throws, the UI error indicates ZIP creation failed and to retry (English-only)"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
+          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Update the DialogTitle copy to match the header branding (use the same product name shown in the header: “Digital Bundle Studio”) and ensure the title remains English-only."
+          "description": "Ensure the restore flow sets products state to a fresh in-memory copy so subsequent Generate actions use restored product data; update single-product generation error handling to (1) include the product number and (2) show actionable English-only messages: for PDF failures instruct verifying required fields (name, subtitle, description); for ZIP failures state ZIP creation failed and instruct retry."
+        },
+        {
+          "path": "frontend/src/lib/generation/generateProductBundle.ts",
+          "operation": "modify",
+          "description": "Harden generation error surfacing by ensuring thrown errors clearly distinguish PDF generation vs ZIP generation failures (so the UI can reliably map them to the required actionable messages) while keeping generation fully frontend-only and based on the provided in-memory product entry."
         }
       ]
     }

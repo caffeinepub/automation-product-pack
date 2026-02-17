@@ -1,13 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make key dialogs fully opaque and readable across themes, improve the Product Editor workspace surface depth, and include a subtle always-visible styling sanity check to confirm fresh deployments.
+**Goal:** Let users restore the three shipped default product drafts in the Product Editor after local drafts have expired or been overwritten.
 
 **Planned changes:**
-- Remove forced `!bg-popover` styling from the onboarding instructions modal container and header/body/footer; apply an opaque surface background (e.g., `bg-card`) with consistent border/shadow so it is never translucent in any browser.
-- Apply the same opaque dialog surface treatment to the Profile Setup dialog while keeping its existing behavior unchanged (including dismissal rules and form submission).
-- Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (English-only) and remove outdated branding text.
-- Strengthen the Product Editor workspace page surface styling with a subtle tinted/gradient background and softened borders/shadows consistent with existing theme tokens, without changing any editor logic or navigation.
-- Add a small, non-functional, always-rendered styling tweak within the Product Editor workspace container to serve as a deterministic deployment sanity check.
+- Add a clearly labeled “Restore default products” action in the ProductsWorkspace/Product Editor to reset local drafts and repopulate the workspace with the three `DEFAULT_PRODUCTS` entries.
+- Add a confirmation prompt before performing the destructive reset; cancel keeps current drafts, confirm resets and switches to the first product tab (product-1).
+- Ensure PDF/ZIP generation after restore uses the restored in-memory product data, and show specific, actionable English error messages if PDF or ZIP generation fails.
 
-**User-visible outcome:** Dialogs (onboarding instructions and Profile Setup) are fully opaque and easier to read in light/dark themes, and the Product Editor workspace has more visible depth and a subtle always-present styling cue that confirms the latest build is deployed.
+**User-visible outcome:** Users can one-click restore “Digital Planner Mastery”, “Canva Templates Empire”, and “Printable Wall Art Studio” (after confirming), then immediately generate PDFs/ZIPs from the restored products with clear error messaging if something goes wrong.

@@ -17,7 +17,8 @@ export async function generateProductBundle(product: ProductEntry): Promise<Gene
       pdfBlob = await generateProductPdf(product, coverBlob);
     } catch (error) {
       console.error('PDF generation failed:', error);
-      throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`PDF generation failed: ${message}`);
     }
     
     const pdfFilename = generateProductPdfName(product.name, versionTag);
@@ -28,7 +29,8 @@ export async function generateProductBundle(product: ProductEntry): Promise<Gene
       zipBlob = await buildProductZip(product, pdfBlob, pdfFilename);
     } catch (error) {
       console.error('ZIP generation failed:', error);
-      throw new Error(`ZIP generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`ZIP generation failed: ${message}`);
     }
     
     return {
