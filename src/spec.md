@@ -1,11 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Restore the Product Editor’s intended visual styling (blue primary actions, non-white surfaced editor background) and make the Instructions modal fully readable by removing transparency.
+**Goal:** Make key dialogs fully opaque and readable across themes, improve the Product Editor workspace surface depth, and include a subtle always-visible styling sanity check to confirm fresh deployments.
 
 **Planned changes:**
-- Update global theme tokens in `frontend/src/index.css` so primary buttons render with a clearly blue fill (not purple) and maintain readable contrast in both light and dark themes.
-- Adjust Product Editor workspace and editor card surface styling in `frontend/src/components/products/ProductsWorkspace.tsx` and `frontend/src/components/products/ProductEditor.tsx` to avoid a flat “completely white” look and keep the editor card visually distinct.
-- Update `frontend/src/components/onboarding/OnboardingInstructionsModal.tsx` to apply an opaque background plus appropriate border/shadow styling to the modal `DialogContent` for legibility, without changing layout/scroll behavior or content.
+- Remove forced `!bg-popover` styling from the onboarding instructions modal container and header/body/footer; apply an opaque surface background (e.g., `bg-card`) with consistent border/shadow so it is never translucent in any browser.
+- Apply the same opaque dialog surface treatment to the Profile Setup dialog while keeping its existing behavior unchanged (including dismissal rules and form submission).
+- Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (English-only) and remove outdated branding text.
+- Strengthen the Product Editor workspace page surface styling with a subtle tinted/gradient background and softened borders/shadows consistent with existing theme tokens, without changing any editor logic or navigation.
+- Add a small, non-functional, always-rendered styling tweak within the Product Editor workspace container to serve as a deterministic deployment sanity check.
 
-**User-visible outcome:** Primary actions in the Product Editor appear consistently blue with readable text in light/dark themes, the editor area has a clear surfaced/tinted treatment instead of flat white, and the Instructions modal is fully opaque and easy to read.
+**User-visible outcome:** Dialogs (onboarding instructions and Profile Setup) are fully opaque and easier to read in light/dark themes, and the Product Editor workspace has more visible depth and a subtle always-present styling cue that confirms the latest build is deployed.

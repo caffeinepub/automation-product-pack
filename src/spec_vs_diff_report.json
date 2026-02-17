@@ -1,13 +1,14 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T02:29:33.018Z",
-  "summary": "All three requested styling fixes appear to be implemented: global theme tokens updated to blue primary in index.css, Product Editor workspace/card given surfaced styling via component classes, and the Instructions modal DialogContent made opaque with background/border/shadow while preserving sizing/scrolling structure.",
+  "generatedAt": "2026-02-17T02:59:06.895Z",
+  "summary": "All requested styling updates for the onboarding instructions modal, Profile Setup dialog, and Product Editor workspace (including the always-rendered sanity-check styling tweak) appear to be implemented in the provided diff summary, and the onboarding modal title copy has been updated away from the outdated branding.",
   "missing_requirements": [],
   "hallucinated_features": [],
-  "confidence": 0.74,
+  "confidence": 0.78,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/src/components/auth/ProfileSetupDialog.tsx",
     "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
     "frontend/src/components/products/ProductEditor.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",

@@ -1,73 +1,116 @@
 {
   "kind": "build_request",
-  "title": "Restore Product Editor styling (blue primary buttons, non-white editor surface) and fix transparent Instructions modal",
+  "title": "Make dialogs fully opaque and strengthen Product Editor workspace surface styling",
   "projectName": "Digital Bundle Studio",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-52",
-      "text": "Reintroduce a blue primary action style across the Product Editor experience so primary buttons (e.g., “Generate”, “Generate All Products”) render with a clearly blue background (not purple) and readable contrast in both light and dark themes by updating the global theme tokens in frontend/src/index.css.",
+      "id": "REQ-62",
+      "text": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-4"
+          "msg-1"
         ],
         "quotes": [
-          "I preferred when there were blue buttons in the original design"
+          "the popup window is still transparent and hard to read",
+          "Just say “yes, apply the fixes,” and I’ll update the code and redeploy so you can finally see the visual changes take effect.",
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "In light theme, primary buttons render with a clearly blue fill (not purple) and meet readable contrast against button text.",
-        "In dark theme, primary buttons still render blue and remain readable (no low-contrast text).",
-        "Buttons that use the default variant (e.g., ProductsWorkspace “Generate All Products”, ProductEditor “Generate”) visually match the updated blue primary color without additional per-button overrides."
+        "When opening the onboarding instructions modal, the dialog surface is fully opaque (no translucency/see-through effect) in both light and dark themes.",
+        "The modal remains readable with clear contrast between background and text.",
+        "Scroll behavior and responsive sizing remain intact (modal content is still scrollable; no content is cut off on phone/tablet/desktop).",
+        "No `!bg-popover` overrides remain on the onboarding modal container/header/content/footer that could reintroduce transparency."
       ]
     },
     {
-      "id": "REQ-53",
-      "text": "Fix the Product Editor page background/surface styling so it does not appear “completely white”; restore an accented/surfaced look (subtle tint/gradient or muted panel treatment) consistent with the app theme when viewing the product editor workspace and editor card(s) (frontend/src/components/products/ProductsWorkspace.tsx and frontend/src/components/products/ProductEditor.tsx).",
+      "id": "REQ-63",
+      "text": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-4"
+          "msg-1"
         ],
         "quotes": [
-          "the page is completely white"
+          "the popup window is still transparent and hard to read",
+          "Make all other app dialogs used in normal flows (at minimum the ProfileSetupDialog) match the same opaque, readable dialog styling as the Instructions modal"
         ]
       },
       "acceptanceCriteria": [
-        "The Product Editor workspace area has a visible surface treatment (e.g., muted/tinted container or subtle gradient) so the page does not look like flat white-on-white in light theme.",
-        "The ProductEditor card remains visually distinct from the surrounding page (clear border/shadow/surface separation).",
-        "No changes to product editing functionality, autosave behavior, or generation logic."
+        "When the Profile Setup dialog is shown, the dialog surface is fully opaque (no translucency) in both light and dark themes.",
+        "The dialog content (title, description, input, buttons) is clearly legible with sufficient contrast.",
+        "The dialog’s existing behavior (cannot dismiss by clicking outside, form submission) remains unchanged."
       ]
     },
     {
-      "id": "REQ-54",
-      "text": "Make the onboarding/popup Instructions window fully opaque and easy to read by updating frontend/src/components/onboarding/OnboardingInstructionsModal.tsx to apply a solid background and appropriate border/shadow styling to the DialogContent (avoid transparent/translucent content that reduces legibility).",
+      "id": "REQ-64",
+      "text": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-4"
+          "msg-1"
         ],
         "quotes": [
-          "The popup instruction window is transparent now and hard to read"
+          "The refreshed design still appears the same with no visible changes.",
+          "Same issue on the Product Editor page",
+          "Add a lightly tinted panel background to Product Editor ... so the page no longer looks stark white.",
+          "Strengthen border and shadow so the workspace has visible depth."
         ]
       },
       "acceptanceCriteria": [
-        "When the Instructions modal is open, the modal panel (DialogContent) has an opaque background and text is clearly readable over the page behind it.",
-        "The Instructions modal retains its existing responsive sizing and scrolling behavior (no regression to scrollability on tablet/touch).",
-        "No change to the Instructions content structure or navigation behavior; only visual/legibility fixes."
+        "The Product Editor workspace area has a visibly tinted/gradient surface (not plain white) in light theme and retains appropriate depth/contrast in dark theme.",
+        "Borders and shadows appear softened (no harsh stark outlines), while maintaining clear separation between sections.",
+        "All existing Product Editor functionality remains unchanged (editing, tabs, Generate, Generate All Products, error display)."
+      ]
+    },
+    {
+      "id": "REQ-65",
+      "text": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "The refreshed design still appears the same with no visible changes.",
+          "Add a lightweight, user-visible sanity check that confirms the deployed build includes the latest styling changes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After deployment, there is at least one subtle but clearly observable visual change in the editor workspace container styling that can be used to confirm the new build is running.",
+        "The tweak does not add new UI features, buttons, or flows; it is purely a styling-level change.",
+        "No functional behavior changes occur in the editor view."
+      ]
+    },
+    {
+      "id": "REQ-66",
+      "text": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "the popup window is still transparent and hard to read"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The onboarding modal title does not say “Automation Product Pack!” and instead uses the current app branding consistent with the header title.",
+        "All user-facing text remains English-only."
       ]
     }
   ],
   "constraints": [
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
     "Keep all user-facing text in English.",
-    "Do not edit any files under frontend/src/components/ui (shadcn components are read-only); fix styling via composition/classes in feature components and via theme tokens in frontend/src/index.css.",
-    "Do not change backend logic or schema (single-actor backend remains unchanged)."
+    "Do not change bundle generation logic, export logic, or view-state navigation behavior as part of these styling fixes."
   ],
   "nonGoals": [
-    "Rebuilding or redesigning the Export, Storefront, or Unified Preview screens beyond any incidental theme-token impact.",
-    "Changing instructions copy/content (only fix transparency/legibility).",
-    "Introducing new navigation, new features, or new generation/export behaviors."
+    "Adding new features to the onboarding modal beyond styling/copy consistency (e.g., new steps, new tabs, new controls).",
+    "Backend/canister changes or schema migrations.",
+    "Replacing the design system or introducing new UI component libraries."
   ],
   "imageRequirements": {
     "required": [],

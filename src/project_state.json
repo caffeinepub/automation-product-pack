@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 39,
+  "projectStateVersion": 45,
   "summary": "Build a simple app to generate complete product files (PDFs and downloadable assets) for three digital AI-automation products, suitable for uploading to Gumroad or Etsy.",
   "architectural_notes": [
     "Simple app that outputs PDFs and packaged downloadable assets intended for Gumroad/Etsy distribution.",
@@ -12,7 +12,9 @@
     "Deployment/build is failing (deployment error); may be transient in the current environment.",
     "Current visual theme/layout appears too bland; needs more color accents in the UI.",
     "Product Editor page styling regressed: page background is completely white and prior blue button styling is missing (user prefers original design).",
-    "Instructions popup/modal styling regressed: popup is transparent and hard to read."
+    "Instructions popup/modal styling regressed: popup is transparent and hard to read.",
+    "Deployed build appears to not reflect recent styling fixes (changes not visible after deployment); may be caching or deployment pipeline issue.",
+    "Product Editor still appears with an all-white surface and stark black outlines (styling/color accents not applying as expected)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -445,6 +447,102 @@
       "title": "Make the onboarding/popup Instructions window fully opaque and easy to read by updating frontend/src/components/onboarding/OnboardingInstructionsModal.tsx to apply a solid background and appropriate border/shadow styling to the DialogContent (avoid transparent/translucent content that reduces legibility).",
       "reqIds": [
         "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-restore-the-product-editor-workspace-surface-styling-so-the-editor-page-no-longer-appears-completely-white-by-applying-an-accented-tinted-background-treatment-consistent-with-the-app-theme-in-frontend-src-components-products-productsworkspace-tsx-and-any-surrounding-editor-containers-without-changing-any-existing-generation-or-navigation-behavior",
+      "title": "Restore the Product Editor workspace surface styling so the editor page no longer appears completely white, by applying an accented/tinted background treatment consistent with the app theme in frontend/src/components/products/ProductsWorkspace.tsx (and any surrounding editor containers), without changing any existing generation or navigation behavior.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reintroduce-clearly-blue-primary-action-styling-not-purple-for-primary-buttons-in-the-product-editor-experience-e-g-generate-and-generate-all-products-by-updating-theme-tokens-in-frontend-src-index-css-e-g-primary-ring-as-needed-and-ensuring-buttons-render-with-readable-contrast-in-both-light-and-dark-modes",
+      "title": "Reintroduce clearly blue primary action styling (not purple) for primary buttons in the Product Editor experience (e.g., \"Generate\" and \"Generate All Products\") by updating theme tokens in frontend/src/index.css (e.g., --primary/--ring as needed) and ensuring buttons render with readable contrast in both light and dark modes.",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-onboarding-instructions-modal-fully-opaque-and-easy-to-read-by-ensuring-the-dialogcontent-in-frontend-src-components-onboarding-onboardinginstructionsmodal-tsx-uses-a-solid-background-no-translucent-transparent-treatment-plus-appropriate-border-shadow-styling-while-preserving-the-existing-responsive-sizing-and-scroll-behavior",
+      "title": "Make the onboarding/instructions modal fully opaque and easy to read by ensuring the DialogContent in frontend/src/components/onboarding/OnboardingInstructionsModal.tsx uses a solid background (no translucent/transparent treatment) plus appropriate border/shadow styling, while preserving the existing responsive sizing and scroll behavior.",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-lightweight-user-visible-sanity-check-that-confirms-the-deployed-build-includes-the-latest-styling-changes-by-updating-a-single-non-functional-non-user-action-ui-detail-that-is-already-rendered-in-the-editor-view-e-g-a-minor-class-level-visual-tweak-on-an-existing-container-in-frontend-src-components-products-productsworkspace-tsx-so-that-a-fresh-deploy-deterministically-reflects-an-observable-change-even-if-caching-previously-masked-updates",
+      "title": "Add a lightweight, user-visible sanity check that confirms the deployed build includes the latest styling changes by updating a single non-functional, non-user-action UI detail that is already rendered in the Editor view (e.g., a minor class-level visual tweak on an existing container in frontend/src/components/products/ProductsWorkspace.tsx), so that a fresh deploy deterministically reflects an observable change even if caching previously masked updates.",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-product-editor-workspace-so-it-no-longer-appears-all-white-with-stark-outlines-by-applying-a-clearly-visible-but-subtle-tinted-gradient-surface-and-softened-borders-that-are-consistent-with-the-existing-theme-tokens-without-changing-any-editor-functionality",
+      "title": "Update the Product Editor workspace so it no longer appears all-white with stark outlines by applying a clearly visible but subtle tinted/gradient surface and softened borders that are consistent with the existing theme tokens, without changing any editor functionality.",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-instructions-popup-onboardinginstructionsmodal-renders-with-a-fully-opaque-high-contrast-dialog-surface-no-transparent-translucent-background-and-remains-easy-to-read-while-preserving-existing-responsive-sizing-scrolling-and-animation-behavior",
+      "title": "Ensure the Instructions popup (OnboardingInstructionsModal) renders with a fully opaque, high-contrast dialog surface (no transparent/translucent background) and remains easy to read while preserving existing responsive sizing, scrolling, and animation behavior.",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-all-other-app-dialogs-used-in-normal-flows-at-minimum-the-profilesetupdialog-match-the-same-opaque-readable-dialog-styling-as-the-instructions-modal-so-popups-are-consistently-easy-to-read-across-the-app",
+      "title": "Make all other app dialogs used in normal flows (at minimum the ProfileSetupDialog) match the same opaque, readable dialog styling as the Instructions modal so popups are consistently easy to read across the app.",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-onboarding-instructions-modal-fully-opaque-and-easy-to-read-by-removing-the-forced-bg-popover-styling-from-the-dialog-container-and-its-header-body-footer-and-using-an-opaque-surface-token-e-g-bg-card-with-appropriate-border-shadow-so-the-modal-is-never-translucent-on-any-browser",
+      "title": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-profile-setup-dialog-match-the-same-opaque-readable-dialog-styling-as-the-onboarding-instructions-modal-by-removing-the-forced-bg-popover-styling-and-ensuring-it-uses-an-opaque-surface-background-with-consistent-border-shadow-treatment",
+      "title": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-strengthen-the-product-editor-workspace-page-surface-styling-so-it-no-longer-appears-flat-white-by-applying-a-clearly-visible-but-subtle-tinted-gradient-background-treatment-and-softened-borders-shadows-consistent-with-the-existing-theme-tokens-without-changing-any-generation-logic-or-navigation-behavior",
+      "title": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-small-non-functional-user-visible-styling-tweak-in-the-editor-view-that-is-always-rendered-within-the-product-editor-workspace-container-to-serve-as-a-deterministic-deployment-sanity-check-ensuring-a-fresh-deploy-clearly-reflects-the-latest-styling-changes-even-if-caching-previously-masked-updates",
+      "title": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-onboarding-instructions-modal-header-title-copy-to-match-the-app-s-current-neutral-branding-shown-in-the-header-use-english-only-text-so-the-modal-no-longer-references-outdated-branding",
+      "title": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
+      "reqIds": [
+        "REQ-66"
       ],
       "version": 1
     }

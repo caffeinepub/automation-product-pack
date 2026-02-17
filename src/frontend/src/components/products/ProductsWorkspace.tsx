@@ -94,7 +94,7 @@ export default function ProductsWorkspace({
   };
 
   return (
-    <div className="space-y-6 p-6 bg-muted/30 rounded-lg border border-border">
+    <div className="space-y-6 p-6 workspace-container bg-gradient-to-br from-accent/20 via-primary/15 to-accent/25 rounded-2xl border-2 border-primary/30 shadow-xl ring-4 ring-primary/20">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Product Editor</h2>

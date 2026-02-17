@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-reintroduce-a-blue-primary-action-style-across-the-product-editor-experience-so-primary-buttons-e-g-generate-generate-all-products-render-with-a-clearly-blue-background-not-purple-and-readable-contrast-in-both-light-and-dark-themes-by-updating-the-global-theme-tokens-in-frontend-src-index-css",
-      "featureTitle": "Reintroduce a blue primary action style across the Product Editor experience so primary buttons (e.g., “Generate”, “Generate All Products”) render with a clearly blue background (not purple) and readable contrast in both light and dark themes by updating the global theme tokens in frontend/src/index.css.",
+      "featureId": "feature-make-the-onboarding-instructions-modal-fully-opaque-and-easy-to-read-by-removing-the-forced-bg-popover-styling-from-the-dialog-container-and-its-header-body-footer-and-using-an-opaque-surface-token-e-g-bg-card-with-appropriate-border-shadow-so-the-modal-is-never-translucent-on-any-browser",
+      "featureTitle": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,13 +16,32 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-52"
+        "REQ-62"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-fix-the-product-editor-page-background-surface-styling-so-it-does-not-appear-completely-white-restore-an-accented-surfaced-look-subtle-tint-gradient-or-muted-panel-treatment-consistent-with-the-app-theme-when-viewing-the-product-editor-workspace-and-editor-card-s-frontend-src-components-products-productsworkspace-tsx-and-frontend-src-components-products-producteditor-tsx",
-      "featureTitle": "Fix the Product Editor page background/surface styling so it does not appear “completely white”; restore an accented/surfaced look (subtle tint/gradient or muted panel treatment) consistent with the app theme when viewing the product editor workspace and editor card(s) (frontend/src/components/products/ProductsWorkspace.tsx and frontend/src/components/products/ProductEditor.tsx).",
+      "featureId": "feature-make-the-profile-setup-dialog-match-the-same-opaque-readable-dialog-styling-as-the-onboarding-instructions-modal-by-removing-the-forced-bg-popover-styling-and-ensuring-it-uses-an-opaque-surface-background-with-consistent-border-shadow-treatment",
+      "featureTitle": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
+      "files": [
+        "frontend/src/components/auth/ProfileSetupDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-63"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-strengthen-the-product-editor-workspace-page-surface-styling-so-it-no-longer-appears-flat-white-by-applying-a-clearly-visible-but-subtle-tinted-gradient-background-treatment-and-softened-borders-shadows-consistent-with-the-existing-theme-tokens-without-changing-any-generation-logic-or-navigation-behavior",
+      "featureTitle": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
       "files": [
         "frontend/src/components/products/ProductEditor.tsx",
         "frontend/src/components/products/ProductsWorkspace.tsx"
@@ -36,13 +55,33 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-53"
+        "REQ-64"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-make-the-onboarding-popup-instructions-window-fully-opaque-and-easy-to-read-by-updating-frontend-src-components-onboarding-onboardinginstructionsmodal-tsx-to-apply-a-solid-background-and-appropriate-border-shadow-styling-to-the-dialogcontent-avoid-transparent-translucent-content-that-reduces-legibility",
-      "featureTitle": "Make the onboarding/popup Instructions window fully opaque and easy to read by updating frontend/src/components/onboarding/OnboardingInstructionsModal.tsx to apply a solid background and appropriate border/shadow styling to the DialogContent (avoid transparent/translucent content that reduces legibility).",
+      "featureId": "feature-add-a-small-non-functional-user-visible-styling-tweak-in-the-editor-view-that-is-always-rendered-within-the-product-editor-workspace-container-to-serve-as-a-deterministic-deployment-sanity-check-ensuring-a-fresh-deploy-clearly-reflects-the-latest-styling-changes-even-if-caching-previously-masked-updates",
+      "featureTitle": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
+      "files": [
+        "frontend/src/components/products/ProductsWorkspace.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-65"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-onboarding-instructions-modal-header-title-copy-to-match-the-app-s-current-neutral-branding-shown-in-the-header-use-english-only-text-so-the-modal-no-longer-references-outdated-branding",
+      "featureTitle": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
       "files": [
         "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
       ],
@@ -55,7 +94,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-54"
+        "REQ-66"
       ],
       "confidence": "high"
     }

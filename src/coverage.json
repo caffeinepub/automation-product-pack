@@ -1,29 +1,40 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T02:29:33.022Z",
+  "generatedAt": "2026-02-17T02:59:06.900Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 5,
+    "implemented": 5,
     "items": [
       {
-        "id": "REQ-52",
-        "summary": "Reintroduce a blue primary action style across the Product Editor experience so primary buttons (e.g., “Generate”, “Generate All Products”) render with a clearly blue background (not purple) and readable contrast in both light and dark themes by updating the global theme tokens in frontend/src/index.css.",
+        "id": "REQ-62",
+        "summary": "Make the onboarding instructions modal fully opaque and easy to read by removing the forced `!bg-popover` styling from the dialog container and its header/body/footer, and using an opaque surface token (e.g., `bg-card`) with appropriate border/shadow so the modal is never translucent on any browser.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
         ]
       },
       {
-        "id": "REQ-53",
-        "summary": "Fix the Product Editor page background/surface styling so it does not appear “completely white”; restore an accented/surfaced look (subtle tint/gradient or muted panel treatment) consistent with the app theme when viewing the product editor workspace and editor card(s) (frontend/src/components/products/ProductsWorkspace.tsx and frontend/src/components/products/ProductEditor.tsx).",
+        "id": "REQ-63",
+        "summary": "Make the Profile Setup dialog match the same opaque, readable dialog styling as the onboarding instructions modal by removing the forced `!bg-popover` styling and ensuring it uses an opaque surface background with consistent border/shadow treatment.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/auth/ProfileSetupDialog.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/auth/ProfileSetupDialog.tsx"
+        ]
+      },
+      {
+        "id": "REQ-64",
+        "summary": "Strengthen the Product Editor workspace page surface styling so it no longer appears flat white by applying a clearly visible but subtle tinted/gradient background treatment and softened borders/shadows consistent with the existing theme tokens, without changing any generation logic or navigation behavior.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/products/ProductsWorkspace.tsx",
@@ -35,8 +46,21 @@
         ]
       },
       {
-        "id": "REQ-54",
-        "summary": "Make the onboarding/popup Instructions window fully opaque and easy to read by updating frontend/src/components/onboarding/OnboardingInstructionsModal.tsx to apply a solid background and appropriate border/shadow styling to the DialogContent (avoid transparent/translucent content that reduces legibility).",
+        "id": "REQ-65",
+        "summary": "Add a small, non-functional, user-visible styling tweak in the editor view that is always rendered (within the Product Editor workspace container) to serve as a deterministic deployment sanity check, ensuring a fresh deploy clearly reflects the latest styling changes even if caching previously masked updates.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/products/ProductsWorkspace.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/src/components/products/ProductsWorkspace.tsx"
+        ]
+      },
+      {
+        "id": "REQ-66",
+        "summary": "Update the onboarding instructions modal header/title copy to match the app’s current neutral branding shown in the header (use English-only text) so the modal no longer references outdated branding.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx"
@@ -52,6 +76,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/components/auth/ProfileSetupDialog.tsx",
     "frontend/src/components/onboarding/OnboardingInstructionsModal.tsx",
     "frontend/src/components/products/ProductEditor.tsx",
     "frontend/src/components/products/ProductsWorkspace.tsx",

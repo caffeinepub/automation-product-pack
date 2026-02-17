@@ -28,7 +28,7 @@ export default function ProfileSetupDialog({ open, onComplete }: ProfileSetupDia
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-md bg-card text-card-foreground border-2 border-border shadow-xl ring-2 ring-border/50" onPointerDownOutside={(e) => e.preventDefault()}>
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Welcome!</DialogTitle>

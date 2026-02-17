@@ -83,8 +83,8 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
   };
 
   return (
-    <Card className="shadow-md border">
-      <CardHeader className="space-y-3 pb-6 border-b">
+    <Card className="shadow-xl border-2 border-primary/20 bg-card">
+      <CardHeader className="space-y-3 pb-6 border-b-2 border-primary/15 bg-gradient-to-r from-primary/8 to-accent/12">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">
             <CardTitle className="text-2xl">{product.name || 'Untitled Product'}</CardTitle>
@@ -102,7 +102,7 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 bg-card">
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="basic">Basic</TabsTrigger>
@@ -219,19 +219,19 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
             ) : (
               <div className="space-y-3">
                 {product.prompts.map((prompt, index) => (
-                  <div key={index} className="flex gap-3">
+                  <div key={index} className="flex gap-2">
                     <Textarea
                       value={prompt}
                       onChange={(e) => updatePrompt(index, e.target.value)}
-                      placeholder={`Prompt ${index + 1}`}
-                      rows={3}
+                      placeholder="Enter AI prompt..."
+                      rows={2}
                       className="flex-1 resize-none"
                     />
                     <Button
                       onClick={() => removePrompt(index)}
                       size="sm"
                       variant="ghost"
-                      className="h-9 w-9 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
+                      className="h-auto px-2 hover:bg-destructive/10 hover:text-destructive"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -259,18 +259,18 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
               ) : (
                 <div className="space-y-3">
                   {product.templates.map((template, index) => (
-                    <div key={index} className="flex gap-3">
+                    <div key={index} className="flex gap-2">
                       <Input
                         value={template}
                         onChange={(e) => updateTemplate(index, e.target.value)}
-                        placeholder={`Template ${index + 1}`}
+                        placeholder="Template name or description"
                         className="flex-1"
                       />
                       <Button
                         onClick={() => removeTemplate(index)}
                         size="sm"
                         variant="ghost"
-                        className="h-9 w-9 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
+                        className="h-auto px-2 hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -297,18 +297,18 @@ export default function ProductEditor({ product, onChange, onGenerate, isGenerat
               ) : (
                 <div className="space-y-3">
                   {product.checklists.map((checklist, index) => (
-                    <div key={index} className="flex gap-3">
+                    <div key={index} className="flex gap-2">
                       <Input
                         value={checklist}
                         onChange={(e) => updateChecklist(index, e.target.value)}
-                        placeholder={`Checklist ${index + 1}`}
+                        placeholder="Checklist item"
                         className="flex-1"
                       />
                       <Button
                         onClick={() => removeChecklist(index)}
                         size="sm"
                         variant="ghost"
-                        className="h-9 w-9 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
+                        className="h-auto px-2 hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
