@@ -1,12 +1,24 @@
 import { GenerationError } from './generationErrors';
+import { ProductDataValidationError } from './productDataErrors';
 
 /**
  * Formats generation errors into clear, English-only user messages
  * with step and product context.
  */
 export function formatGenerationError(error: unknown): string {
+  // Handle ProductDataValidationError specifically
+  if (error instanceof ProductDataValidationError) {
+    const { productName, productNumber, missingFields } = error;
+    return `Cannot generate PDF for "${productName}" (Product ${productNumber}). Missing required fields: ${missingFields.join(', ')}. Please fill in all required fields and try again.`;
+  }
+  
   if (error instanceof GenerationError) {
     const { step, productName, productNumber, originalError } = error;
+    
+    // Check if the original error is a ProductDataValidationError
+    if (originalError instanceof ProductDataValidationError) {
+      return `Cannot generate PDF for "${productName}" (Product ${productNumber}). Missing required fields: ${originalError.missingFields.join(', ')}. Please fill in all required fields and try again.`;
+    }
     
     // Extract the original error message
     const originalMessage = originalError instanceof Error ? originalError.message : String(originalError);
@@ -49,7 +61,15 @@ export function formatGenerationError(error: unknown): string {
  * Logs the full error details to console for troubleshooting.
  */
 export function logGenerationError(error: unknown): void {
-  if (error instanceof GenerationError) {
+  if (error instanceof ProductDataValidationError) {
+    console.error('Product data validation error:', {
+      productId: error.productId,
+      productName: error.productName,
+      productNumber: error.productNumber,
+      missingFields: error.missingFields,
+      diagnosticSnapshot: error.diagnosticSnapshot,
+    });
+  } else if (error instanceof GenerationError) {
     console.error('Generation error details:', {
       step: error.step,
       productId: error.productId,
@@ -61,6 +81,14 @@ export function logGenerationError(error: unknown): void {
     // Log the original error stack if available
     if (error.originalError instanceof Error) {
       console.error('Original error stack:', error.originalError.stack);
+    }
+    
+    // If the original error is a ProductDataValidationError, log its details too
+    if (error.originalError instanceof ProductDataValidationError) {
+      console.error('Original validation error details:', {
+        missingFields: error.originalError.missingFields,
+        diagnosticSnapshot: error.originalError.diagnosticSnapshot,
+      });
     }
   } else {
     console.error('Generation error:', error);

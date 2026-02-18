@@ -17,7 +17,9 @@ export const ProductDefinition = IDL.Record({
   'name' : IDL.Text,
   'description' : IDL.Text,
   'imageUrl' : IDL.Text,
+  'digitalProductUrl' : IDL.Text,
   'price' : IDL.Nat,
+  'subtitle' : IDL.Opt(IDL.Text),
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const Time = IDL.Int;
@@ -56,7 +58,9 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'description' : IDL.Text,
     'imageUrl' : IDL.Text,
+    'digitalProductUrl' : IDL.Text,
     'price' : IDL.Nat,
+    'subtitle' : IDL.Opt(IDL.Text),
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const Time = IDL.Int;

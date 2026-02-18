@@ -23,6 +23,8 @@ import { formatGenerationError, logGenerationError } from '../../lib/generation/
 import { validateProductRequiredFields, validateAllProducts } from '../../lib/validation/productValidation';
 import { useIsCallerAdmin, usePopulateDefaultProducts } from '../../hooks/usePopulateDefaultProducts';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
+import { useBackendProducts } from '../../hooks/useBackendProducts';
+import { mapBackendProductsToEntries } from '../../lib/products/mapBackendProductToEntry';
 import { Loader2, AlertCircle, RotateCcw, Database } from 'lucide-react';
 
 interface ProductsWorkspaceProps {
@@ -45,6 +47,7 @@ export default function ProductsWorkspace({
   const { identity } = useInternetIdentity();
   const { data: isAdmin, isLoading: isAdminLoading } = useIsCallerAdmin();
   const populateDefaultProducts = usePopulateDefaultProducts();
+  const { data: backendProducts, refetch: refetchBackendProducts } = useBackendProducts();
 
   useEffect(() => {
     const drafts = loadDrafts();
@@ -90,15 +93,33 @@ export default function ProductsWorkspace({
     try {
       await populateDefaultProducts.mutateAsync();
       
-      // On success, restore local editor state
-      resetDrafts();
-      const freshDefaults = getDefaultProducts();
-      setProducts(freshDefaults);
+      // Refetch backend products
+      const { data: freshBackendProducts } = await refetchBackendProducts();
+      
+      // Merge backend products with frontend defaults
+      if (freshBackendProducts && freshBackendProducts.length === 3) {
+        const mergedProducts = mapBackendProductsToEntries(freshBackendProducts);
+        setProducts(mergedProducts);
+        
+        // Also update local drafts
+        resetDrafts();
+        const drafts = mergedProducts.reduce((acc, p) => {
+          acc[p.id] = p;
+          return acc;
+        }, {} as Record<string, ProductEntry>);
+        saveDrafts(drafts);
+      } else {
+        // Fallback to defaults if backend fetch fails
+        resetDrafts();
+        const freshDefaults = getDefaultProducts();
+        setProducts(freshDefaults);
+      }
+      
       if (onActiveProductChange) {
         onActiveProductChange('product-1');
       }
       
-      setSuccessMessage('Default products successfully repopulated in the backend. Editor has been reset to default products.');
+      setSuccessMessage('Default products successfully repopulated in the backend. Editor has been synced with backend data.');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       
@@ -197,7 +218,7 @@ export default function ProductsWorkspace({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Repopulate default products in backend?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will reset the backend product database to the three default products and restore your local editor to the default state. This is useful after deployment to ensure the backend has the correct product data. This action cannot be undone.
+                    This will reset the backend product database to the three default products (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) and sync your local editor with the backend data. This is useful after deployment to ensure the backend has the correct product data. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

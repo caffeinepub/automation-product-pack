@@ -1,5 +1,49 @@
 import type { ProductEntry } from '../../types/productEntry';
 import { getJsPDF } from './jspdfClient';
+import { ProductDataValidationError } from '../generation/productDataErrors';
+
+/**
+ * Validates required product fields and throws ProductDataValidationError if any are missing.
+ */
+function validateRequiredFields(product: ProductEntry, productNumber: number): void {
+  const missingFields: string[] = [];
+  
+  // Check name
+  if (!product.name || product.name.trim() === '') {
+    missingFields.push('Product Name');
+  }
+  
+  // Check subtitle
+  if (!product.subtitle || product.subtitle.trim() === '') {
+    missingFields.push('Subtitle');
+  }
+  
+  // Check description
+  if (!product.description || product.description.trim() === '') {
+    missingFields.push('Description');
+  }
+  
+  if (missingFields.length > 0) {
+    // Create diagnostic snapshot for console logging
+    const diagnosticSnapshot = {
+      productId: product.id,
+      name: product.name,
+      subtitle: product.subtitle,
+      description: product.description,
+      nameLength: product.name?.length ?? 0,
+      subtitleLength: product.subtitle?.length ?? 0,
+      descriptionLength: product.description?.length ?? 0,
+    };
+    
+    throw new ProductDataValidationError(
+      product.id,
+      product.name || 'Untitled',
+      productNumber,
+      missingFields,
+      diagnosticSnapshot
+    );
+  }
+}
 
 /**
  * Normalizes a value to a string, throwing an error if it's invalid.
@@ -17,9 +61,12 @@ function normalizeToString(value: any, fieldName: string): string {
   return str;
 }
 
-export async function generateProductPdf(product: ProductEntry, coverBlob: Blob | null): Promise<Blob> {
+export async function generateProductPdf(product: ProductEntry, productNumber: number, coverBlob: Blob | null): Promise<Blob> {
   try {
-    // Validate and normalize required product fields
+    // Validate required fields first
+    validateRequiredFields(product, productNumber);
+    
+    // Normalize required product fields
     const productName = normalizeToString(product.name, 'product.name');
     const productSubtitle = normalizeToString(product.subtitle, 'product.subtitle');
     const productDescription = normalizeToString(product.description, 'product.description');

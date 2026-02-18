@@ -1,77 +1,66 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Accurate PDF error messaging + product field pre-validation and hardening",
+  "title": "Digital Bundle Studio — Frontend safeguards + diagnostics for missing product fields during PDF generation",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Derive PDF-step UI errors from the underlying cause (jsPDF load failure vs invalid/missing product data) instead of a generic prompt.",
+      "id": "REQ-3",
+      "summary": "Load/merge backend-synced product data (when available) with local defaults so required PDF fields are always present for the three default products.",
       "acceptanceCriteria": [
-        "When jsPDF is not available (e.g., getJsPDF() throws \"jsPDF library not loaded\"), the displayed error explicitly indicates jsPDF failed to load and suggests retrying after ensuring the library is available.",
-        "When product fields are missing/blank, the displayed error explicitly lists which fields are missing (name, subtitle, description) for the affected product.",
-        "The error message shown for PDF failures is derived from the underlying error (GenerationError.originalError) and is not a generic/incorrect prompt."
+        "With the default products (no user edits), clicking “Generate All Products” succeeds without triggering the \"Missing required fields\" pre-validation error.",
+        "Generating a single product for each of the three defaults succeeds without throwing a PDF-step \"Invalid product data\" error.",
+        "If backend product syncing is enabled for authenticated users, the loaded products in the editor contain non-empty name/subtitle/description matching the defaults after using “Repopulate Default Products”."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/generation/formatGenerationError.ts",
-          "operation": "modify",
-          "description": "Update PDF-step formatting to inspect GenerationError.originalError and emit actionable, accurate messages (e.g., jsPDF CDN not loaded vs. validation/missing fields). Remove the current always-the-same prompt for PDF failures."
+          "path": "frontend/src/hooks/useBackendProducts.ts",
+          "operation": "create",
+          "description": "Add a React Query hook that (when an authenticated actor is available) fetches the three known products from the backend by id (product-1..3) and exposes loading/error/refetch; ensure missing/empty name/subtitle/description are safely defaulted from frontend defaults before updating editor state."
         },
         {
-          "path": "frontend/src/lib/generation/generationErrors.ts",
-          "operation": "modify",
-          "description": "Extend structured error handling support for generation to preserve/propagate meaningful causes that the formatter can reliably map to user messages (without changing app flow)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Pre-validate required product fields (trimmed) before generating single or all PDFs, and block generation with clear guidance.",
-      "acceptanceCriteria": [
-        "Clicking “Generate” for a product with missing/blank name, subtitle, or description does not call the PDF generator and instead shows a clear validation error in English.",
-        "Clicking “Generate All Products” skips/blocks generation if any product has missing required fields and reports which product(s) need fixes.",
-        "Validation uses trimmed strings (e.g., whitespace-only values are treated as missing)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/validation/productValidation.ts",
+          "path": "frontend/src/lib/products/mapBackendProductToEntry.ts",
           "operation": "create",
-          "description": "Add a reusable product required-field validator that treats trimmed whitespace-only strings as missing and returns a structured result suitable for UI messaging."
+          "description": "Implement a mapping/merge utility to convert backend ProductDefinition data into a ProductEntry-compatible shape while preserving local default modules/prompts/templates/checklists and guaranteeing non-empty name/subtitle/description by falling back to frontend defaultProducts when backend values are missing/blank."
         },
         {
           "path": "frontend/src/components/products/ProductsWorkspace.tsx",
           "operation": "modify",
-          "description": "Add pre-validation checks in \"Generate\" and \"Generate All Products\" handlers; block generation when invalid and set the existing workspace error alert to a clear English message listing missing fields per product and/or which products need fixes."
+          "description": "Wire backend product syncing into the workspace: when authenticated, use the new useBackendProducts hook to hydrate/merge products into state (without overwriting local drafts unless explicitly repopulating); after “Repopulate Default Products”, refetch backend products and update editor state from merged backend+defaults so required fields are present for generation."
         },
         {
-          "path": "frontend/src/components/products/ProductEditor.tsx",
+          "path": "frontend/src/lib/defaultProducts.ts",
           "operation": "modify",
-          "description": "Align editor labels/required-field indicators with the actual required fields (name, subtitle, description) and ensure the Generate button behavior does not bypass workspace-level pre-validation."
+          "description": "Export lightweight helpers for looking up a default product by id (and/or retrieving a deterministic array for product-1..3) so backend sync merging can reliably fall back to the correct default name/subtitle/description."
         }
       ]
     },
     {
-      "id": "REQ-3",
-      "summary": "Harden PDF generation against undefined/null/empty text inputs by normalizing to strings and preventing jsPDF text calls with non-string data.",
+      "id": "REQ-4",
+      "summary": "Improve UI error messaging and console diagnostics to identify which product and which required fields are missing when generation fails, without showing stack traces in production UI.",
       "acceptanceCriteria": [
-        "If any of product.name/product.subtitle/product.description is unexpectedly undefined/null at runtime, PDF generation fails with a clear, accurate error indicating invalid product data (not a generic message), and logs useful diagnostics via existing logging.",
-        "No jsPDF doc.text invocation receives a non-string value (verified by code changes and manual testing through the UI)."
+        "When generation fails due to invalid/empty required product fields, the displayed error message identifies the product name (or product number) and the missing field(s) (Product Name, Subtitle, Description).",
+        "Console logs include the full diagnostic details (current product object snapshot or key fields) to help reproduce, while user-facing text remains concise and in English."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/lib/generation/productDataErrors.ts",
+          "operation": "create",
+          "description": "Define a typed error (e.g., ProductDataValidationError) that captures product id/name/number context plus the exact missing required fields (Product Name, Subtitle, Description) and a small diagnostic snapshot for console logging."
+        },
+        {
           "path": "frontend/src/lib/pdf/generateProductPdf.ts",
           "operation": "modify",
-          "description": "Normalize/guard all product text inputs (name/subtitle/description and any other strings passed into jsPDF) so doc.text and splitTextToSize are only called with strings/arrays of strings; on invalid runtime product data, throw a clear invalid-data error and keep existing console diagnostics useful."
+          "description": "Replace generic \"Invalid product data\" throws with the new typed ProductDataValidationError by explicitly checking required fields (name/subtitle/description) for undefined/null/blank and reporting exactly which are missing; include a concise diagnostic snapshot for console logs."
         },
         {
-          "path": "frontend/src/lib/pdf/jspdfClient.ts",
+          "path": "frontend/src/lib/generation/formatGenerationError.ts",
           "operation": "modify",
-          "description": "Ensure jsPDF availability errors remain distinct and machine-detectable (e.g., consistent error messages) so UI can accurately report jsPDF load failures."
+          "description": "Detect the new ProductDataValidationError and format a targeted user-facing message that includes the product name/product number and the specific missing field(s); keep messaging concise and English-only. Update logGenerationError to log the diagnostic snapshot (or key product fields) to the console without surfacing stack traces in the UI."
         },
         {
-          "path": "frontend/src/lib/generation/generateProductBundle.ts",
+          "path": "frontend/src/lib/validation/productValidation.ts",
           "operation": "modify",
-          "description": "Improve PDF-step error propagation so the underlying PDF/validation/jsPDF cause is preserved for downstream formatting and logging, without changing the overall bundle-generation workflow."
+          "description": "Ensure required-field validation utilities produce consistent, human-readable field labels (Product Name, Subtitle, Description) that match the new PDF-step validation error formatting, so pre-validation and PDF-step messaging align."
         }
       ]
     }

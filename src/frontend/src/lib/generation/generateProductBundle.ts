@@ -1,51 +1,73 @@
 import type { ProductEntry, GeneratedBundle } from '../../types/productEntry';
 import { generateProductPdf } from '../pdf/generateProductPdf';
 import { buildProductZip } from '../zip/buildProductZip';
-import { generateProductPdfName, generateProductZipName } from '../filename';
 import { fetchCoverAsBlob } from '../assets/covers';
 import { GenerationError } from './generationErrors';
+import { generateProductPdfName } from '../filename';
 
 export async function generateProductBundle(
   product: ProductEntry,
-  productNumber: number = 1
+  productNumber: number
 ): Promise<GeneratedBundle> {
-  const versionTag = new Date().toISOString().split('T')[0];
-  
-  // Fetch cover
-  let coverBlob: Blob | null = null;
+  const versionTag = `v${new Date().toISOString().split('T')[0]}`;
+
   try {
-    coverBlob = await fetchCoverAsBlob(product.id);
-  } catch (error) {
-    throw new GenerationError({
-      step: 'cover',
+    // Step 1: Load cover image
+    let coverBlob: Blob | null = null;
+    try {
+      coverBlob = await fetchCoverAsBlob(product.id);
+    } catch (error) {
+      throw new GenerationError({
+        step: 'cover',
+        productId: product.id,
+        productName: product.name,
+        productNumber,
+        originalError: error,
+      });
+    }
+
+    // Step 2: Generate PDF
+    let pdfBlob: Blob;
+    try {
+      pdfBlob = await generateProductPdf(product, productNumber, coverBlob);
+    } catch (error) {
+      throw new GenerationError({
+        step: 'pdf',
+        productId: product.id,
+        productName: product.name,
+        productNumber,
+        originalError: error,
+      });
+    }
+
+    // Step 3: Build ZIP
+    let zipBlob: Blob;
+    try {
+      const pdfFilename = generateProductPdfName(product.name, versionTag);
+      zipBlob = await buildProductZip(product, pdfBlob, pdfFilename);
+    } catch (error) {
+      throw new GenerationError({
+        step: 'zip',
+        productId: product.id,
+        productName: product.name,
+        productNumber,
+        originalError: error,
+      });
+    }
+
+    return {
       productId: product.id,
-      productName: product.name,
-      productNumber,
-      originalError: error,
-    });
-  }
-  
-  // Generate PDF
-  let pdfBlob: Blob;
-  try {
-    pdfBlob = await generateProductPdf(product, coverBlob);
+      pdfBlob,
+      zipBlob,
+      generatedAt: new Date(),
+      versionTag,
+    };
   } catch (error) {
-    throw new GenerationError({
-      step: 'pdf',
-      productId: product.id,
-      productName: product.name,
-      productNumber,
-      originalError: error,
-    });
-  }
-  
-  const pdfFilename = generateProductPdfName(product.name, versionTag);
-  
-  // Build ZIP
-  let zipBlob: Blob;
-  try {
-    zipBlob = await buildProductZip(product, pdfBlob, pdfFilename);
-  } catch (error) {
+    // Re-throw if already a GenerationError
+    if (error instanceof GenerationError) {
+      throw error;
+    }
+    // Wrap any other errors
     throw new GenerationError({
       step: 'zip',
       productId: product.id,
@@ -54,12 +76,4 @@ export async function generateProductBundle(
       originalError: error,
     });
   }
-  
-  return {
-    productId: product.id,
-    pdfBlob,
-    zipBlob,
-    generatedAt: new Date(),
-    versionTag,
-  };
 }

@@ -1,71 +1,89 @@
 {
   "kind": "build_request",
-  "title": "Fix misleading PDF generation errors and add robust pre-validation for product fields",
+  "title": "Fix PDF generation validation error by aligning backend default products with frontend digital products",
   "projectName": "Digital Bundle Studio",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Improve PDF-step error handling so the UI shows an accurate, actionable message based on the real underlying PDF error (e.g., missing jsPDF CDN library vs. missing/invalid product fields), instead of always prompting to verify name/subtitle/description.",
-      "target": "frontend",
+      "text": "Update backend default product population so it creates the three digital products used by the frontend defaults (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) instead of the current tshirt/mug/cap products.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-user-1"
         ],
         "quotes": [
-          "Failed to generate PDF for \"Digital Planner Mastery\" (Product 1). Please verify that the product name, subtitle, and description are filled in and try again."
+          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
         ]
       },
       "acceptanceCriteria": [
-        "When jsPDF is not available (e.g., getJsPDF() throws \"jsPDF library not loaded\"), the displayed error explicitly indicates jsPDF failed to load and suggests retrying after ensuring the library is available.",
-        "When product fields are missing/blank, the displayed error explicitly lists which fields are missing (name, subtitle, description) for the affected product.",
-        "The error message shown for PDF failures is derived from the underlying error (GenerationError.originalError) and is not a generic/incorrect prompt."
+        "Calling the backend populateDefaultProducts results in backend product records whose names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", \"Printable Wall Art Studio\".",
+        "The previously seeded products (\"Internet Computer T-Shirt\", \"Internet Computer Mug\", \"Internet Computer Cap\") are no longer created by populateDefaultProducts."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add pre-validation before attempting PDF generation for each product to ensure required fields are present and non-empty (after trimming), and prevent generation when validation fails.",
-      "target": "frontend",
+      "text": "Align the backend product data model with the frontend ProductEntry shape so that required PDF fields (name, subtitle, description) are never missing when products are loaded/synced from the backend.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-user-1"
         ],
         "quotes": [
-          "Please verify that the product name, subtitle, and description are filled in and try again."
+          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
         ]
       },
       "acceptanceCriteria": [
-        "Clicking “Generate” for a product with missing/blank name, subtitle, or description does not call the PDF generator and instead shows a clear validation error in English.",
-        "Clicking “Generate All Products” skips/blocks generation if any product has missing required fields and reports which product(s) need fixes.",
-        "Validation uses trimmed strings (e.g., whitespace-only values are treated as missing)."
+        "Backend product type includes at least: id, name, subtitle, description, modules (title+description), prompts, templates, checklists (matching frontend ProductEntry fields).",
+        "Backend APIs return complete non-empty values for name/subtitle/description for the three default products.",
+        "No backend method returns products with undefined/null/missing values for name/subtitle/description."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Harden the PDF generator against undefined/empty text inputs by safely normalizing product fields to strings and guarding jsPDF text calls so generation does not crash due to unexpected undefined/null values coming from drafts or merges.",
+      "text": "Ensure the frontend uses the correctly populated product data (local defaults and/or backend-synced data) so that generating PDFs for Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio does not fail due to missing required fields.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-user-1"
         ],
         "quotes": [
-          "Failed to generate PDF for \"Digital Planner Mastery\" (Product 1)."
+          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
         ]
       },
       "acceptanceCriteria": [
-        "If any of product.name/product.subtitle/product.description is unexpectedly undefined/null at runtime, PDF generation fails with a clear, accurate error indicating invalid product data (not a generic message), and logs useful diagnostics via existing logging.",
-        "No jsPDF doc.text invocation receives a non-string value (verified by code changes and manual testing through the UI)."
+        "With the default products (no user edits), clicking “Generate All Products” succeeds without triggering the \"Missing required fields\" pre-validation error.",
+        "Generating a single product for each of the three defaults succeeds without throwing a PDF-step \"Invalid product data\" error.",
+        "If backend product syncing is enabled for authenticated users, the loaded products in the editor contain non-empty name/subtitle/description matching the defaults after using “Repopulate Default Products”."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add targeted debugging information for this specific failure mode so that if a product’s required fields arrive empty during generation, the UI error message includes which product and which field(s) were empty, without exposing stack traces in production UI.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-1"
+        ],
+        "quotes": [
+          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When generation fails due to invalid/empty required product fields, the displayed error message identifies the product name (or product number) and the missing field(s) (Product Name, Subtitle, Description).",
+        "Console logs include the full diagnostic details (current product object snapshot or key fields) to help reproduce, while user-facing text remains concise and in English."
       ]
     }
   ],
   "constraints": [
-    "Do not modify read-only frontend paths listed in SYSTEM_CONTEXT.frontend.immutablePaths.",
-    "Keep backend as a single Motoko actor; do not introduce additional backend services."
+    "Keep all Motoko backend logic in the single actor at backend/main.mo (single-actor architecture).",
+    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT.",
+    "Use English for all user-facing text."
   ],
   "nonGoals": [
-    "Redesigning the PDF layout/content beyond what is necessary to prevent errors and improve error messaging.",
-    "Adding new authentication providers (only Internet Identity is supported).",
-    "Adding external databases or third-party backend services."
+    "Adding third-party authentication providers (only Internet Identity is supported).",
+    "Introducing external databases or non-Motoko backend services.",
+    "Adding new product types beyond the three specified defaults."
   ],
   "imageRequirements": {
     "required": [],

@@ -5,9 +5,10 @@ import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
-
-
+// Use migration module for upgrade logic
+(with migration = Migration.run)
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
@@ -18,8 +19,10 @@ actor {
 
   public type ProductDefinition = {
     name : Text;
+    subtitle : ?Text;
     description : Text;
     imageUrl : Text;
+    digitalProductUrl : Text;
     price : Nat;
   };
 
@@ -79,38 +82,50 @@ actor {
     products.clear();
     metadata.clear();
 
-    // Add default products
-    products.add("tshirt", {
-      name = "Internet Computer T-Shirt";
-      description = "High-quality cotton t-shirt featuring the Internet Computer logo. Show off your support and look great doing it!";
-      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/ic_tshirt.jpeg";
-      price = 25_000_000;
+    // Add digitally downloadable default products
+    products.add("digital_planner_mastery", {
+      name = "Digital Planner Mastery";
+      subtitle = ?(
+        "Ultimate Bundle: Notion, Goodnotes, Excel & PDF Planners Included!"
+      );
+      description = "Unlock your productivity potential with this all-in-one digital planning suite. Plan, track, and organize every aspect of your life across platforms.";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/digital_planner_mastery.jpeg";
+      digitalProductUrl = "https://icme-cdn.internetcomputer.org/data/digital_planner_mastery.zip";
+      price = 15_000_000;
     });
-    products.add("mug", {
-      name = "Internet Computer Mug";
-      description = "High-quality 11oz ceramic mug with the Internet Computer logo.";
-      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/internet_computer_mug.jpeg";
-      price = 12_000_000;
+    products.add("canva_templates_empire", {
+      name = "Canva Templates Empire";
+      subtitle = ?(
+        "Mega Bundle: 500+ Templates for Business, Marketing, and Social Media"
+      );
+      description = "Elevate your design game instantly with this massive Canva template collection. Media kits, workbooks, social graphics, and more for every need!";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/canva_templates_empire.jpeg";
+      digitalProductUrl = "https://icme-cdn.internetcomputer.org/data/canva_templates_empire.zip";
+      price = 39_000_000;
     });
-    products.add("cap", {
-      name = "Internet Computer Cap";
-      description = "Adjustable black cap with the Internet Computer logo. Durable and stylish.";
-      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/internet_computer_cap.jpeg";
+    products.add("printable_wall_art_studio", {
+      name = "Printable Wall Art Studio";
+      subtitle = ?(
+        "Home Decor Mega Pack: 50 Unique Designs, Ready to Print"
+      );
+      description = "Transform your space instantly with this collection of modern and classic wall art. High-resolution printable files for every aesthetic.";
+      imageUrl = "https://aff0000jivv3ncbobq0g3zdzht2g0bmznizd8p4zn5n35bx5ib8uicqd0yc2/printable_wall_art_studio.jpeg";
+      digitalProductUrl = "https://icme-cdn.internetcomputer.org/data/printable_wall_art_studio.zip";
       price = 12_000_000;
     });
 
     // Add default metadata
-    metadata.add("tshirt", {
+    metadata.add("digital_planner_mastery", {
       lastGeneratedTime = Time.now();
-      versionTag = "initial v0.1";
+      versionTag = "initial v0.2";
     });
-    metadata.add("mug", {
+    metadata.add("canva_templates_empire", {
       lastGeneratedTime = Time.now();
-      versionTag = "initial v0.1";
+      versionTag = "initial v0.2";
     });
-    metadata.add("cap", {
+    metadata.add("printable_wall_art_studio", {
       lastGeneratedTime = Time.now();
-      versionTag = "initial v0.1";
+      versionTag = "initial v0.2";
     });
   };
 

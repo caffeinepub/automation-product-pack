@@ -14,7 +14,9 @@ export interface ProductDefinition {
   'name' : string,
   'description' : string,
   'imageUrl' : string,
+  'digitalProductUrl' : string,
   'price' : bigint,
+  'subtitle' : [] | [string],
 }
 export interface ProductMetadata {
   'lastGeneratedTime' : Time,

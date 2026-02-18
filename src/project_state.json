@@ -4,36 +4,45 @@
   "summary": "New project",
   "architectural_notes": [],
   "known_issues": [
-    "PDF generation fails for all products with error: \"Failed to generate PDF for 'Digital Planner Mastery' (Product 1). Please verify that the product name, subtitle, and description are filled in and try again.\""
+    "PDF generation still fails with the same validation error; backend appears to be receiving empty required fields for some products (e.g., Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio)."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-improve-pdf-step-error-handling-so-the-ui-shows-an-accurate-actionable-message-based-on-the-real-underlying-pdf-error-e-g-missing-jspdf-cdn-library-vs-missing-invalid-product-fields-instead-of-always-prompting-to-verify-name-subtitle-description",
-      "title": "Improve PDF-step error handling so the UI shows an accurate, actionable message based on the real underlying PDF error (e.g., missing jsPDF CDN library vs. missing/invalid product fields), instead of always prompting to verify name/subtitle/description.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-pre-validation-before-attempting-pdf-generation-for-each-product-to-ensure-required-fields-are-present-and-non-empty-after-trimming-and-prevent-generation-when-validation-fails",
-      "title": "Add pre-validation before attempting PDF generation for each product to ensure required fields are present and non-empty (after trimming), and prevent generation when validation fails.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-harden-the-pdf-generator-against-undefined-empty-text-inputs-by-safely-normalizing-product-fields-to-strings-and-guarding-jspdf-text-calls-so-generation-does-not-crash-due-to-unexpected-undefined-null-values-coming-from-drafts-or-merges",
-      "title": "Harden the PDF generator against undefined/empty text inputs by safely normalizing product fields to strings and guarding jsPDF text calls so generation does not crash due to unexpected undefined/null values coming from drafts or merges.",
+      "id": "feature-ensure-the-frontend-uses-the-correctly-populated-product-data-local-defaults-and-or-backend-synced-data-so-that-generating-pdfs-for-digital-planner-mastery-canva-templates-empire-and-printable-wall-art-studio-does-not-fail-due-to-missing-required-fields",
+      "title": "Ensure the frontend uses the correctly populated product data (local defaults and/or backend-synced data) so that generating PDFs for Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio does not fail due to missing required fields.",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-targeted-debugging-information-for-this-specific-failure-mode-so-that-if-a-product-s-required-fields-arrive-empty-during-generation-the-ui-error-message-includes-which-product-and-which-field-s-were-empty-without-exposing-stack-traces-in-production-ui",
+      "title": "Add targeted debugging information for this specific failure mode so that if a product’s required fields arrive empty during generation, the UI error message includes which product and which field(s) were empty, without exposing stack traces in production UI.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
     }
   ],
-  "new_feature_requests": [],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Update backend default product population so it creates the three digital products used by the frontend defaults (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) instead of the current tshirt/mug/cap products.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Align the backend product data model with the frontend ProductEntry shape so that required PDF fields (name, subtitle, description) are never missing when products are loaded/synced from the backend.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
   "projectName": "Digital Bundle Studio",
   "clarification_mode": "instant",
   "clarification_rounds": 0

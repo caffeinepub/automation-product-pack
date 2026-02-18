@@ -198,3 +198,21 @@ export const DEFAULT_PRODUCTS: ProductEntry[] = [
 export function getDefaultProducts(): ProductEntry[] {
   return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
 }
+
+/**
+ * Returns a default product by index (0-2)
+ */
+export function getDefaultProductByIndex(index: number): ProductEntry | null {
+  if (index < 0 || index >= DEFAULT_PRODUCTS.length) {
+    return null;
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS[index]));
+}
+
+/**
+ * Returns a default product by ID (product-1, product-2, product-3)
+ */
+export function getDefaultProductById(id: string): ProductEntry | null {
+  const product = DEFAULT_PRODUCTS.find(p => p.id === id);
+  return product ? JSON.parse(JSON.stringify(product)) : null;
+}

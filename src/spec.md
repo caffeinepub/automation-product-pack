@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Make PDF generation failures show accurate, actionable errors and prevent PDF generation when required product fields are missing or invalid.
+**Goal:** Fix PDF generation validation errors by ensuring backend-seeded products and backend-synced product data match the frontend’s three digital product defaults and always include required fields.
 
 **Planned changes:**
-- Update PDF-step error handling to display messages derived from the underlying PDF error (including distinguishing jsPDF load failures vs. invalid/missing product data).
-- Add pre-validation for each product before PDF generation (trimmed name/subtitle/description required), blocking “Generate” and “Generate All Products” when validation fails and reporting which product(s)/field(s) need fixes.
-- Harden the PDF generator by normalizing/guarding product text inputs so jsPDF text calls only receive strings and unexpected undefined/null values fail with a clear, accurate error plus existing diagnostics logging.
+- Update backend `populateDefaultProducts` to seed only the three digital products: “Digital Planner Mastery”, “Canva Templates Empire”, and “Printable Wall Art Studio”, and stop creating the prior tshirt/mug/cap products.
+- Align the backend product data model and API responses with the frontend `ProductEntry` shape so required PDF fields (name, subtitle, description) are always present and non-empty for default products.
+- Ensure the frontend uses correctly populated local and/or backend-synced product data so “Generate All Products” and single-product generation succeed for the three defaults.
+- Add targeted frontend error messaging and console diagnostics to identify which product and which required field(s) were empty when generation fails, without showing stack traces in the production UI.
 
-**User-visible outcome:** When generating PDFs, users see specific error messages (e.g., jsPDF failed to load or exactly which fields are missing for which products), and PDF generation won’t run until required product fields are filled in correctly.
+**User-visible outcome:** Generating PDFs for “Digital Planner Mastery”, “Canva Templates Empire”, and “Printable Wall Art Studio” works with default data (and after repopulating defaults), and any missing-field failures clearly indicate the affected product and field(s).
