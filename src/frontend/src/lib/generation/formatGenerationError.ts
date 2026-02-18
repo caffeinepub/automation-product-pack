@@ -24,13 +24,16 @@ export function formatGenerationError(error: unknown): string {
     const originalMessage = originalError instanceof Error ? originalError.message : String(originalError);
     
     switch (step) {
+      case 'library-check':
+        return `The PDF library failed to initialize. Please refresh the page and try again. If the problem persists, check your internet connection or try clearing your browser cache.`;
+      
       case 'cover':
         return `Failed to load cover image for "${productName}" (Product ${productNumber}). ${originalMessage}`;
       
       case 'pdf':
         // Check if it's a jsPDF library error
-        if (originalMessage.includes('jsPDF library not loaded')) {
-          return `Failed to generate PDF for "${productName}" (Product ${productNumber}). The PDF library failed to load. Please refresh the page and try again.`;
+        if (originalMessage.includes('PDF library failed to load') || originalMessage.includes('jsPDF library not loaded')) {
+          return `The PDF library failed to initialize for "${productName}" (Product ${productNumber}). Please refresh the page and try again. If the problem persists, check your internet connection.`;
         }
         
         // Check if it's a validation error (missing fields)
@@ -51,6 +54,10 @@ export function formatGenerationError(error: unknown): string {
 
   // Fallback for non-GenerationError errors
   if (error instanceof Error) {
+    // Check for library loading errors
+    if (error.message.includes('PDF library failed to load') || error.message.includes('jsPDF')) {
+      return `The PDF library failed to initialize. Please refresh the page and try again. If the problem persists, check your internet connection or try clearing your browser cache.`;
+    }
     return `Generation failed: ${error.message}`;
   }
 

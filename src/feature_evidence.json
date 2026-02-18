@@ -2,13 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-the-frontend-uses-the-correctly-populated-product-data-local-defaults-and-or-backend-synced-data-so-that-generating-pdfs-for-digital-planner-mastery-canva-templates-empire-and-printable-wall-art-studio-does-not-fail-due-to-missing-required-fields",
-      "featureTitle": "Ensure the frontend uses the correctly populated product data (local defaults and/or backend-synced data) so that generating PDFs for Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio does not fail due to missing required fields.",
+      "featureId": "feature-fix-the-pdf-library-jspdf-initialization-failure-that-prevents-pdf-generation-for-all-products-on-the-backend",
+      "featureTitle": "Fix the PDF library (jsPDF) initialization failure that prevents PDF generation for all products on the backend",
       "files": [
-        "frontend/src/components/products/ProductsWorkspace.tsx",
-        "frontend/src/hooks/useBackendProducts.ts",
-        "frontend/src/lib/defaultProducts.ts",
-        "frontend/src/lib/products/mapBackendProductToEntry.ts"
+        "frontend/src/lib/pdf/generateProductPdf.ts",
+        "frontend/src/lib/pdf/jspdfClient.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,17 +17,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-3"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-targeted-debugging-information-for-this-specific-failure-mode-so-that-if-a-product-s-required-fields-arrive-empty-during-generation-the-ui-error-message-includes-which-product-and-which-field-s-were-empty-without-exposing-stack-traces-in-production-ui",
-      "featureTitle": "Add targeted debugging information for this specific failure mode so that if a product’s required fields arrive empty during generation, the UI error message includes which product and which field(s) were empty, without exposing stack traces in production UI.",
+      "featureId": "feature-ensure-the-pdf-generation-flow-properly-handles-library-loading-errors-and-provides-clear-feedback-if-the-library-fails-to-initialize",
+      "featureTitle": "Ensure the PDF generation flow properly handles library loading errors and provides clear feedback if the library fails to initialize",
       "files": [
         "frontend/src/lib/generation/formatGenerationError.ts",
-        "frontend/src/lib/generation/productDataErrors.ts",
-        "frontend/src/lib/pdf/generateProductPdf.ts"
+        "frontend/src/lib/generation/generateProductBundle.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -40,7 +37,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-4"
+        "REQ-2"
       ],
       "confidence": "high"
     }

@@ -1,66 +1,47 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Digital Bundle Studio — Frontend safeguards + diagnostics for missing product fields during PDF generation",
+  "title": "Fix PDF library initialization failure",
   "requirements": [
     {
-      "id": "REQ-3",
-      "summary": "Load/merge backend-synced product data (when available) with local defaults so required PDF fields are always present for the three default products.",
+      "id": "REQ-1",
+      "summary": "Fix the jsPDF library initialization failure that prevents PDF generation for all products",
       "acceptanceCriteria": [
-        "With the default products (no user edits), clicking “Generate All Products” succeeds without triggering the \"Missing required fields\" pre-validation error.",
-        "Generating a single product for each of the three defaults succeeds without throwing a PDF-step \"Invalid product data\" error.",
-        "If backend product syncing is enabled for authenticated users, the loaded products in the editor contain non-empty name/subtitle/description matching the defaults after using “Repopulate Default Products”."
+        "The jsPDF library loads successfully without throwing initialization errors",
+        "PDF generation completes for all three default products",
+        "No 'PDF library failed to load' error appears when generating PDFs"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useBackendProducts.ts",
-          "operation": "create",
-          "description": "Add a React Query hook that (when an authenticated actor is available) fetches the three known products from the backend by id (product-1..3) and exposes loading/error/refetch; ensure missing/empty name/subtitle/description are safely defaulted from frontend defaults before updating editor state."
-        },
-        {
-          "path": "frontend/src/lib/products/mapBackendProductToEntry.ts",
-          "operation": "create",
-          "description": "Implement a mapping/merge utility to convert backend ProductDefinition data into a ProductEntry-compatible shape while preserving local default modules/prompts/templates/checklists and guaranteeing non-empty name/subtitle/description by falling back to frontend defaultProducts when backend values are missing/blank."
-        },
-        {
-          "path": "frontend/src/components/products/ProductsWorkspace.tsx",
+          "path": "frontend/src/lib/pdf/jspdfClient.ts",
           "operation": "modify",
-          "description": "Wire backend product syncing into the workspace: when authenticated, use the new useBackendProducts hook to hydrate/merge products into state (without overwriting local drafts unless explicitly repopulating); after “Repopulate Default Products”, refetch backend products and update editor state from merged backend+defaults so required fields are present for generation."
-        },
-        {
-          "path": "frontend/src/lib/defaultProducts.ts",
-          "operation": "modify",
-          "description": "Export lightweight helpers for looking up a default product by id (and/or retrieving a deterministic array for product-1..3) so backend sync merging can reliably fall back to the correct default name/subtitle/description."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Improve UI error messaging and console diagnostics to identify which product and which required fields are missing when generation fails, without showing stack traces in production UI.",
-      "acceptanceCriteria": [
-        "When generation fails due to invalid/empty required product fields, the displayed error message identifies the product name (or product number) and the missing field(s) (Product Name, Subtitle, Description).",
-        "Console logs include the full diagnostic details (current product object snapshot or key fields) to help reproduce, while user-facing text remains concise and in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/generation/productDataErrors.ts",
-          "operation": "create",
-          "description": "Define a typed error (e.g., ProductDataValidationError) that captures product id/name/number context plus the exact missing required fields (Product Name, Subtitle, Description) and a small diagnostic snapshot for console logging."
+          "description": "Fix the jsPDF global reference to use window.jsPDF (capital P) instead of window.jspdf.jsPDF, matching how the CDN exposes the library in frontend/index.html. Update getJsPDF() to check for window.jsPDF directly and createDocument() to use the corrected reference."
         },
         {
           "path": "frontend/src/lib/pdf/generateProductPdf.ts",
           "operation": "modify",
-          "description": "Replace generic \"Invalid product data\" throws with the new typed ProductDataValidationError by explicitly checking required fields (name/subtitle/description) for undefined/null/blank and reporting exactly which are missing; include a concise diagnostic snapshot for console logs."
-        },
+          "description": "Ensure the library availability check uses the corrected jsPDF reference. Verify that error handling properly surfaces library loading failures with the 'PDF library failed to load' message when getJsPDF() returns null."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Ensure the PDF generation flow properly handles library loading errors and provides clear feedback if the library fails to initialize",
+      "acceptanceCriteria": [
+        "If jsPDF fails to load, the error message clearly indicates a library loading problem",
+        "The generation process does not attempt to create PDFs if the library is unavailable",
+        "Users receive actionable feedback when library initialization fails"
+      ],
+      "file_operations": [
         {
           "path": "frontend/src/lib/generation/formatGenerationError.ts",
           "operation": "modify",
-          "description": "Detect the new ProductDataValidationError and format a targeted user-facing message that includes the product name/product number and the specific missing field(s); keep messaging concise and English-only. Update logGenerationError to log the diagnostic snapshot (or key product fields) to the console without surfacing stack traces in the UI."
+          "description": "Enhance the error formatting logic to explicitly check for 'PDF library failed to load' error messages and provide clear, actionable feedback such as 'The PDF library failed to initialize. Please refresh the page and try again.' Include troubleshooting guidance for library loading failures."
         },
         {
-          "path": "frontend/src/lib/validation/productValidation.ts",
+          "path": "frontend/src/lib/generation/generateProductBundle.ts",
           "operation": "modify",
-          "description": "Ensure required-field validation utilities produce consistent, human-readable field labels (Product Name, Subtitle, Description) that match the new PDF-step validation error formatting, so pre-validation and PDF-step messaging align."
+          "description": "Add explicit validation that the PDF library is available before attempting PDF generation. If the library check fails, throw a GenerationError with step 'library-check' and a descriptive message. Ensure the error propagates properly to the UI layer without attempting to proceed with PDF creation."
         }
       ]
     }

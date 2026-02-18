@@ -4,6 +4,7 @@ import { buildProductZip } from '../zip/buildProductZip';
 import { fetchCoverAsBlob } from '../assets/covers';
 import { GenerationError } from './generationErrors';
 import { generateProductPdfName } from '../filename';
+import { isJsPDFAvailable } from '../pdf/jspdfClient';
 
 export async function generateProductBundle(
   product: ProductEntry,
@@ -12,6 +13,17 @@ export async function generateProductBundle(
   const versionTag = `v${new Date().toISOString().split('T')[0]}`;
 
   try {
+    // Step 0: Check if PDF library is available
+    if (!isJsPDFAvailable()) {
+      throw new GenerationError({
+        step: 'library-check',
+        productId: product.id,
+        productName: product.name,
+        productNumber,
+        originalError: new Error('PDF library failed to load. The jsPDF library is not available. Please refresh the page and try again.'),
+      });
+    }
+
     // Step 1: Load cover image
     let coverBlob: Blob | null = null;
     try {

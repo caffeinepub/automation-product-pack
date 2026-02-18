@@ -1,83 +1,54 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T00:27:09.865Z",
+  "generatedAt": "2026-02-18T15:18:44.524Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
+    "total": 2,
     "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update backend default product population so it creates the three digital products used by the frontend defaults (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) instead of the current tshirt/mug/cap products.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Align the backend product data model with the frontend ProductEntry shape so that required PDF fields (name, subtitle, description) are never missing when products are loaded/synced from the backend.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Ensure the frontend uses the correctly populated product data (local defaults and/or backend-synced data) so that generating PDFs for Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio does not fail due to missing required fields.",
+        "summary": "Fix the PDF library (jsPDF) initialization failure that prevents PDF generation for all products on the backend",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useBackendProducts.ts",
-          "frontend/src/lib/products/mapBackendProductToEntry.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx",
-          "frontend/src/lib/defaultProducts.ts"
+          "frontend/src/lib/pdf/jspdfClient.ts",
+          "frontend/src/lib/pdf/generateProductPdf.ts"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useBackendProducts.ts",
-          "frontend/src/lib/products/mapBackendProductToEntry.ts",
-          "frontend/src/components/products/ProductsWorkspace.tsx",
-          "frontend/src/lib/defaultProducts.ts"
+          "frontend/src/lib/pdf/jspdfClient.ts",
+          "frontend/src/lib/pdf/generateProductPdf.ts"
         ]
       },
       {
-        "id": "REQ-4",
-        "summary": "Add targeted debugging information for this specific failure mode so that if a product’s required fields arrive empty during generation, the UI error message includes which product and which field(s) were empty, without exposing stack traces in production UI.",
+        "id": "REQ-2",
+        "summary": "Ensure the PDF generation flow properly handles library loading errors and provides clear feedback if the library fails to initialize",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/generation/productDataErrors.ts",
-          "frontend/src/lib/pdf/generateProductPdf.ts",
           "frontend/src/lib/generation/formatGenerationError.ts",
-          "frontend/src/lib/validation/productValidation.ts"
+          "frontend/src/lib/generation/generateProductBundle.ts"
         ],
         "matchedFiles": [
-          "frontend/src/lib/generation/productDataErrors.ts",
-          "frontend/src/lib/pdf/generateProductPdf.ts",
-          "frontend/src/lib/generation/formatGenerationError.ts"
+          "frontend/src/lib/generation/formatGenerationError.ts",
+          "frontend/src/lib/generation/generateProductBundle.ts"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/products/ProductsWorkspace.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useBackendProducts.ts",
-    "frontend/src/lib/defaultProducts.ts",
     "frontend/src/lib/generation/formatGenerationError.ts",
     "frontend/src/lib/generation/generateProductBundle.ts",
-    "frontend/src/lib/generation/productDataErrors.ts",
+    "frontend/src/lib/generation/generationErrors.ts",
     "frontend/src/lib/pdf/generateProductPdf.ts",
-    "frontend/src/lib/products/mapBackendProductToEntry.ts",
+    "frontend/src/lib/pdf/jspdfClient.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

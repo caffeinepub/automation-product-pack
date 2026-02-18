@@ -1,102 +1,60 @@
 {
   "kind": "build_request",
-  "title": "Fix PDF generation validation error by aligning backend default products with frontend digital products",
-  "projectName": "Digital Bundle Studio",
+  "title": "Fix PDF library initialization failure",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update backend default product population so it creates the three digital products used by the frontend defaults (Digital Planner Mastery, Canva Templates Empire, Printable Wall Art Studio) instead of the current tshirt/mug/cap products.",
-      "target": "backend",
+      "text": "Fix the PDF library (jsPDF) initialization failure that prevents PDF generation for all products on the backend",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1"
+          "msg-user-all-3-products",
+          "msg-user-no-update",
+          "msg-user-never-heard-back"
         ],
         "quotes": [
-          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
+          "This time it says the PDF library failed to load",
+          "all 3 products"
         ]
       },
       "acceptanceCriteria": [
-        "Calling the backend populateDefaultProducts results in backend product records whose names match exactly: \"Digital Planner Mastery\", \"Canva Templates Empire\", \"Printable Wall Art Studio\".",
-        "The previously seeded products (\"Internet Computer T-Shirt\", \"Internet Computer Mug\", \"Internet Computer Cap\") are no longer created by populateDefaultProducts."
+        "The jsPDF library loads successfully without throwing initialization errors",
+        "PDF generation completes for all three default products",
+        "No 'PDF library failed to load' error appears when generating PDFs"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Align the backend product data model with the frontend ProductEntry shape so that required PDF fields (name, subtitle, description) are never missing when products are loaded/synced from the backend.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-user-1"
-        ],
-        "quotes": [
-          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend product type includes at least: id, name, subtitle, description, modules (title+description), prompts, templates, checklists (matching frontend ProductEntry fields).",
-        "Backend APIs return complete non-empty values for name/subtitle/description for the three default products.",
-        "No backend method returns products with undefined/null/missing values for name/subtitle/description."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Ensure the frontend uses the correctly populated product data (local defaults and/or backend-synced data) so that generating PDFs for Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio does not fail due to missing required fields.",
+      "text": "Ensure the PDF generation flow properly handles library loading errors and provides clear feedback if the library fails to initialize",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1"
+          "msg-assistant-library-setup"
         ],
         "quotes": [
-          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
+          "the PDF generator itself didn't initialize, so the backend never even got to the product data"
         ]
       },
       "acceptanceCriteria": [
-        "With the default products (no user edits), clicking “Generate All Products” succeeds without triggering the \"Missing required fields\" pre-validation error.",
-        "Generating a single product for each of the three defaults succeeds without throwing a PDF-step \"Invalid product data\" error.",
-        "If backend product syncing is enabled for authenticated users, the loaded products in the editor contain non-empty name/subtitle/description matching the defaults after using “Repopulate Default Products”."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Add targeted debugging information for this specific failure mode so that if a product’s required fields arrive empty during generation, the UI error message includes which product and which field(s) were empty, without exposing stack traces in production UI.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-1"
-        ],
-        "quotes": [
-          "same error again. The product names are Digital Planner Mastery, Canva Templates Empire, and Printable Wall Art Studio"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When generation fails due to invalid/empty required product fields, the displayed error message identifies the product name (or product number) and the missing field(s) (Product Name, Subtitle, Description).",
-        "Console logs include the full diagnostic details (current product object snapshot or key fields) to help reproduce, while user-facing text remains concise and in English."
+        "If jsPDF fails to load, the error message clearly indicates a library loading problem",
+        "The generation process does not attempt to create PDFs if the library is unavailable",
+        "Users receive actionable feedback when library initialization fails"
       ]
     }
   ],
   "constraints": [
-    "Keep all Motoko backend logic in the single actor at backend/main.mo (single-actor architecture).",
-    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT.",
-    "Use English for all user-facing text."
+    "The jsPDF library is loaded via CDN in frontend/index.html",
+    "Do not modify the backend Motoko code",
+    "Preserve the existing PDF generation workflow in frontend/src/lib/pdf/generateProductPdf.ts"
   ],
   "nonGoals": [
-    "Adding third-party authentication providers (only Internet Identity is supported).",
-    "Introducing external databases or non-Motoko backend services.",
-    "Adding new product types beyond the three specified defaults."
+    "Changing the PDF content layout or styling",
+    "Modifying product data validation logic",
+    "Updating the ZIP generation functionality"
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

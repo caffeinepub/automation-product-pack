@@ -1,16 +1,16 @@
 /**
- * Typed generation error model that preserves root-cause details
- * while allowing clear user-facing messages.
+ * Typed error model for generation failures.
+ * Captures the step where the error occurred, product context, and the original error.
  */
 
-export type GenerationStep = 'cover' | 'pdf' | 'zip';
+export type GenerationStep = 'library-check' | 'cover' | 'pdf' | 'zip';
 
 export interface GenerationErrorContext {
   step: GenerationStep;
   productId: string;
   productName: string;
   productNumber: number;
-  originalError: Error | unknown;
+  originalError: unknown;
 }
 
 export class GenerationError extends Error {
@@ -18,10 +18,10 @@ export class GenerationError extends Error {
   public readonly productId: string;
   public readonly productName: string;
   public readonly productNumber: number;
-  public readonly originalError: Error | unknown;
+  public readonly originalError: unknown;
 
   constructor(context: GenerationErrorContext) {
-    const message = `Generation failed at ${context.step} step for ${context.productName}`;
+    const message = `Generation failed at step "${context.step}" for product "${context.productName}" (${context.productNumber})`;
     super(message);
     this.name = 'GenerationError';
     this.step = context.step;

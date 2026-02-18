@@ -1,5 +1,5 @@
 import type { ProductEntry } from '../../types/productEntry';
-import { getJsPDF } from './jspdfClient';
+import { getJsPDF, isJsPDFAvailable } from './jspdfClient';
 import { ProductDataValidationError } from '../generation/productDataErrors';
 
 /**
@@ -63,6 +63,11 @@ function normalizeToString(value: any, fieldName: string): string {
 
 export async function generateProductPdf(product: ProductEntry, productNumber: number, coverBlob: Blob | null): Promise<Blob> {
   try {
+    // Check if jsPDF library is available before proceeding
+    if (!isJsPDFAvailable()) {
+      throw new Error('PDF library failed to load. The jsPDF library is not available. Please refresh the page and try again.');
+    }
+    
     // Validate required fields first
     validateRequiredFields(product, productNumber);
     
